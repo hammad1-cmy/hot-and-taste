@@ -1,0 +1,199 @@
+<!-- Fact-Forcing Declaration:
+  Callers/Importers: Customer fast-food storefront for Lahore branches.
+  Affected API: Storefront online ordering and WhatsApp checkout serializer.
+  Data Schemas: Cart Item { id, itemId, name, basePrice, unitPrice, crust, spice, addons, notes, qty }.
+  User Instruction: "remove top urgency banner (hamza from gulshan ravi)", "admin shouldnt have access through customor app fix that", "when in cart shows green notification in cart"
+-->
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Hot & Taste Fast Food | Official Online Ordering</title>
+
+  <!-- Modern Typography -->
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Outfit:wght@500;700;800;900&family=Plus+Jakarta+Sans:wght@400;600;700;800&display=swap" rel="stylesheet">
+
+  <link rel="stylesheet" href="styles.css">
+</head>
+<body>
+
+  <!-- Green Notification Toast for Cart Additions -->
+  <div id="cartToast" class="cart-toast">
+    <span class="toast-icon">✓</span>
+    <span id="toastMsg">Added to cart successfully!</span>
+  </div>
+
+  <!-- Top Navigation Bar (Customer View - Zero Admin Links) -->
+  <header>
+    <div class="brand-container">
+      <div class="logo-badge">🔥</div>
+      <div>
+        <h1 class="brand-title">HOT & TASTE</h1>
+        <p class="brand-subtitle">Fast Food & Pizza Experts • Lahore</p>
+      </div>
+    </div>
+
+    <div class="nav-actions">
+      <!-- Branch Selector Pill -->
+      <select id="branchSelect" class="branch-select-pill" title="Select Lahore Branch"></select>
+
+      <!-- Cart Toggle Button -->
+      <button id="cartToggleBtn" class="cart-toggle-btn">
+        <span>🛒 Cart</span>
+        <span id="cartBadge" class="cart-badge">0</span>
+      </button>
+    </div>
+  </header>
+
+  <!-- STOREFRONT VIEW -->
+  <main id="storefrontView">
+    <!-- Promotional Hero Deals Carousel Slider -->
+    <div class="hero-carousel-wrapper">
+      <div class="hero-carousel" id="heroCarousel">
+        <div class="hero-slides-track" id="heroSlidesTrack">
+          <!-- Slide 1 -->
+          <div class="hero-slide" style="background-image: url('https://images.unsplash.com/photo-1594212699903-ec8a3eca50f5?auto=format&fit=crop&w=1400&q=80');">
+            <div class="hero-slide-overlay"></div>
+            <div class="hero-slide-content">
+              <span class="hero-tag">🔥 Trending Deal of the Day</span>
+              <h2 class="hero-title">Deal 12 Mega Feast: <span>Zinger + Small Pizza + Drink</span></h2>
+              <p class="hero-desc">Savor our signature crispy chicken zinger alongside hot stone-baked Italian pizza with chilled cold drink.</p>
+              <div class="hero-cta-group">
+                <span class="hero-deal-price">Rs. 830 <span style="font-size: 13px; text-decoration: line-through; opacity: 0.7; font-weight: 500;">Rs. 1080</span></span>
+                <button class="hero-order-btn" onclick="openItemCustomizer('deal_12')">⚡ Customize & Order</button>
+              </div>
+            </div>
+          </div>
+          <!-- Slide 2 -->
+          <div class="hero-slide" style="background-image: url('https://images.unsplash.com/photo-1534308983496-4fabb1a015ee?auto=format&fit=crop&w=1400&q=80');">
+            <div class="hero-slide-overlay"></div>
+            <div class="hero-slide-content">
+              <span class="hero-tag">👑 Crown Crust & Kabab Stuffed</span>
+              <h2 class="hero-title">Party Deal Supreme: <span>3 Large Pizzas + 1.5L Drink</span></h2>
+              <p class="hero-desc">Stuffed with melted mozzarella cheese pockets and seekh kabab crusts baked fresh at Khuda Baksh Rd, Dohlanwal & Sodiwal.</p>
+              <div class="hero-cta-group">
+                <span class="hero-deal-price">Rs. 3,950</span>
+                <button class="hero-order-btn" onclick="openItemCustomizer('party_deal')">🍕 Order Party Deal</button>
+              </div>
+            </div>
+          </div>
+          <!-- Slide 3 -->
+          <div class="hero-slide" style="background-image: url('https://images.unsplash.com/photo-1585109649139-366815a0d713?auto=format&fit=crop&w=1400&q=80');">
+            <div class="hero-slide-overlay"></div>
+            <div class="hero-slide-content">
+              <span class="hero-tag">🍟 Lahore Signature Sensation</span>
+              <h2 class="hero-title">Special Pizza Fries: <span>Smothered in Pizza Sauce & Mozzarella</span></h2>
+              <p class="hero-desc">Golden crispy fries smothered in rich pizza sauce, chicken tikka chunks, black olives and thick melted cheese.</p>
+              <div class="hero-cta-group">
+                <span class="hero-deal-price">Rs. 490</span>
+                <button class="hero-order-btn" onclick="openItemCustomizer('pizza_fries')">🍟 Order Loaded Fries</button>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <!-- Carousel Navigation Controls -->
+        <button class="carousel-arrow prev" id="carouselPrev" aria-label="Previous Slide">‹</button>
+        <button class="carousel-arrow next" id="carouselNext" aria-label="Next Slide">›</button>
+        <div class="carousel-dots" id="carouselDots">
+          <button class="carousel-dot active" data-slide="0"></button>
+          <button class="carousel-dot" data-slide="1"></button>
+          <button class="carousel-dot" data-slide="2"></button>
+        </div>
+      </div>
+    </div>
+
+    <!-- Sticky Category Nav -->
+    <nav class="category-nav" id="categoryNav"></nav>
+
+    <!-- Menu Section -->
+    <div class="menu-container">
+      <div class="section-header">
+        <h2 class="section-title">
+          <span>Freshly Prepared Menu</span>
+          <span class="section-badge">100% Authentic Deals & Pricing</span>
+        </h2>
+      </div>
+
+      <!-- Dynamic Food Cards Grid -->
+      <div class="menu-grid" id="menuGrid"></div>
+    </div>
+  </main>
+
+  <!-- ITEM CUSTOMIZATION MODAL (CONFIGURATOR) -->
+  <div class="customizer-modal" id="customizerModal">
+    <div class="customizer-card">
+      <div class="customizer-header" id="modalHeaderImg">
+        <div class="customizer-header-overlay"></div>
+        <button class="customizer-close-btn" id="modalCloseBtn">✕</button>
+        <div class="customizer-title-block">
+          <h3 class="customizer-title" id="modalItemTitle">Customize Your Order</h3>
+          <p class="customizer-desc" id="modalItemDesc">Select your crust, spice level and toppings</p>
+        </div>
+      </div>
+
+      <div class="customizer-body" id="modalCustomizerBody">
+        <!-- Dynamically Populated by app.js -->
+      </div>
+
+      <div class="customizer-footer">
+        <div>
+          <span style="font-size: 11px; color: var(--text-muted); text-transform: uppercase; font-weight: 700; display: block;">Total Price</span>
+          <div class="customizer-total-price" id="modalPriceDisplay">Rs. 0</div>
+        </div>
+        <button class="confirm-custom-add-btn" id="modalConfirmBtn">
+          <span>Add To Order</span>
+          <span style="font-size: 16px;">🛒</span>
+        </button>
+      </div>
+    </div>
+  </div>
+
+  <!-- Cart Drawer Overlay & Sidebar -->
+  <div class="cart-overlay" id="cartOverlay"></div>
+  <aside class="cart-drawer" id="cartDrawer">
+    <div class="cart-header">
+      <h3 class="cart-title">Your Order Cart</h3>
+      <button class="cart-close-btn" id="cartCloseBtn" aria-label="Close Cart">✕</button>
+    </div>
+
+    <!-- Psychological Free Delivery Threshold Bar -->
+    <div class="free-delivery-meter">
+      <div class="meter-text" id="freeDeliveryText">
+        <span>Add Rs. 670 more for FREE Lahore Delivery</span>
+        <span>55%</span>
+      </div>
+      <div class="meter-bar-bg">
+        <div class="meter-bar-fill" id="freeDeliveryProgress" style="width: 55%;"></div>
+      </div>
+    </div>
+
+    <div class="cart-items-list" id="cartItemsList"></div>
+
+    <div class="cart-footer">
+      <div class="cart-summary-row">
+        <span>Items Subtotal</span>
+        <span id="cartSubtotal">Rs. 0</span>
+      </div>
+      <div class="cart-summary-row">
+        <span>Lahore City Delivery Fee</span>
+        <span>Rs. 100</span>
+      </div>
+      <div class="cart-summary-row total">
+        <span>Grand Total</span>
+        <span id="cartTotal">Rs. 0</span>
+      </div>
+
+      <button class="checkout-btn" id="checkoutBtn">
+        <span>Confirm & Order via WhatsApp</span>
+        <span style="font-size: 18px;">➔</span>
+      </button>
+    </div>
+  </aside>
+
+  <script src="app.js"></script>
+</body>
+</html>

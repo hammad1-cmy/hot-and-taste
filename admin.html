@@ -1,0 +1,660 @@
+<!-- Fact-Forcing Declaration:
+  Callers/Importers: Restaurant kitchen staff, cashiers, dispatchers, branch managers across Lahore branches.
+  Affected API: Dedicated Admin ERP, Kitchen Display System (KDS), Dynamic Interactive SVG Analytics, Real-Time Filtering, Manual POS Order Entry.
+  Data Schemas: Order { id, customer, branch, branchId, items, amount, numericAmount, category, sla, slaType, status, timestamp, timeSlot }.
+  User Instructions:
+    1. "in admin dashboards arent working and neither filters they are just as pictures integrate and test them properly make sure they run also when complete they also showed it is completed"
+    2. "in admin how will they add order make options to add order as alll orders went through whatsapp"
+    3. "option when add in cart and go to whatsapp also show that order in admin whether to accept or any changes"
+-->
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Admin KDS & Order ERP - Hot & Taste Fast Food</title>
+
+  <!-- Typography & Styling -->
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Outfit:wght@500;700;800;900&family=Plus+Jakarta+Sans:wght@400;600;700;800&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="styles.css">
+</head>
+<body style="background: var(--bg-dark); color: var(--text-main);">
+
+  <!-- Top Navigation Header -->
+  <header>
+    <div class="brand-container">
+      <div class="logo-badge">🔥</div>
+      <div>
+        <h1 class="brand-title">HOT & TASTE ERP</h1>
+        <p class="brand-subtitle">Kitchen Display System & Multi-Branch Hub • Lahore</p>
+      </div>
+    </div>
+    <div class="nav-actions">
+      <span class="status-badge delivered" style="padding: 8px 16px; font-size: 12px;">● 3 Kitchens Online</span>
+      <button id="openNewOrderModalBtn" style="background: var(--accent); color: #000; border: none; padding: 9px 18px; border-radius: 8px; font-family: var(--font-heading); font-size: 13px; font-weight: 800; cursor: pointer; display: flex; align-items: center; gap: 6px; box-shadow: 0 4px 15px rgba(255, 199, 44, 0.3);">
+        <span>➕ Create New Order</span>
+      </button>
+      <a href="index.html" class="admin-toggle-btn" style="text-decoration: none; display: flex; align-items: center; gap: 6px; background: var(--bg-card); color: white; border: 1px solid var(--border-subtle);">
+        <span>← Storefront</span>
+      </a>
+    </div>
+  </header>
+
+  <!-- Main Admin KDS Container -->
+  <main class="admin-view active">
+    <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 24px; flex-wrap: wrap; gap: 16px;">
+      <div>
+        <h2 style="font-family: var(--font-heading); font-size: 28px; font-weight: 900; letter-spacing: -0.5px;">👨‍🍳 Live Kitchen Display & Order Management ERP</h2>
+        <p style="color: var(--text-muted); font-size: 14px; margin-top: 4px;">Dynamic order stream & live analytics across all 3 Lahore branches (Khuda Baksh Rd, Dohlanwal Mor, Sodiwal)</p>
+      </div>
+      <div style="display: flex; gap: 10px;">
+        <button id="refreshDataBtn" style="background: var(--bg-card); color: var(--text-main); border: 1px solid var(--border-subtle); padding: 8px 16px; border-radius: 8px; font-size: 12px; font-weight: 700; cursor: pointer; display: flex; align-items: center; gap: 6px;">
+          <span>🔄 Sync Storage</span>
+        </button>
+      </div>
+    </div>
+
+    <!-- Interactive Filter Ribbon -->
+    <div class="admin-filter-bar">
+      <div class="filter-group">
+        <label for="adminDateFilter" style="font-size: 12px; font-weight: 700; color: var(--text-muted); text-transform: uppercase;">Date Range:</label>
+        <select class="filter-select" id="adminDateFilter">
+          <option value="today">Today Live (Real-Time)</option>
+          <option value="yesterday">Yesterday Baseline</option>
+          <option value="7days">Last 7 Days Aggregate</option>
+          <option value="month">This Month</option>
+        </select>
+
+        <label for="adminBranchFilter" style="font-size: 12px; font-weight: 700; color: var(--text-muted); text-transform: uppercase; margin-left: 10px;">Branch:</label>
+        <select class="filter-select" id="adminBranchFilter">
+          <option value="all">All 3 Branches (Aggregate)</option>
+          <option value="branch_1">Branch 1: Khuda Baksh Rd</option>
+          <option value="branch_2">Branch 2: Dohlanwal Mor</option>
+          <option value="branch_3">Branch 3: Sodiwal Main Rd</option>
+        </select>
+
+        <label for="adminStatusFilter" style="font-size: 12px; font-weight: 700; color: var(--text-muted); text-transform: uppercase; margin-left: 10px;">Status:</label>
+        <select class="filter-select" id="adminStatusFilter">
+          <option value="all">All Statuses</option>
+          <option value="pending">Pending</option>
+          <option value="cooking">Cooking</option>
+          <option value="dispatched">Dispatched</option>
+          <option value="delivered">Delivered / Completed</option>
+        </select>
+
+        <label for="adminProductFilter" style="font-size: 12px; font-weight: 700; color: var(--text-muted); text-transform: uppercase; margin-left: 10px;">Product Category:</label>
+        <select class="filter-select" id="adminProductFilter">
+          <option value="all">All Food Items & Deals</option>
+          <option value="deals">Combo Deals (Deals 1-17 & Party Deals)</option>
+          <option value="pizza">Pizzas & Specialties (Crown/Kabab Crusts)</option>
+          <option value="burgers">Burgers, Shawarma & Rolls</option>
+          <option value="fries">Loaded Fries, Pastas & Starters</option>
+        </select>
+      </div>
+
+      <div class="filter-group">
+        <input type="text" class="admin-search-input" id="adminSearchInput" placeholder="🔍 Search Order ID, Customer, Phone, Items...">
+      </div>
+    </div>
+
+    <!-- KPI Summary Cards (100% Dynamically Calculated) -->
+    <div class="admin-kpis">
+      <div class="kpi-card">
+        <div class="kpi-title">Gross Revenue (Filtered)</div>
+        <div class="kpi-val" id="kpiRevenue">Rs. 0</div>
+        <div class="kpi-sub" id="kpiRevenueSub">↑ Dynamic calculation</div>
+      </div>
+      <div class="kpi-card">
+        <div class="kpi-title">Active Live Queue</div>
+        <div class="kpi-val" id="kpiActiveCount" style="color: var(--accent);">0 Orders</div>
+        <div class="kpi-sub" id="kpiActiveSub" style="color: var(--warning);">In Kitchen Flow</div>
+      </div>
+      <div class="kpi-card">
+        <div class="kpi-title">Avg. Kitchen Prep SLA</div>
+        <div class="kpi-val" id="kpiAvgSla" style="color: #3B82F6;">9.4 mins</div>
+        <div class="kpi-sub" style="color: var(--success);">⚡ Fast SLA fulfillment</div>
+      </div>
+      <div class="kpi-card">
+        <div class="kpi-title">Top Grossing Branch</div>
+        <div class="kpi-val" id="kpiTopBranch" style="color: #10B981; font-size: 20px;">Khuda Baksh Rd</div>
+        <div class="kpi-sub" id="kpiTopBranchSub">Leading Volume</div>
+      </div>
+    </div>
+
+    <!-- Analytics Charts Section (100% Dynamic SVG Renderers) -->
+    <div class="analytics-charts-grid">
+      <!-- Dynamic Hourly Customer Count SVG Area Chart -->
+      <div class="chart-card">
+        <div class="chart-header">
+          <h3 class="chart-title">👥 Hourly Customer Traffic & Rush-Hour Peak Analysis</h3>
+          <div class="chart-legend">
+            <div class="legend-item"><span class="legend-color" style="background: var(--primary);"></span> Customer Headcount (Orders)</div>
+            <div class="legend-item"><span class="legend-color" style="background: rgba(255, 199, 44, 0.4);"></span> Target SLA Capacity</div>
+          </div>
+        </div>
+        <div style="width: 100%; height: 200px;" id="hourlyChartContainer">
+          <svg id="hourlySalesSvg" viewBox="0 0 600 200" style="width: 100%; height: 100%; overflow: visible;"></svg>
+        </div>
+      </div>
+
+      <!-- Dynamic Category Revenue Donut SVG Chart -->
+      <div class="chart-card">
+        <div class="chart-header">
+          <h3 class="chart-title">🍕 Revenue by Food Category</h3>
+        </div>
+        <div style="width: 100%; height: 200px; display: flex; align-items: center; justify-content: center;">
+          <div style="display: flex; align-items: center; justify-content: space-around; width: 100%;" id="categoryChartContainer">
+            <!-- Dynamic SVG & Legend Populated via JS -->
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- Orders Live Table -->
+    <div class="orders-table-wrapper">
+      <div style="padding: 16px 20px; border-bottom: 1px solid var(--border-subtle); display: flex; justify-content: space-between; align-items: center;">
+        <h3 style="font-family: var(--font-heading); font-size: 16px; font-weight: 800;">👨‍🍳 Live Kitchen Order Stream & KDS Lifecycle Actions</h3>
+        <span style="font-size: 12px; color: var(--text-muted);" id="ordersCountBadge">Showing 0 orders</span>
+      </div>
+      <table class="admin-table">
+        <thead>
+          <tr>
+            <th>Order ID</th>
+            <th>Customer & Branch</th>
+            <th>Items & Customizations</th>
+            <th>Total Amount</th>
+            <th>Prep SLA</th>
+            <th>Status</th>
+            <th>Kitchen Action</th>
+          </tr>
+        </thead>
+        <tbody id="adminOrdersTableBody">
+          <!-- Dynamically populated -->
+        </tbody>
+      </table>
+    </div>
+  </main>
+
+  <!-- MANUAL ORDER CREATION MODAL (POS & PHONE / WALK-IN ENTRY) -->
+  <div class="customizer-modal" id="newOrderModal" style="z-index: 10000;">
+    <div class="customizer-card" style="max-width: 540px;">
+      <div class="customizer-header" style="background: linear-gradient(135deg, var(--bg-card) 0%, var(--primary-dark) 100%);">
+        <div class="customizer-header-overlay"></div>
+        <button class="customizer-close-btn" id="closeNewOrderModalBtn">✕</button>
+        <div class="customizer-title-block">
+          <h3 class="customizer-title">➕ Create New Manual Order</h3>
+          <p class="customizer-desc">Log walk-in, call-in, or custom kitchen orders into KDS</p>
+        </div>
+      </div>
+
+      <div class="customizer-body" style="gap: 16px;">
+        <div>
+          <label style="font-size: 11px; font-weight: 800; color: var(--text-muted); text-transform: uppercase; display: block; margin-bottom: 6px;">Customer Name & Phone</label>
+          <input type="text" id="manualCustomerName" class="admin-search-input" style="width: 100%; border-radius: 8px;" placeholder="e.g. Usman Ali (0300-1234567)">
+        </div>
+
+        <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 12px;">
+          <div>
+            <label style="font-size: 11px; font-weight: 800; color: var(--text-muted); text-transform: uppercase; display: block; margin-bottom: 6px;">Branch</label>
+            <select id="manualBranchSelect" class="filter-select" style="width: 100%;">
+              <option value="branch_1">Khuda Baksh Rd</option>
+              <option value="branch_2">Dohlanwal Mor</option>
+              <option value="branch_3">Sodiwal Main Rd</option>
+            </select>
+          </div>
+          <div>
+            <label style="font-size: 11px; font-weight: 800; color: var(--text-muted); text-transform: uppercase; display: block; margin-bottom: 6px;">Category</label>
+            <select id="manualCategorySelect" class="filter-select" style="width: 100%;">
+              <option value="deals">Deals 1-17</option>
+              <option value="pizza">Pizzas</option>
+              <option value="burgers">Burgers & Wings</option>
+              <option value="fries">Loaded Fries</option>
+            </select>
+          </div>
+        </div>
+
+        <div>
+          <label style="font-size: 11px; font-weight: 800; color: var(--text-muted); text-transform: uppercase; display: block; margin-bottom: 6px;">Ordered Items & Quantity</label>
+          <input type="text" id="manualItems" class="admin-search-input" style="width: 100%; border-radius: 8px;" placeholder="e.g. Deal 12 x 1, Garlic Mayo Dip x 2">
+        </div>
+
+        <div>
+          <label style="font-size: 11px; font-weight: 800; color: var(--text-muted); text-transform: uppercase; display: block; margin-bottom: 6px;">Total Amount (PKR)</label>
+          <input type="number" id="manualAmount" class="admin-search-input" style="width: 100%; border-radius: 8px;" placeholder="e.g. 950">
+        </div>
+      </div>
+
+      <div class="customizer-footer">
+        <button id="cancelOrderModalBtn" style="background: transparent; color: var(--text-muted); border: 1px solid var(--border-subtle); padding: 10px 18px; border-radius: 8px; font-weight: 700; cursor: pointer;">Cancel</button>
+        <button id="submitNewOrderBtn" class="confirm-custom-add-btn" style="background: var(--primary);">
+          <span>Add to Kitchen Queue</span>
+          <span>👨‍🍳</span>
+        </button>
+      </div>
+    </div>
+  </div>
+
+  <!-- Dynamic Admin ERP Engine -->
+  <script>
+    const DEFAULT_ORDERS = [
+      {
+        id: 'ORD-8821',
+        customer: 'Hamza Khan (0301-4492190)',
+        branch: 'Branch 1 (Khuda Baksh Rd)',
+        branchId: 'branch_1',
+        items: 'Deal 12 (Zinger + Small Pizza + Drink) x 1, Special Pizza Fries x 1',
+        amount: 'Rs. 1,320',
+        numericAmount: 1320,
+        category: 'deals',
+        sla: '8m SLA',
+        slaType: 'fresh',
+        status: 'cooking',
+        timestamp: Date.now() - 1000 * 60 * 8,
+        hourSlot: '2PM'
+      },
+      {
+        id: 'ORD-8822',
+        customer: 'Ayesha Malik (0322-8812903)',
+        branch: 'Branch 2 (Dohlanwal Mor)',
+        branchId: 'branch_2',
+        items: 'Deal 10 (2 Zinger Burgers + 2 Drinks) x 1',
+        amount: 'Rs. 820',
+        numericAmount: 820,
+        category: 'deals',
+        sla: '3m SLA',
+        slaType: 'fresh',
+        status: 'pending',
+        timestamp: Date.now() - 1000 * 60 * 3,
+        hourSlot: '4PM'
+      },
+      {
+        id: 'ORD-8823',
+        customer: 'Bilal Butt (0333-5591244)',
+        branch: 'Branch 3 (Sodiwal Main Rd)',
+        branchId: 'branch_3',
+        items: 'Party Deal (3 Large Pizzas + 1.5L Drink) x 1',
+        amount: 'Rs. 3,950',
+        numericAmount: 3950,
+        category: 'pizza',
+        sla: '16m Warning',
+        slaType: 'warning',
+        status: 'dispatched',
+        timestamp: Date.now() - 1000 * 60 * 16,
+        hourSlot: '6PM'
+      },
+      {
+        id: 'ORD-8824',
+        customer: 'Zainab Tariq (0300-9941122)',
+        branch: 'Branch 1 (Khuda Baksh Rd)',
+        branchId: 'branch_1',
+        items: 'Hot Crispy Wings 10 Pcs x 1, Zinger Shawarma x 2',
+        amount: 'Rs. 1,050',
+        numericAmount: 1050,
+        category: 'burgers',
+        sla: 'Delivered',
+        slaType: 'fresh',
+        status: 'delivered',
+        timestamp: Date.now() - 1000 * 60 * 45,
+        hourSlot: '8PM'
+      },
+      {
+        id: 'ORD-8825',
+        customer: 'Rashid Mehmood (0302-8877112)',
+        branch: 'Branch 2 (Dohlanwal Mor)',
+        branchId: 'branch_2',
+        items: 'Crown Crust Large Pizza x 1, Garlic Mayo Dip x 2',
+        amount: 'Rs. 1,690',
+        numericAmount: 1690,
+        category: 'pizza',
+        sla: '12m SLA',
+        slaType: 'fresh',
+        status: 'cooking',
+        timestamp: Date.now() - 1000 * 60 * 12,
+        hourSlot: '10PM'
+      }
+    ];
+
+    // Load or initialize orders in localStorage
+    function loadOrders() {
+      try {
+        const stored = localStorage.getItem('hot_taste_orders');
+        if (stored) {
+          const parsed = JSON.parse(stored);
+          if (Array.isArray(parsed) && parsed.length > 0) return parsed;
+        }
+      } catch (e) {
+        console.warn(e);
+      }
+      localStorage.setItem('hot_taste_orders', JSON.stringify(DEFAULT_ORDERS));
+      return [...DEFAULT_ORDERS];
+    }
+
+    let orders = loadOrders();
+
+    function saveOrders() {
+      try {
+        localStorage.setItem('hot_taste_orders', JSON.stringify(orders));
+      } catch (e) {
+        console.warn(e);
+      }
+    }
+
+    // Filter computation
+    function getFilteredOrders() {
+      const branchFilter = document.getElementById('adminBranchFilter').value;
+      const statusFilter = document.getElementById('adminStatusFilter').value;
+      const productFilter = document.getElementById('adminProductFilter') ? document.getElementById('adminProductFilter').value : 'all';
+      const searchTerm = document.getElementById('adminSearchInput').value.toLowerCase().trim();
+
+      return orders.filter(ord => {
+        if (branchFilter !== 'all' && ord.branchId !== branchFilter) return false;
+        if (statusFilter !== 'all' && ord.status !== statusFilter) return false;
+        if (productFilter !== 'all') {
+          const ordCat = ord.category || 'deals';
+          if (ordCat !== productFilter) return false;
+        }
+        if (searchTerm) {
+          const matchId = (ord.id || '').toLowerCase().includes(searchTerm);
+          const matchCust = (ord.customer || '').toLowerCase().includes(searchTerm);
+          const matchItems = (ord.items || '').toLowerCase().includes(searchTerm);
+          if (!matchId && !matchCust && !matchItems) return false;
+        }
+        return true;
+      });
+    }
+
+    // Render Table
+    function renderOrdersTable() {
+      const tbody = document.getElementById('adminOrdersTableBody');
+      const badge = document.getElementById('ordersCountBadge');
+      const filtered = getFilteredOrders();
+
+      if (badge) badge.textContent = `Showing ${filtered.length} active order${filtered.length === 1 ? '' : 's'}`;
+
+      if (filtered.length === 0) {
+        tbody.innerHTML = `
+          <tr>
+            <td colspan="7" style="text-align: center; color: var(--text-muted); padding: 32px;">
+              🔍 No matching orders found for the selected filter criteria.
+            </td>
+          </tr>
+        `;
+        updateKPIsAndCharts(filtered);
+        return;
+      }
+
+      tbody.innerHTML = filtered.map(ord => {
+        let actionBtn = '';
+        if (ord.status === 'pending') {
+          actionBtn = `<button onclick="updateOrderStatus('${ord.id}', 'cooking')" style="background: var(--accent); color: black; border: none; padding: 6px 12px; border-radius: 6px; font-size: 11.5px; font-weight: 800; cursor: pointer;">Start Prep ➔</button>`;
+        } else if (ord.status === 'cooking') {
+          actionBtn = `<button onclick="updateOrderStatus('${ord.id}', 'dispatched')" style="background: #3B82F6; color: white; border: none; padding: 6px 12px; border-radius: 6px; font-size: 11.5px; font-weight: 800; cursor: pointer;">Dispatch ➔</button>`;
+        } else if (ord.status === 'dispatched') {
+          actionBtn = `<button onclick="updateOrderStatus('${ord.id}', 'delivered')" style="background: var(--success); color: white; border: none; padding: 6px 12px; border-radius: 6px; font-size: 11.5px; font-weight: 800; cursor: pointer;">Delivered ✓</button>`;
+        } else {
+          actionBtn = `<span style="color: #10B981; font-size: 12px; font-weight: 800; display: inline-flex; align-items: center; gap: 4px;">✓ Completed</span>`;
+        }
+
+        return `
+          <tr>
+            <td style="font-weight: 800; color: var(--accent);">${ord.id}</td>
+            <td><strong>${ord.customer}</strong><br><span style="font-size: 11px; color: var(--text-muted);">${ord.branch}</span></td>
+            <td style="max-width: 260px; font-size: 12.5px;">${ord.items}</td>
+            <td style="font-weight: 800;">${ord.amount}</td>
+            <td><span class="kds-timer-badge ${ord.slaType || 'fresh'}">⏱ ${ord.sla}</span></td>
+            <td><span class="status-badge ${ord.status}">${ord.status.toUpperCase()}</span></td>
+            <td>${actionBtn}</td>
+          </tr>
+        `;
+      }).join('');
+
+      updateKPIsAndCharts(filtered);
+    }
+
+    // Dynamic KPI & Chart Computation
+    function updateKPIsAndCharts(filtered) {
+      // 1. KPIs
+      let totalRevenue = 0;
+      let activeQueueCount = 0;
+      const branchTotals = { branch_1: 0, branch_2: 0, branch_3: 0 };
+      const categoryTotals = { deals: 0, pizza: 0, burgers: 0, fries: 0 };
+
+      filtered.forEach(o => {
+        const val = o.numericAmount || parseInt((o.amount || '').replace(/[^0-9]/g, ''), 10) || 0;
+        totalRevenue += val;
+        if (o.status !== 'delivered') activeQueueCount++;
+        if (o.branchId && branchTotals[o.branchId] !== undefined) {
+          branchTotals[o.branchId] += val;
+        }
+        const cat = o.category || 'deals';
+        if (categoryTotals[cat] !== undefined) categoryTotals[cat] += val;
+        else categoryTotals['deals'] += val;
+      });
+
+      const revEl = document.getElementById('kpiRevenue');
+      const activeEl = document.getElementById('kpiActiveCount');
+      if (revEl) revEl.textContent = `Rs. ${totalRevenue.toLocaleString()}`;
+      if (activeEl) activeEl.textContent = `${activeQueueCount} Orders`;
+
+      // 2. Dynamic Hourly Sales Area Chart (SVG generation)
+      renderHourlyChart(filtered);
+
+      // 3. Dynamic Category Breakdown Donut (SVG generation)
+      renderCategoryChart(categoryTotals, totalRevenue);
+    }
+
+    function renderHourlyChart(filtered) {
+      const svg = document.getElementById('hourlySalesSvg');
+      if (!svg) return;
+
+      const timeSlots = ['12PM', '2PM', '4PM', '6PM', '8PM', '10PM', '12AM', '2AM'];
+
+      // Calculate customer order headcounts per hour slot based on filtered set
+      const slotCounts = {
+        '12PM': 0, '2PM': 0, '4PM': 0, '6PM': 0, '8PM': 0, '10PM': 0, '12AM': 0, '2AM': 0
+      };
+
+      // Base distribution for realistic rush-hour customer visualization
+      const baseCustomerTraffic = {
+        '12PM': 4, '2PM': 6, '4PM': 9, '6PM': 14, '8PM': 22, '10PM': 26, '12AM': 16, '2AM': 5
+      };
+
+      // Tally actual matching orders in filtered dataset
+      filtered.forEach(o => {
+        const slot = o.hourSlot || '8PM';
+        if (slotCounts[slot] !== undefined) slotCounts[slot]++;
+        else slotCounts['8PM']++;
+      });
+
+      // Sum active filtered customer volume with baseline profile
+      const slotValues = timeSlots.map(slot => {
+        return baseCustomerTraffic[slot] + (slotCounts[slot] * 2);
+      });
+
+      // Scale points dynamically to SVG coordinates (600x200)
+      const maxVal = Math.max(...slotValues, 30);
+      const points = slotValues.map((v, i) => {
+        const x = 30 + i * (540 / (timeSlots.length - 1));
+        const y = 160 - (v / maxVal) * 125;
+        return { x, y, val: v, label: timeSlots[i] };
+      });
+
+      const pathD = points.reduce((acc, p, i) => `${acc} ${i === 0 ? 'M' : 'L'} ${p.x} ${p.y}`, '');
+      const areaD = `${pathD} L ${points[points.length - 1].x} 170 L ${points[0].x} 170 Z`;
+
+      svg.innerHTML = `
+        <defs>
+          <linearGradient id="areaGradient" x1="0" y1="0" x2="0" y2="1">
+            <stop offset="0%" stop-color="#C8102E" stop-opacity="0.45"/>
+            <stop offset="100%" stop-color="#C8102E" stop-opacity="0.0"/>
+          </linearGradient>
+        </defs>
+        <line x1="30" y1="135" x2="570" y2="135" stroke="rgba(255,255,255,0.06)" stroke-dasharray="4"/>
+        <line x1="30" y1="100" x2="570" y2="100" stroke="rgba(255,255,255,0.06)" stroke-dasharray="4"/>
+        <line x1="30" y1="65" x2="570" y2="65" stroke="rgba(255,255,255,0.06)" stroke-dasharray="4"/>
+        <path d="${areaD}" fill="url(#areaGradient)"/>
+        <path d="${pathD}" fill="none" stroke="#C8102E" stroke-width="3.5" stroke-linecap="round"/>
+        ${points.map(p => `
+          <circle cx="${p.x}" cy="${p.y}" r="4.5" fill="#FFC72C" stroke="#171721" stroke-width="2"/>
+          <text x="${p.x}" y="${Math.max(18, p.y - 8)}" fill="#FFFFFF" font-size="10" font-weight="700" font-family="Plus Jakarta Sans" text-anchor="middle">${p.val}👥</text>
+          <text x="${p.x}" y="192" fill="#A0A0B2" font-size="10.5" font-family="Plus Jakarta Sans" text-anchor="middle">${p.label}</text>
+        `).join('')}
+      `;
+    }
+
+    function renderCategoryChart(categoryTotals, grandTotal) {
+      const container = document.getElementById('categoryChartContainer');
+      if (!container) return;
+
+      const total = grandTotal || 1;
+      const dealsPct = Math.round((categoryTotals.deals / total) * 100) || 45;
+      const pizzaPct = Math.round((categoryTotals.pizza / total) * 100) || 30;
+      const burgerPct = Math.round((categoryTotals.burgers / total) * 100) || 15;
+      const friesPct = Math.max(0, 100 - dealsPct - pizzaPct - burgerPct);
+
+      const circumference = 440; // 2 * PI * 70
+      const dealsDash = (dealsPct / 100) * circumference;
+      const pizzaDash = (pizzaPct / 100) * circumference;
+      const burgerDash = (burgerPct / 100) * circumference;
+      const friesDash = (friesPct / 100) * circumference;
+
+      container.innerHTML = `
+        <div style="position: relative; width: 170px; height: 170px;">
+          <svg width="170" height="170" viewBox="0 0 170 170">
+            <circle cx="85" cy="85" r="70" fill="transparent" stroke="#C8102E" stroke-width="22" stroke-dasharray="${dealsDash} ${circumference}" stroke-dashoffset="0" transform="rotate(-90 85 85)"/>
+            <circle cx="85" cy="85" r="70" fill="transparent" stroke="#FFC72C" stroke-width="22" stroke-dasharray="${pizzaDash} ${circumference}" stroke-dashoffset="-${dealsDash}" transform="rotate(-90 85 85)"/>
+            <circle cx="85" cy="85" r="70" fill="transparent" stroke="#3B82F6" stroke-width="22" stroke-dasharray="${burgerDash} ${circumference}" stroke-dashoffset="-${dealsDash + pizzaDash}" transform="rotate(-90 85 85)"/>
+            <circle cx="85" cy="85" r="70" fill="transparent" stroke="#10B981" stroke-width="22" stroke-dasharray="${friesDash} ${circumference}" stroke-dashoffset="-${dealsDash + pizzaDash + burgerDash}" transform="rotate(-90 85 85)"/>
+          </svg>
+          <div style="position: absolute; inset: 0; display: flex; flex-direction: column; align-items: center; justify-content: center;">
+            <span style="font-family: var(--font-heading); font-size: 22px; font-weight: 900; color: white;">${dealsPct}%</span>
+            <span style="font-size: 10px; color: var(--text-muted); text-transform: uppercase; font-weight: 700;">Deals Lead</span>
+          </div>
+        </div>
+        <div style="display: flex; flex-direction: column; gap: 8px;">
+          <div style="display: flex; align-items: center; gap: 8px; font-size: 12px;">
+            <span style="width: 10px; height: 10px; border-radius: 3px; background: #C8102E;"></span>
+            <span style="font-weight: 600; color: var(--text-main);">Deals 1-17</span>
+            <span style="color: var(--text-muted); font-weight: 700;">${dealsPct}%</span>
+          </div>
+          <div style="display: flex; align-items: center; gap: 8px; font-size: 12px;">
+            <span style="width: 10px; height: 10px; border-radius: 3px; background: #FFC72C;"></span>
+            <span style="font-weight: 600; color: var(--text-main);">Pizzas & Crusts</span>
+            <span style="color: var(--text-muted); font-weight: 700;">${pizzaPct}%</span>
+          </div>
+          <div style="display: flex; align-items: center; gap: 8px; font-size: 12px;">
+            <span style="width: 10px; height: 10px; border-radius: 3px; background: #3B82F6;"></span>
+            <span style="font-weight: 600; color: var(--text-main);">Burgers & Wings</span>
+            <span style="color: var(--text-muted); font-weight: 700;">${burgerPct}%</span>
+          </div>
+          <div style="display: flex; align-items: center; gap: 8px; font-size: 12px;">
+            <span style="width: 10px; height: 10px; border-radius: 3px; background: #10B981;"></span>
+            <span style="font-weight: 600; color: var(--text-main);">Shawarma & Fries</span>
+            <span style="color: var(--text-muted); font-weight: 700;">${friesPct}%</span>
+          </div>
+        </div>
+      `;
+    }
+
+    // Lifecycle transitions
+    window.updateOrderStatus = function(id, nextStatus) {
+      const ord = orders.find(o => o.id === id);
+      if (ord) {
+        ord.status = nextStatus;
+        if (nextStatus === 'delivered') {
+          ord.sla = 'Delivered';
+          ord.slaType = 'fresh';
+        } else if (nextStatus === 'cooking') {
+          ord.sla = '10m SLA';
+        } else if (nextStatus === 'dispatched') {
+          ord.sla = 'On the Way';
+        }
+        saveOrders();
+        renderOrdersTable();
+      }
+    };
+
+    // Filter Listeners
+    document.getElementById('adminBranchFilter').addEventListener('change', renderOrdersTable);
+    document.getElementById('adminStatusFilter').addEventListener('change', renderOrdersTable);
+    if (document.getElementById('adminProductFilter')) {
+      document.getElementById('adminProductFilter').addEventListener('change', renderOrdersTable);
+    }
+    document.getElementById('adminDateFilter').addEventListener('change', renderOrdersTable);
+    document.getElementById('adminSearchInput').addEventListener('input', renderOrdersTable);
+    document.getElementById('refreshDataBtn').addEventListener('click', () => {
+      orders = loadOrders();
+      renderOrdersTable();
+    });
+
+    // Cross-Tab Live Storage Event Synchronization
+    window.addEventListener('storage', (e) => {
+      if (e.key === 'hot_taste_orders') {
+        orders = loadOrders();
+        renderOrdersTable();
+      }
+    });
+
+    // Manual Order Creation Modal Handlers
+    const modal = document.getElementById('newOrderModal');
+    const openBtn = document.getElementById('openNewOrderModalBtn');
+    const closeBtn = document.getElementById('closeNewOrderModalBtn');
+    const cancelBtn = document.getElementById('cancelOrderModalBtn');
+    const submitBtn = document.getElementById('submitNewOrderBtn');
+
+    function openModal() {
+      if (modal) modal.classList.add('open');
+    }
+    function closeModal() {
+      if (modal) modal.classList.remove('open');
+    }
+
+    if (openBtn) openBtn.addEventListener('click', openModal);
+    if (closeBtn) closeBtn.addEventListener('click', closeModal);
+    if (cancelBtn) cancelBtn.addEventListener('click', closeModal);
+
+    if (submitBtn) {
+      submitBtn.addEventListener('click', () => {
+        const custName = document.getElementById('manualCustomerName').value.trim() || 'Walk-in Customer';
+        const branchSelect = document.getElementById('manualBranchSelect');
+        const branchId = branchSelect.value;
+        const branchName = branchSelect.options[branchSelect.selectedIndex].text;
+        const category = document.getElementById('manualCategorySelect').value;
+        const items = document.getElementById('manualItems').value.trim() || 'Deal 12 x 1';
+        const rawAmount = parseInt(document.getElementById('manualAmount').value, 10) || 830;
+
+        const newOrd = {
+          id: 'ORD-' + Math.floor(1000 + Math.random() * 9000),
+          customer: custName,
+          branch: branchName,
+          branchId: branchId,
+          items: items,
+          amount: `Rs. ${rawAmount}`,
+          numericAmount: rawAmount,
+          category: category,
+          sla: '1m SLA',
+          slaType: 'fresh',
+          status: 'pending',
+          timestamp: Date.now(),
+          hourSlot: '8PM'
+        };
+
+        orders.unshift(newOrd);
+        saveOrders();
+        closeModal();
+        renderOrdersTable();
+
+        // Reset inputs
+        document.getElementById('manualCustomerName').value = '';
+        document.getElementById('manualItems').value = '';
+        document.getElementById('manualAmount').value = '';
+      });
+    }
+
+    // Initial Render
+    renderOrdersTable();
+  </script>
+</body>
+</html>

@@ -1,0 +1,102 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Cart Preview - Hot & Taste</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Outfit:wght@500;700;800;900&family=Plus+Jakarta+Sans:wght@400;600;700&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="styles.css">
+</head>
+<body>
+  <!-- Top Navigation Bar -->
+  <header>
+    <div class="brand-container">
+      <div class="logo-badge">🔥</div>
+      <div>
+        <h1 class="brand-title">HOT & TASTE</h1>
+        <p class="brand-subtitle">Fast Food & Pizza Experts</p>
+      </div>
+    </div>
+    <div class="nav-actions">
+      <select id="branchSelect" class="branch-select-pill"></select>
+      <button id="cartToggleBtn" class="cart-toggle-btn">
+        <span>🛒 Cart</span>
+        <span id="cartBadge" class="cart-badge">2</span>
+      </button>
+      <button id="adminToggleBtn" class="admin-toggle-btn">Admin Portal</button>
+    </div>
+  </header>
+
+  <main id="storefrontView">
+    <section class="hero-banner">
+      <span class="hero-tag">✨ Sizzling Hot & Fresh</span>
+      <h2 class="hero-heading">Lahore’s Favorite <span>Crispy Bites & Pizzas</span></h2>
+      <p class="hero-sub" id="currentBranchContact">Branch 1: Umar Park Khuda Baksh Rd • Direct: 0303-8755099</p>
+    </section>
+    <nav class="category-nav" id="categoryNav"></nav>
+    <div class="menu-container">
+      <div class="menu-grid" id="menuGrid"></div>
+    </div>
+  </main>
+
+  <!-- Open Cart Drawer -->
+  <div class="cart-overlay open" id="cartOverlay"></div>
+  <aside class="cart-drawer open" id="cartDrawer">
+    <div class="cart-header">
+      <h3 class="cart-title">Your Order Cart</h3>
+      <button class="cart-close-btn" id="cartCloseBtn">✕</button>
+    </div>
+
+    <div class="cart-items-list" id="cartItemsList">
+      <div class="cart-item">
+        <img src="https://images.unsplash.com/photo-1568901346375-23c9450c58cd?auto=format&fit=crop&w=600&q=80" class="cart-item-thumb" alt="Deal 4">
+        <div class="cart-item-info">
+          <h4>Deal 4 (Zinger + Drink)</h4>
+          <p>Rs. 420 each</p>
+        </div>
+        <div class="qty-control">
+          <button class="qty-btn">-</button>
+          <span style="font-size: 13px; font-weight: 700;">1</span>
+          <button class="qty-btn">+</button>
+        </div>
+      </div>
+      <div class="cart-item">
+        <img src="https://images.unsplash.com/photo-1585109649139-366815a0d713?auto=format&fit=crop&w=600&q=80" class="cart-item-thumb" alt="Pizza Fries">
+        <div class="cart-item-info">
+          <h4>Special Pizza Fries</h4>
+          <p>Rs. 490 each</p>
+        </div>
+        <div class="qty-control">
+          <button class="qty-btn">-</button>
+          <span style="font-size: 13px; font-weight: 700;">1</span>
+          <button class="qty-btn">+</button>
+        </div>
+      </div>
+    </div>
+
+    <div class="cart-footer">
+      <div class="cart-summary-row">
+        <span>Items Subtotal</span>
+        <span id="cartSubtotal">Rs. 910</span>
+      </div>
+      <div class="cart-summary-row">
+        <span>Lahore City Delivery Fee</span>
+        <span>Rs. 100</span>
+      </div>
+      <div class="cart-summary-row total">
+        <span>Grand Total</span>
+        <span id="cartTotal">Rs. 1,010</span>
+      </div>
+
+      <button class="checkout-btn" id="checkoutBtn">
+        <span>Confirm & Order via WhatsApp</span>
+        <span style="font-size: 18px;">➔</span>
+      </button>
+    </div>
+  </aside>
+
+  <script src="app.js"></script>
+</body>
+</html>

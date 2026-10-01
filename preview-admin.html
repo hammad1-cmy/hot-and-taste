@@ -1,0 +1,241 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Admin KDS ERP - Hot & Taste Fast Food</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Outfit:wght@500;700;800;900&family=Plus+Jakarta+Sans:wght@400;600;700&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="styles.css">
+</head>
+<body>
+  <!-- Top Navigation Bar -->
+  <header>
+    <div class="brand-container">
+      <div class="logo-badge">🔥</div>
+      <div>
+        <h1 class="brand-title">HOT & TASTE</h1>
+        <p class="brand-subtitle">Fast Food & Pizza Experts</p>
+      </div>
+    </div>
+    <div class="nav-actions">
+      <select id="branchSelect" class="branch-select-pill">
+        <option>Branch 1: Umar Park Khuda Baksh Rd</option>
+      </select>
+      <button class="cart-toggle-btn">
+        <span>🛒 Cart</span>
+        <span class="cart-badge">0</span>
+      </button>
+      <button class="admin-toggle-btn" style="background: var(--primary); color: white; border-color: var(--primary);">← Back to Menu</button>
+    </div>
+  </header>
+
+  <!-- Admin View Active -->
+  <section class="admin-view active">
+    <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 24px; flex-wrap: wrap; gap: 16px;">
+      <div>
+        <h2 style="font-family: var(--font-heading); font-size: 28px; font-weight: 900; letter-spacing: -0.5px;">👨‍🍳 Hot & Taste Kitchen Display & Order ERP</h2>
+        <p style="color: var(--text-muted); font-size: 14px; margin-top: 4px;">Live order stream across all 3 Lahore branches (Khuda Baksh, Dohlanwal Mor, Sodiwal)</p>
+      </div>
+      <span class="status-badge delivered" style="font-size: 12px; padding: 8px 16px;">● Live Connected (3 Kitchens Online)</span>
+    </div>
+
+    <!-- Interactive Filter Ribbon -->
+    <div class="admin-filter-bar">
+      <div class="filter-group">
+        <label style="font-size: 12px; font-weight: 700; color: var(--text-muted); text-transform: uppercase;">Date Range:</label>
+        <select class="filter-select">
+          <option>Today Live (Live Stream)</option>
+          <option>Yesterday</option>
+          <option>Last 7 Days</option>
+        </select>
+
+        <label style="font-size: 12px; font-weight: 700; color: var(--text-muted); text-transform: uppercase; margin-left: 10px;">Branch:</label>
+        <select class="filter-select">
+          <option>All 3 Branches (Aggregate)</option>
+          <option>Branch 1: Khuda Baksh Rd</option>
+          <option>Branch 2: Dohlanwal Mor</option>
+          <option>Branch 3: Sodiwal Main Rd</option>
+        </select>
+
+        <label style="font-size: 12px; font-weight: 700; color: var(--text-muted); text-transform: uppercase; margin-left: 10px;">Status:</label>
+        <select class="filter-select">
+          <option>All Statuses</option>
+          <option>Pending</option>
+          <option>Cooking</option>
+          <option>Dispatched</option>
+          <option>Delivered</option>
+        </select>
+      </div>
+
+      <div class="filter-group">
+        <input type="text" class="admin-search-input" value="Deal 12" placeholder="🔍 Search Order ID, Customer, Phone...">
+      </div>
+    </div>
+
+    <!-- KPI Summary Cards -->
+    <div class="admin-kpis">
+      <div class="kpi-card">
+        <div class="kpi-title">Gross Revenue (Today)</div>
+        <div class="kpi-val">Rs. 26,450</div>
+        <div class="kpi-sub">↑ 18.4% vs yesterday</div>
+      </div>
+      <div class="kpi-card">
+        <div class="kpi-title">Active Live Queue</div>
+        <div class="kpi-val" style="color: var(--accent);">4 Orders</div>
+        <div class="kpi-sub" style="color: var(--warning);">2 Kitchens Cooking</div>
+      </div>
+      <div class="kpi-card">
+        <div class="kpi-title">Avg. Kitchen Prep Time</div>
+        <div class="kpi-val" style="color: #3B82F6;">11.8 mins</div>
+        <div class="kpi-sub" style="color: var(--success);">⚡ Fast SLA fulfillment</div>
+      </div>
+      <div class="kpi-card">
+        <div class="kpi-title">Top Grossing Branch</div>
+        <div class="kpi-val" style="color: #10B981; font-size: 22px;">Khuda Baksh Rd</div>
+        <div class="kpi-sub">Rs. 12,300 today (46%)</div>
+      </div>
+    </div>
+
+    <!-- Analytics Charts Section (Pure SVG Zero-Dependency) -->
+    <div class="analytics-charts-grid">
+      <div class="chart-card">
+        <div class="chart-header">
+          <h3 class="chart-title">📈 Hourly Sales & Rush-Hour Peak Analysis</h3>
+          <div class="chart-legend">
+            <div class="legend-item"><span class="legend-color" style="background: var(--primary);"></span> Today Sales (PKR)</div>
+            <div class="legend-item"><span class="legend-color" style="background: rgba(255, 158, 11, 0.4);"></span> Yesterday Baseline</div>
+          </div>
+        </div>
+        <div style="width: 100%; height: 200px;">
+          <svg viewBox="0 0 600 200" style="width: 100%; height: 100%; overflow: visible;">
+            <defs>
+              <linearGradient id="areaGradient" x1="0" y1="0" x2="0" y2="1">
+                <stop offset="0%" stop-color="#D32323" stop-opacity="0.45"/>
+                <stop offset="100%" stop-color="#D32323" stop-opacity="0.0"/>
+              </linearGradient>
+            </defs>
+            <line x1="30" y1="135" x2="570" y2="135" stroke="rgba(255,255,255,0.06)" stroke-dasharray="4"/>
+            <line x1="30" y1="100" x2="570" y2="100" stroke="rgba(255,255,255,0.06)" stroke-dasharray="4"/>
+            <line x1="30" y1="65" x2="570" y2="65" stroke="rgba(255,255,255,0.06)" stroke-dasharray="4"/>
+            <path d="M 30 153 L 107 136 L 184 144 L 261 110 L 338 75 L 415 41 L 492 94 L 570 140 L 570 170 L 30 170 Z" fill="url(#areaGradient)"/>
+            <path d="M 30 157 L 107 143 L 184 150 L 261 126 L 338 97 L 415 70 L 492 110 L 570 147" fill="none" stroke="rgba(255, 158, 11, 0.4)" stroke-width="2" stroke-dasharray="4"/>
+            <path d="M 30 153 L 107 136 L 184 144 L 261 110 L 338 75 L 415 41 L 492 94 L 570 140" fill="none" stroke="#D32323" stroke-width="3.5" stroke-linecap="round"/>
+            <circle cx="30" cy="153" r="4.5" fill="#FF9E0B" stroke="#171721" stroke-width="2"/>
+            <text x="30" y="192" fill="#A0A0B2" font-size="10.5" font-family="Plus Jakarta Sans" text-anchor="middle">12PM</text>
+            <circle cx="107" cy="136" r="4.5" fill="#FF9E0B" stroke="#171721" stroke-width="2"/>
+            <text x="107" y="192" fill="#A0A0B2" font-size="10.5" font-family="Plus Jakarta Sans" text-anchor="middle">2PM</text>
+            <circle cx="184" cy="144" r="4.5" fill="#FF9E0B" stroke="#171721" stroke-width="2"/>
+            <text x="184" y="192" fill="#A0A0B2" font-size="10.5" font-family="Plus Jakarta Sans" text-anchor="middle">4PM</text>
+            <circle cx="261" cy="110" r="4.5" fill="#FF9E0B" stroke="#171721" stroke-width="2"/>
+            <text x="261" y="192" fill="#A0A0B2" font-size="10.5" font-family="Plus Jakarta Sans" text-anchor="middle">6PM</text>
+            <circle cx="338" cy="75" r="4.5" fill="#FF9E0B" stroke="#171721" stroke-width="2"/>
+            <text x="338" y="192" fill="#A0A0B2" font-size="10.5" font-family="Plus Jakarta Sans" text-anchor="middle">8PM</text>
+            <circle cx="415" cy="41" r="4.5" fill="#FF9E0B" stroke="#171721" stroke-width="2"/>
+            <text x="415" y="192" fill="#A0A0B2" font-size="10.5" font-family="Plus Jakarta Sans" text-anchor="middle">10PM</text>
+            <circle cx="492" cy="94" r="4.5" fill="#FF9E0B" stroke="#171721" stroke-width="2"/>
+            <text x="492" y="192" fill="#A0A0B2" font-size="10.5" font-family="Plus Jakarta Sans" text-anchor="middle">12AM</text>
+            <circle cx="570" cy="140" r="4.5" fill="#FF9E0B" stroke="#171721" stroke-width="2"/>
+            <text x="570" y="192" fill="#A0A0B2" font-size="10.5" font-family="Plus Jakarta Sans" text-anchor="middle">2AM</text>
+          </svg>
+        </div>
+      </div>
+
+      <div class="chart-card">
+        <div class="chart-header">
+          <h3 class="chart-title">🍕 Revenue by Food Category</h3>
+        </div>
+        <div style="width: 100%; height: 200px; display: flex; align-items: center; justify-content: center;">
+          <div style="display: flex; align-items: center; justify-content: space-around; width: 100%;">
+            <div style="position: relative; width: 170px; height: 170px;">
+              <svg width="170" height="170" viewBox="0 0 170 170">
+                <circle cx="85" cy="85" r="70" fill="transparent" stroke="#D32323" stroke-width="22" stroke-dasharray="211 440" stroke-dashoffset="0" transform="rotate(-90 85 85)"/>
+                <circle cx="85" cy="85" r="70" fill="transparent" stroke="#FF9E0B" stroke-width="22" stroke-dasharray="114 440" stroke-dashoffset="-211" transform="rotate(-90 85 85)"/>
+                <circle cx="85" cy="85" r="70" fill="transparent" stroke="#3B82F6" stroke-width="22" stroke-dasharray="70 440" stroke-dashoffset="-325" transform="rotate(-90 85 85)"/>
+                <circle cx="85" cy="85" r="70" fill="transparent" stroke="#10B981" stroke-width="22" stroke-dasharray="44 440" stroke-dashoffset="-395" transform="rotate(-90 85 85)"/>
+              </svg>
+              <div style="position: absolute; inset: 0; display: flex; flex-direction: column; align-items: center; justify-content: center;">
+                <span style="font-family: var(--font-heading); font-size: 22px; font-weight: 900; color: white;">48%</span>
+                <span style="font-size: 10px; color: var(--text-muted); text-transform: uppercase; font-weight: 700;">Deals Lead</span>
+              </div>
+            </div>
+            <div style="display: flex; flex-direction: column; gap: 8px;">
+              <div style="display: flex; align-items: center; gap: 8px; font-size: 12px;">
+                <span style="width: 10px; height: 10px; border-radius: 3px; background: #D32323;"></span>
+                <span style="font-weight: 600; color: var(--text-main);">Deals 1-17</span>
+                <span style="color: var(--text-muted); font-weight: 700;">48%</span>
+              </div>
+              <div style="display: flex; align-items: center; gap: 8px; font-size: 12px;">
+                <span style="width: 10px; height: 10px; border-radius: 3px; background: #FF9E0B;"></span>
+                <span style="font-weight: 600; color: var(--text-main);">Pizzas & Crusts</span>
+                <span style="color: var(--text-muted); font-weight: 700;">26%</span>
+              </div>
+              <div style="display: flex; align-items: center; gap: 8px; font-size: 12px;">
+                <span style="width: 10px; height: 10px; border-radius: 3px; background: #3B82F6;"></span>
+                <span style="font-weight: 600; color: var(--text-main);">Burgers & Wings</span>
+                <span style="color: var(--text-muted); font-weight: 700;">16%</span>
+              </div>
+              <div style="display: flex; align-items: center; gap: 8px; font-size: 12px;">
+                <span style="width: 10px; height: 10px; border-radius: 3px; background: #10B981;"></span>
+                <span style="font-weight: 600; color: var(--text-main);">Shawarma & Fries</span>
+                <span style="color: var(--text-muted); font-weight: 700;">10%</span>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- Orders Live Table -->
+    <div class="orders-table-wrapper">
+      <div style="padding: 16px 20px; border-bottom: 1px solid var(--border-subtle); display: flex; justify-content: space-between; align-items: center;">
+        <h3 style="font-family: var(--font-heading); font-size: 16px; font-weight: 800;">👨‍🍳 Live Kitchen Order Stream & KDS Actions</h3>
+        <span style="font-size: 12px; color: var(--text-muted);">Showing 4 active orders</span>
+      </div>
+      <table class="admin-table">
+        <thead>
+          <tr>
+            <th>Order ID</th>
+            <th>Customer & Branch</th>
+            <th>Items & Customizations</th>
+            <th>Total Amount</th>
+            <th>Prep SLA</th>
+            <th>Status</th>
+            <th>Kitchen Action</th>
+          </tr>
+        </thead>
+        <tbody>
+          <tr>
+            <td style="font-weight: 800; color: var(--accent);">ORD-8821</td>
+            <td><strong>Hamza Khan</strong><br><span style="font-size: 11px; color: var(--text-muted);">Branch 1 (Khuda Baksh Rd)</span></td>
+            <td style="max-width: 260px; font-size: 12.5px;">Deal 12 (Zinger + Pizza) x 1, Special Pizza Fries x 1</td>
+            <td style="font-weight: 800;">Rs. 1,320</td>
+            <td><span class="kds-timer-badge fresh">⏱ 8m SLA</span></td>
+            <td><span class="status-badge cooking">COOKING</span></td>
+            <td><button style="background: #3B82F6; color: white; border: none; padding: 6px 12px; border-radius: 6px; font-size: 11.5px; font-weight: 800; cursor: pointer;">Dispatch ➔</button></td>
+          </tr>
+          <tr>
+            <td style="font-weight: 800; color: var(--accent);">ORD-8822</td>
+            <td><strong>Ayesha Malik</strong><br><span style="font-size: 11px; color: var(--text-muted);">Branch 2 (Dohlanwal Mor)</span></td>
+            <td style="max-width: 260px; font-size: 12.5px;">Deal 10 (2 Zinger Burgers + 2 Drinks) x 1</td>
+            <td style="font-weight: 800;">Rs. 820</td>
+            <td><span class="kds-timer-badge fresh">⏱ 3m SLA</span></td>
+            <td><span class="status-badge pending">PENDING</span></td>
+            <td><button style="background: var(--accent); color: black; border: none; padding: 6px 12px; border-radius: 6px; font-size: 11.5px; font-weight: 800; cursor: pointer;">Start Prep ➔</button></td>
+          </tr>
+          <tr>
+            <td style="font-weight: 800; color: var(--accent);">ORD-8823</td>
+            <td><strong>Bilal Butt</strong><br><span style="font-size: 11px; color: var(--text-muted);">Branch 3 (Sodiwal Main Rd)</span></td>
+            <td style="max-width: 260px; font-size: 12.5px;">Party Deal (3 Large Pizzas + 1.5L Drink) x 1</td>
+            <td style="font-weight: 800;">Rs. 3,950</td>
+            <td><span class="kds-timer-badge warning">⏱ 16m Warning</span></td>
+            <td><span class="status-badge dispatched">DISPATCHED</span></td>
+            <td><button style="background: var(--success); color: white; border: none; padding: 6px 12px; border-radius: 6px; font-size: 11.5px; font-weight: 800; cursor: pointer;">Delivered ✓</button></td>
+          </tr>
+        </tbody>
+      </table>
+    </div>
+  </section>
+</body>
+</html>
