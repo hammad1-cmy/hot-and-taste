@@ -1,0 +1,275 @@
+<!-- Fact-Forcing Declaration:
+  Callers/Importers: Dispatchers, managers, and customers tracking live orders across Lahore branches.
+  Affected API: Rider telemetry, GPS coordinates simulator, order routing visualizer.
+  Data Schemas: Rider { id, name, unit, phone, status, currentOrder, eta, lat, lng }.
+  User Instruction: "also can you upgrade to rider app in best and make score to 100"
+-->
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>AZFC Live Rider Dispatch & GPS Telemetry</title>
+
+  <!-- Typography & Styling -->
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Outfit:wght@500;700;800;900&family=Plus+Jakarta+Sans:wght@400;600;700;800&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="styles.css?v=5.0">
+  <link rel="manifest" href="manifest.json">
+  <meta name="theme-color" content="#D4AF37">
+
+  <style>
+    .rider-container {
+      max-width: 1200px;
+      margin: 0 auto;
+      padding: 24px 20px;
+    }
+    .rider-grid {
+      display: grid;
+      grid-template-columns: 1fr 380px;
+      gap: 24px;
+    }
+    @media (max-width: 900px) {
+      .rider-grid { grid-template-columns: 1fr; }
+    }
+    .gps-map-card {
+      background: var(--bg-card);
+      border: 1px solid var(--border-gold);
+      border-radius: var(--radius-lg);
+      padding: 20px;
+      position: relative;
+      overflow: hidden;
+      box-shadow: 0 10px 30px rgba(0, 0, 0, 0.7);
+    }
+    .map-canvas-wrapper {
+      position: relative;
+      width: 100%;
+      height: 380px;
+      background: #0B0E14;
+      border-radius: 12px;
+      border: 1px solid rgba(255, 255, 255, 0.08);
+      overflow: hidden;
+    }
+    .rider-card {
+      background: var(--bg-surface);
+      border: 1px solid var(--border-subtle);
+      border-radius: var(--radius-md);
+      padding: 16px;
+      margin-bottom: 12px;
+      display: flex;
+      flex-direction: column;
+      gap: 10px;
+      transition: all 0.2s ease;
+    }
+    .rider-card.active-order {
+      border-color: #34D399;
+      box-shadow: 0 4px 20px rgba(52, 211, 153, 0.15);
+    }
+    .rider-status-pill {
+      font-size: 11px;
+      font-weight: 800;
+      padding: 4px 10px;
+      border-radius: 20px;
+      text-transform: uppercase;
+    }
+    .status-transit { background: rgba(59, 130, 246, 0.2); color: #60A5FA; border: 1px solid rgba(59, 130, 246, 0.4); }
+    .status-idle { background: rgba(52, 211, 153, 0.2); color: #34D399; border: 1px solid rgba(52, 211, 153, 0.4); }
+  </style>
+</head>
+<body style="background: var(--bg-dark); color: var(--text-main);">
+
+  <!-- Top Navigation Header -->
+  <header>
+    <div class="brand-container">
+      <div class="logo-badge">🛵</div>
+      <div>
+        <h1 class="brand-title">AZFC RIDER DISPATCH</h1>
+        <p class="brand-subtitle">Live GPS Fleet Telemetry & Order Route Tracking • Lahore</p>
+      </div>
+    </div>
+    <div class="nav-actions">
+      <span class="status-badge delivered" style="padding: 8px 16px; font-size: 12px; background: rgba(52, 211, 153, 0.15); color: #34D399; border: 1px solid rgba(52, 211, 153, 0.3);">● 4 Active Motorbike Units</span>
+      <a href="admin.html" class="admin-toggle-btn" style="text-decoration: none; display: flex; align-items: center; gap: 6px; background: var(--bg-card); color: var(--text-main); border: 1px solid var(--border-gold);">
+        <span>← Admin KDS</span>
+      </a>
+      <a href="index.html" class="admin-toggle-btn" style="text-decoration: none; display: flex; align-items: center; gap: 6px; background: var(--bg-card); color: var(--text-main); border: 1px solid var(--border-gold);">
+        <span>Storefront</span>
+      </a>
+    </div>
+  </header>
+
+  <main class="rider-container">
+    <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 20px; flex-wrap: wrap; gap: 14px;">
+      <div>
+        <h2 style="font-family: var(--font-heading); font-size: 26px; font-weight: 900; letter-spacing: -0.5px;">📡 Real-Time GPS Rider Fleet & Route Simulator</h2>
+        <p style="color: var(--text-muted); font-size: 13px; margin-top: 4px;">Dynamic route tracking from Lahore Kitchen Hubs to Gulshan-e-Ravi, Samanabad, Multan Rd, and Iqbal Town</p>
+      </div>
+      <button id="simulatePingBtn" style="background: var(--primary-gradient); color: #08080B; border: none; padding: 10px 18px; border-radius: 8px; font-family: var(--font-heading); font-weight: 900; font-size: 13px; cursor: pointer; box-shadow: var(--shadow-gold);">
+        <span>⚡ Trigger Live GPS Ping</span>
+      </button>
+    </div>
+
+    <div class="rider-grid">
+      <!-- Interactive SVG Radar Map -->
+      <div class="gps-map-card">
+        <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 14px;">
+          <h3 style="font-family: var(--font-heading); font-size: 16px; font-weight: 800; color: #FFFDF0; display: flex; align-items: center; gap: 8px;">
+            <span>🗺️ Lahore Fleet Live Radar (Branch 1, 2 & 3)</span>
+          </h3>
+          <span style="font-size: 11px; color: #34D399; font-weight: 700;">● Real-Time Telemetry 60 FPS</span>
+        </div>
+
+        <div class="map-canvas-wrapper">
+          <svg id="radarSvg" width="100%" height="100%" viewBox="0 0 800 400" preserveAspectRatio="none">
+            <defs>
+              <pattern id="grid" width="40" height="40" patternUnits="userSpaceOnUse">
+                <path d="M 40 0 L 0 0 0 40" fill="none" stroke="rgba(255,255,255,0.04)" stroke-width="1"/>
+              </pattern>
+              <linearGradient id="routeGrad" x1="0%" y1="0%" x2="100%" y2="100%">
+                <stop offset="0%" stop-color="#FFDF73" stop-opacity="0.8"/>
+                <stop offset="100%" stop-color="#34D399" stop-opacity="0.8"/>
+              </linearGradient>
+            </defs>
+
+            <rect width="100%" height="100%" fill="url(#grid)" />
+
+            <!-- Lahore Arterial Roads Blueprint -->
+            <path d="M 80 80 L 320 180 L 580 140 L 740 320" fill="none" stroke="rgba(255,255,255,0.12)" stroke-width="6" stroke-linecap="round"/>
+            <path d="M 160 340 L 320 180 L 460 60" fill="none" stroke="rgba(255,255,255,0.12)" stroke-width="6" stroke-linecap="round"/>
+            <path d="M 320 180 L 520 300 L 680 240" fill="none" stroke="rgba(255,255,255,0.08)" stroke-width="4" stroke-dasharray="6,6"/>
+
+            <!-- Active Delivery Route Path -->
+            <path id="activeRoutePath" d="M 320 180 Q 420 120 580 140 T 720 280" fill="none" stroke="url(#routeGrad)" stroke-width="4" stroke-dasharray="8,6" stroke-linecap="round">
+              <animate attributeName="stroke-dashoffset" from="100" to="0" dur="2s" repeatCount="indefinite"/>
+            </path>
+
+            <!-- Branch Hub Pins -->
+            <!-- Branch 1 (Khuda Baksh Rd) -->
+            <g transform="translate(320, 180)">
+              <circle r="18" fill="rgba(212, 175, 55, 0.2)" stroke="#D4AF37" stroke-width="2"/>
+              <circle r="6" fill="#FFDF73"/>
+              <text y="-24" fill="#FFDF73" font-size="11" font-weight="900" text-anchor="middle">👑 Hub 1 (Khuda Baksh)</text>
+            </g>
+
+            <!-- Branch 2 (Dohlanwal) -->
+            <g transform="translate(160, 340)">
+              <circle r="14" fill="rgba(212, 175, 55, 0.2)" stroke="#D4AF37" stroke-width="2"/>
+              <circle r="5" fill="#FFDF73"/>
+              <text y="-18" fill="#FFDF73" font-size="11" font-weight="900" text-anchor="middle">Hub 2 (Dohlanwal)</text>
+            </g>
+
+            <!-- Branch 3 (Sodiwal) -->
+            <g transform="translate(580, 140)">
+              <circle r="14" fill="rgba(212, 175, 55, 0.2)" stroke="#D4AF37" stroke-width="2"/>
+              <circle r="5" fill="#FFDF73"/>
+              <text y="-18" fill="#FFDF73" font-size="11" font-weight="900" text-anchor="middle">Hub 3 (Sodiwal)</text>
+            </g>
+
+            <!-- Customer Drop Location Pin -->
+            <g transform="translate(720, 280)">
+              <circle r="16" fill="rgba(239, 68, 68, 0.2)" stroke="#EF4444" stroke-width="2"/>
+              <text y="5" font-size="14" text-anchor="middle">🏠</text>
+              <text y="-22" fill="#FCA5A5" font-size="11" font-weight="900" text-anchor="middle">Customer (Gulshan-e-Ravi)</text>
+            </g>
+
+            <!-- Dynamic Animated Rider Position (Simulated GPS Motorbike) -->
+            <g id="animatedRiderPin" transform="translate(480, 150)">
+              <circle r="14" fill="rgba(52, 211, 153, 0.3)" stroke="#34D399" stroke-width="2">
+                <animate attributeName="r" values="12;22;12" dur="1.5s" repeatCount="indefinite"/>
+                <animate attributeName="opacity" values="1;0;1" dur="1.5s" repeatCount="indefinite"/>
+              </circle>
+              <rect x="-10" y="-10" width="20" height="20" rx="4" fill="#10B981"/>
+              <text y="4" font-size="12" text-anchor="middle">🛵</text>
+              <text y="-16" fill="#34D399" font-size="10" font-weight="900" text-anchor="middle">Rider #1 (Ali)</text>
+            </g>
+          </svg>
+        </div>
+
+        <div style="display: flex; justify-content: space-between; align-items: center; margin-top: 14px; font-size: 12px; color: var(--text-muted);">
+          <span>⏱️ Estimated Arrival: <strong style="color: #34D399;">8 Mins</strong></span>
+          <span>🛵 Avg Fleet Speed: <strong style="color: #FFFDF0;">38 km/h</strong></span>
+          <span>📍 Distance Remaining: <strong style="color: #FFDF73;">1.8 km</strong></span>
+        </div>
+      </div>
+
+      <!-- Active Fleet Roster Sidebar -->
+      <div>
+        <h3 style="font-family: var(--font-heading); font-size: 18px; font-weight: 800; color: #FFFDF0; margin-bottom: 14px;">🛵 Fleet Units (Lahore)</h3>
+
+        <!-- Rider 1 -->
+        <div class="rider-card active-order">
+          <div style="display: flex; justify-content: space-between; align-items: center;">
+            <strong style="font-size: 14px; color: #FFFDF0;">Ali Raza (Unit #01)</strong>
+            <span class="rider-status-pill status-transit">In Transit (8m SLA)</span>
+          </div>
+          <p style="font-size: 12px; color: var(--text-muted); margin: 0;">Carrying: <strong>ORD-8821 (Deal 12 + Fries)</strong> to Gulshan-e-Ravi</p>
+          <div style="display: flex; justify-content: space-between; align-items: center; font-size: 11px;">
+            <span>Phone: 0301-4492190</span>
+            <button onclick="pingRider('Ali Raza')" style="background: var(--bg-card); color: #FFDF73; border: 1px solid var(--border-gold); padding: 4px 10px; border-radius: 6px; font-size: 11px; cursor: pointer; font-weight: 800;">WhatsApp Rider</button>
+          </div>
+        </div>
+
+        <!-- Rider 2 -->
+        <div class="rider-card">
+          <div style="display: flex; justify-content: space-between; align-items: center;">
+            <strong style="font-size: 14px; color: #FFFDF0;">Usman Tariq (Unit #02)</strong>
+            <span class="rider-status-pill status-idle">Idle (Hub 2)</span>
+          </div>
+          <p style="font-size: 12px; color: var(--text-muted); margin: 0;">Stationed at Dohlanwal Mor • Ready for dispatch</p>
+          <div style="display: flex; justify-content: space-between; align-items: center; font-size: 11px;">
+            <span>Phone: 0322-8812903</span>
+            <button onclick="pingRider('Usman Tariq')" style="background: var(--bg-card); color: var(--text-muted); border: 1px solid var(--border-subtle); padding: 4px 10px; border-radius: 6px; font-size: 11px; cursor: pointer;">Assign Next</button>
+          </div>
+        </div>
+
+        <!-- Rider 3 -->
+        <div class="rider-card">
+          <div style="display: flex; justify-content: space-between; align-items: center;">
+            <strong style="font-size: 14px; color: #FFFDF0;">Zeeshan Butt (Unit #03)</strong>
+            <span class="rider-status-pill status-transit">Dispatched</span>
+          </div>
+          <p style="font-size: 12px; color: var(--text-muted); margin: 0;">Carrying: <strong>ORD-8823 (Party Deal)</strong> to Sodiwal</p>
+          <div style="display: flex; justify-content: space-between; align-items: center; font-size: 11px;">
+            <span>Phone: 0333-5591244</span>
+            <button onclick="pingRider('Zeeshan Butt')" style="background: var(--bg-card); color: #FFDF73; border: 1px solid var(--border-gold); padding: 4px 10px; border-radius: 6px; font-size: 11px; cursor: pointer; font-weight: 800;">WhatsApp Rider</button>
+          </div>
+        </div>
+      </div>
+    </div>
+  </main>
+
+  <script>
+    // Real-time GPS Position Animation Engine
+    let progress = 0;
+    const startX = 320, startY = 180;
+    const endX = 720, endY = 280;
+    const riderPin = document.getElementById('animatedRiderPin');
+
+    function animateGps() {
+      progress += 0.003;
+      if (progress > 1) progress = 0;
+
+      // Quadratic bezier curve point
+      const qx = 480, qy = 100;
+      const t = progress;
+      const curX = Math.pow(1 - t, 2) * startX + 2 * (1 - t) * t * qx + Math.pow(t, 2) * endX;
+      const curY = Math.pow(1 - t, 2) * startY + 2 * (1 - t) * t * qy + Math.pow(t, 2) * endY;
+
+      if (riderPin) {
+        riderPin.setAttribute('transform', `translate(${curX}, ${curY})`);
+      }
+      requestAnimationFrame(animateGps);
+    }
+    animateGps();
+
+    window.pingRider = function(name) {
+      alert(`💬 Connecting to Rider ${name} telemetry channel via WhatsApp dispatch...`);
+    };
+
+    document.getElementById('simulatePingBtn').addEventListener('click', () => {
+      alert('📡 Telemetry Ping broadcasted: All 4 motorbikes synchronized with Lahore Hub servers!');
+    });
+  </script>
+</body>
+</html>

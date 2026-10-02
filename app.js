@@ -1131,6 +1131,57 @@ function setupPushNotificationEngine() {
   }
 }
 
+// In-App Notification Preferences Toggle Handler
+function setupNotificationToggleBtn() {
+  const toggleBtn = document.getElementById('notifPrefToggleBtn');
+  const icon = document.getElementById('notifStatusIcon');
+  const text = document.getElementById('notifStatusText');
+
+  function updateUi() {
+    const isMuted = localStorage.getItem('azfc_notif_muted') === 'true';
+    if (!('Notification' in window) || Notification.permission === 'denied' || isMuted) {
+      if (icon) icon.textContent = '🔕';
+      if (text) text.textContent = 'Alerts OFF';
+      if (toggleBtn) toggleBtn.style.color = 'var(--text-muted)';
+    } else {
+      if (icon) icon.textContent = '🔔';
+      if (text) text.textContent = 'Alerts ON';
+      if (toggleBtn) toggleBtn.style.color = '#34D399';
+    }
+  }
+
+  updateUi();
+
+  if (toggleBtn) {
+    toggleBtn.addEventListener('click', async () => {
+      if (!('Notification' in window)) {
+        alert('Web push notifications are not supported in this browser.');
+        return;
+      }
+
+      if (Notification.permission === 'default') {
+        const perm = await Notification.requestPermission();
+        if (perm === 'granted') {
+          localStorage.removeItem('azfc_notif_muted');
+          showCartToast('🔔 Notifications Enabled!');
+        }
+      } else if (Notification.permission === 'granted') {
+        const isMuted = localStorage.getItem('azfc_notif_muted') === 'true';
+        if (isMuted) {
+          localStorage.removeItem('azfc_notif_muted');
+          showCartToast('🔔 Push Notifications Activated!');
+        } else {
+          localStorage.setItem('azfc_notif_muted', 'true');
+          showCartToast('🔕 Push Notifications Muted');
+        }
+      } else {
+        alert('Notification permission is blocked in browser settings. Please enable them in your browser/app settings.');
+      }
+      updateUi();
+    });
+  }
+}
+
 // Storage event listener for live cross-tab deal notification
 window.addEventListener('storage', (e) => {
   if (e.key === 'hot_taste_broadcast_promo') {
@@ -1142,6 +1193,7 @@ window.addEventListener('storage', (e) => {
 document.addEventListener('DOMContentLoaded', () => {
   setTimeout(checkPromoBroadcast, 1200);
   setTimeout(setupPushNotificationEngine, 1000);
+  setTimeout(setupNotificationToggleBtn, 500);
 });
 
 // ==========================================

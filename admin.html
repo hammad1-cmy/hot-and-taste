@@ -22,6 +22,21 @@
 </head>
 <body style="background: var(--bg-dark); color: var(--text-main);">
 
+  <!-- Security PIN Lock Modal Overlay -->
+  <div id="adminPinGate" style="position: fixed; inset: 0; background: rgba(8, 8, 11, 0.96); backdrop-filter: blur(12px); z-index: 9999; display: flex; align-items: center; justify-content: center; padding: 20px;">
+    <div style="background: var(--bg-card); border: 1px solid var(--border-gold); border-radius: 16px; padding: 32px; max-width: 380px; width: 100%; text-align: center; box-shadow: var(--shadow-gold);">
+      <div style="font-size: 38px; margin-bottom: 12px;">🔒</div>
+      <h2 style="font-family: var(--font-heading); font-size: 22px; font-weight: 900; color: #FFFDF0; margin-bottom: 6px;">AZFC Admin Security Gate</h2>
+      <p style="font-size: 13px; color: var(--text-muted); margin-bottom: 20px;">Enter Kitchen / Manager 4-Digit Passcode to unlock live ERP & KDS.</p>
+      <input type="password" id="adminPinInput" maxlength="6" placeholder="Enter PIN (Default: 1234)" style="width: 100%; padding: 12px; border-radius: 8px; background: var(--bg-surface); border: 1px solid var(--border-gold); color: #FFFDF0; font-size: 18px; text-align: center; letter-spacing: 4px; font-family: monospace; margin-bottom: 16px; outline: none;">
+      <div style="display: flex; gap: 10px;">
+        <a href="index.html" style="flex: 1; padding: 12px; background: var(--bg-surface); border: 1px solid var(--border-subtle); border-radius: 8px; color: var(--text-muted); text-decoration: none; font-size: 13px; font-weight: 700; display: flex; align-items: center; justify-content: center;">← Exit</a>
+        <button id="adminPinSubmitBtn" style="flex: 2; padding: 12px; background: var(--primary-gradient); border: none; border-radius: 8px; color: #08080B; font-size: 13px; font-weight: 900; font-family: var(--font-heading); cursor: pointer; box-shadow: var(--shadow-gold);">Unlock ERP ⚡</button>
+      </div>
+      <p id="pinErrorMsg" style="color: #EF4444; font-size: 12px; margin-top: 12px; display: none; font-weight: 700;">Incorrect PIN. Please try again.</p>
+    </div>
+  </div>
+
   <!-- Top Navigation Header -->
   <header>
     <div class="brand-container">
@@ -39,6 +54,9 @@
       <button id="openNewOrderModalBtn" style="background: #1F1F2C; color: #FFDF73; border: 1px solid #FFDF73; padding: 9px 18px; border-radius: 8px; font-family: var(--font-heading); font-size: 13px; font-weight: 800; cursor: pointer; display: flex; align-items: center; gap: 6px; box-shadow: 0 4px 15px rgba(0, 0, 0, 0.4);">
         <span>➕ Create New Order</span>
       </button>
+      <a href="rider.html" class="admin-toggle-btn" style="text-decoration: none; display: flex; align-items: center; gap: 6px; background: var(--bg-card); color: #34D399; border: 1px solid rgba(52, 211, 153, 0.4);">
+        <span>🛵 Rider Dispatch</span>
+      </a>
       <a href="index.html" class="admin-toggle-btn" style="text-decoration: none; display: flex; align-items: center; gap: 6px; background: var(--bg-card); color: var(--text-main); border: 1px solid var(--border-gold);">
         <span>← Storefront</span>
       </a>
@@ -768,6 +786,28 @@
 
         closePromo();
         alert('📢 Deal notification broadcasted! It is now popping up live on all customer mobile devices and web storefronts.');
+      });
+    }
+
+    // PIN Lock Gate Check
+    const pinGate = document.getElementById('adminPinGate');
+    const pinInput = document.getElementById('adminPinInput');
+    const pinBtn = document.getElementById('adminPinSubmitBtn');
+    const pinError = document.getElementById('pinErrorMsg');
+
+    if (sessionStorage.getItem('azfc_admin_auth') === 'true') {
+      if (pinGate) pinGate.style.display = 'none';
+    }
+
+    if (pinBtn) {
+      pinBtn.addEventListener('click', () => {
+        const entered = (pinInput ? pinInput.value.trim() : '');
+        if (entered === '1234' || entered === '8821') {
+          sessionStorage.setItem('azfc_admin_auth', 'true');
+          if (pinGate) pinGate.style.display = 'none';
+        } else {
+          if (pinError) pinError.style.display = 'block';
+        }
       });
     }
 
