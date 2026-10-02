@@ -1069,3 +1069,57 @@ document.addEventListener('DOMContentLoaded', () => {
   setTimeout(checkPromoBroadcast, 1200);
 });
 
+// ==========================================
+// 11. PWA SERVICE WORKER & APP INSTALL PROMPT
+// ==========================================
+if ('serviceWorker' in navigator) {
+  window.addEventListener('load', () => {
+    navigator.serviceWorker.register('./sw.js')
+      .then(reg => {
+        console.log('🔥 Hot & Taste PWA Service Worker Active:', reg.scope);
+      })
+      .catch(err => {
+        console.warn('PWA Service Worker Registration Failed:', err);
+      });
+  });
+}
+
+let deferredPrompt = null;
+window.addEventListener('beforeinstallprompt', (e) => {
+  e.preventDefault();
+  deferredPrompt = e;
+  const banner = document.getElementById('pwaInstallBanner');
+  if (banner && !sessionStorage.getItem('pwa_banner_dismissed')) {
+    banner.style.display = 'flex';
+  }
+});
+
+document.addEventListener('DOMContentLoaded', () => {
+  const installBtn = document.getElementById('pwaInstallBtn');
+  const dismissBtn = document.getElementById('pwaDismissBtn');
+  const banner = document.getElementById('pwaInstallBanner');
+
+  if (installBtn) {
+    installBtn.addEventListener('click', async () => {
+      if (deferredPrompt) {
+        deferredPrompt.prompt();
+        const { outcome } = await deferredPrompt.userChoice;
+        if (outcome === 'accepted') {
+          console.log('Customer accepted PWA install');
+          if (banner) banner.style.display = 'none';
+        }
+        deferredPrompt = null;
+      } else {
+        alert("To install: Tap your browser's share or menu icon (⋮) and tap 'Add to Home Screen' / 'Install App'.");
+      }
+    });
+  }
+
+  if (dismissBtn && banner) {
+    dismissBtn.addEventListener('click', () => {
+      banner.style.display = 'none';
+      sessionStorage.setItem('pwa_banner_dismissed', 'true');
+    });
+  }
+});
+

@@ -17,8 +17,28 @@
   <link href="https://fonts.googleapis.com/css2?family=Outfit:wght@500;700;800;900&family=Plus+Jakarta+Sans:wght@400;600;700;800&display=swap" rel="stylesheet">
 
   <link rel="stylesheet" href="styles.css?v=2.1">
+  <link rel="manifest" href="manifest.json">
+  <meta name="theme-color" content="#C8102E">
+  <meta name="apple-mobile-web-app-capable" content="yes">
+  <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+  <meta name="apple-mobile-web-app-title" content="Hot & Taste">
 </head>
 <body>
+
+  <!-- Top PWA App Download & Install Banner -->
+  <div id="pwaInstallBanner" class="pwa-install-topbar">
+    <div class="pwa-install-left">
+      <div class="pwa-app-icon">🔥</div>
+      <div class="pwa-install-info">
+        <span class="pwa-app-title">Hot & Taste Official App</span>
+        <span class="pwa-app-desc">Install on your phone for instant flash deals & order notifications</span>
+      </div>
+    </div>
+    <div class="pwa-install-actions">
+      <button id="pwaInstallBtn" class="pwa-install-btn">📲 Install App</button>
+      <button id="pwaDismissBtn" class="pwa-dismiss-btn" aria-label="Dismiss">✕</button>
+    </div>
+  </div>
 
   <!-- Live Deal Broadcast Push Notification Banner (Triggered from Admin) -->
   <div id="promoPushBanner" class="promo-push-banner" role="alert">
