@@ -1021,7 +1021,7 @@ function handleWhatsAppCheckout() {
 }
 
 // ==========================================
-// 10. REAL-TIME DEAL BROADCAST NOTIFICATION LISTENER
+// 10. REAL-TIME DEAL BROADCAST NOTIFICATION LISTENER & PHONE OS PUSH ENGINE
 // ==========================================
 function checkPromoBroadcast() {
   try {
@@ -1033,6 +1033,7 @@ function checkPromoBroadcast() {
     // Check if dismissed in this session
     if (sessionStorage.getItem('dismissed_promo_' + promo.id)) return;
 
+    // 1. In-App Visual Banner
     const banner = document.getElementById('promoPushBanner');
     const tagEl = document.getElementById('promoBannerTag');
     const titleEl = document.getElementById('promoBannerTitle');
@@ -1052,8 +1053,81 @@ function checkPromoBroadcast() {
         };
       }
     }
+
+    // 2. Native Android / Phone OS System Notification Push
+    if ('Notification' in window && Notification.permission === 'granted') {
+      if (navigator.serviceWorker && navigator.serviceWorker.controller) {
+        navigator.serviceWorker.controller.postMessage({
+          type: 'SHOW_NOTIFICATION',
+          payload: {
+            id: promo.id,
+            title: `${promo.tag || '👑 VIP DEAL'} - ${promo.title}`,
+            message: promo.message
+          }
+        });
+      } else {
+        // Fallback Native Notification
+        new Notification(`${promo.tag || '👑 VIP DEAL'} - ${promo.title}`, {
+          body: promo.message,
+          icon: './icon-192.png',
+          badge: './icon-192.png'
+        });
+      }
+    }
   } catch (e) {
     console.warn('Promo listener error:', e);
+  }
+}
+
+// Check and request Native Push Notification Permission
+function setupPushNotificationEngine() {
+  const permBanner = document.getElementById('pushPermissionBanner');
+  const enableBtn = document.getElementById('enablePushBtn');
+  const dismissBtn = document.getElementById('dismissPushBtn');
+
+  if (!('Notification' in window)) return;
+
+  // If not granted and not previously dismissed, ask customer
+  if (Notification.permission === 'default' && !localStorage.getItem('azfc_push_dismissed')) {
+    if (permBanner) {
+      setTimeout(() => {
+        permBanner.classList.add('show');
+      }, 1500);
+    }
+  }
+
+  if (enableBtn) {
+    enableBtn.addEventListener('click', async () => {
+      try {
+        const perm = await Notification.requestPermission();
+        if (perm === 'granted') {
+          if (permBanner) permBanner.classList.remove('show');
+          showCartToast('🔔 Lock screen notifications enabled!');
+
+          // Test welcome notification
+          if (navigator.serviceWorker && navigator.serviceWorker.ready) {
+            const reg = await navigator.serviceWorker.ready;
+            reg.showNotification('👑 AZFC VIP Alerts Enabled!', {
+              body: 'You will now receive secret discounts and instant kitchen order updates!',
+              icon: './icon-192.png',
+              badge: './icon-192.png',
+              vibrate: [200, 100, 200]
+            });
+          }
+        } else {
+          if (permBanner) permBanner.classList.remove('show');
+        }
+      } catch (err) {
+        console.error('Notification permission error:', err);
+      }
+    });
+  }
+
+  if (dismissBtn && permBanner) {
+    dismissBtn.addEventListener('click', () => {
+      permBanner.classList.remove('show');
+      localStorage.setItem('azfc_push_dismissed', 'true');
+    });
   }
 }
 
@@ -1064,15 +1138,25 @@ window.addEventListener('storage', (e) => {
   }
 });
 
-// Initialize Promo check on storefront load
+// Initialize Promo check & Push Engine on storefront load
 document.addEventListener('DOMContentLoaded', () => {
   setTimeout(checkPromoBroadcast, 1200);
+  setTimeout(setupPushNotificationEngine, 1000);
 });
 
 // ==========================================
 // 11. PWA SERVICE WORKER & INSTANT 1-CLICK APP INSTALL ENGINE
 // ==========================================
 let deferredPrompt = null;
+
+// Determine if app is running in installed standalone mode
+function isAppInstalled() {
+  return (
+    window.matchMedia('(display-mode: standalone)').matches ||
+    window.navigator.standalone === true ||
+    document.referrer.includes('android-app://')
+  );
+}
 
 // Register Service Worker
 if ('serviceWorker' in navigator) {
@@ -1089,13 +1173,12 @@ if ('serviceWorker' in navigator) {
 
 // Intercept browser install prompt immediately
 window.addEventListener('beforeinstallprompt', (e) => {
-  // Prevent mini-infobar from appearing on mobile
   e.preventDefault();
-  // Stash the event so it can be triggered instantly on button click
   deferredPrompt = e;
 
   const banner = document.getElementById('pwaInstallBanner');
-  if (banner && !sessionStorage.getItem('pwa_banner_dismissed')) {
+  // CRITICAL: NEVER show install banner if app is already running as installed standalone app!
+  if (banner && !isAppInstalled() && !sessionStorage.getItem('pwa_banner_dismissed')) {
     banner.style.display = 'flex';
   }
 });
@@ -1105,6 +1188,7 @@ window.addEventListener('appinstalled', () => {
   console.log('🎉 AZFC App installed successfully on user device!');
   const banner = document.getElementById('pwaInstallBanner');
   if (banner) banner.style.display = 'none';
+  localStorage.setItem('azfc_app_is_installed', 'true');
   deferredPrompt = null;
   showCartToast('👑 AZFC App installed successfully!');
 });
@@ -1114,6 +1198,11 @@ document.addEventListener('DOMContentLoaded', () => {
   const dismissBtn = document.getElementById('pwaDismissBtn');
   const banner = document.getElementById('pwaInstallBanner');
 
+  // Immediately hide install banner if app is installed
+  if (isAppInstalled() || localStorage.getItem('azfc_app_is_installed') === 'true') {
+    if (banner) banner.style.display = 'none';
+  }
+
   if (installBtn) {
     installBtn.addEventListener('click', async () => {
       if (deferredPrompt) {
@@ -1122,6 +1211,7 @@ document.addEventListener('DOMContentLoaded', () => {
           const { outcome } = await deferredPrompt.userChoice;
           if (outcome === 'accepted') {
             if (banner) banner.style.display = 'none';
+            localStorage.setItem('azfc_app_is_installed', 'true');
             showCartToast('👑 AZFC App Installing...');
           }
         } catch (err) {

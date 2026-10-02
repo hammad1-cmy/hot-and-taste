@@ -754,6 +754,14 @@
 
         try {
           localStorage.setItem('hot_taste_broadcast_promo', JSON.stringify(promoPayload));
+
+          // Also trigger immediate local service worker notification if supported
+          if ('Notification' in window && Notification.permission === 'granted' && navigator.serviceWorker && navigator.serviceWorker.controller) {
+            navigator.serviceWorker.controller.postMessage({
+              type: 'SHOW_NOTIFICATION',
+              payload: promoPayload
+            });
+          }
         } catch (e) {
           console.warn(e);
         }

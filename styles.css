@@ -1398,6 +1398,123 @@ header::before {
 }
 
 /* ==========================================================================
+   NATIVE PHONE PUSH PERMISSION BANNER
+   ========================================================================== */
+.push-permission-banner {
+  background: linear-gradient(90deg, #101018 0%, #1A1A28 60%, #996515 100%);
+  border-bottom: 1px solid var(--border-gold);
+  padding: 10px 18px;
+  display: none;
+  align-items: center;
+  justify-content: space-between;
+  gap: 14px;
+  box-shadow: 0 4px 15px rgba(0, 0, 0, 0.5);
+  animation: slideDown 0.3s ease-out;
+  position: relative;
+  z-index: 998;
+}
+
+.push-permission-banner.show {
+  display: flex;
+}
+
+.push-perm-left {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+}
+
+.push-bell-icon {
+  width: 32px;
+  height: 32px;
+  background: var(--primary-gradient);
+  color: #08080B;
+  border-radius: 50%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 16px;
+  flex-shrink: 0;
+  animation: bellRing 2s infinite ease-in-out;
+}
+
+@keyframes bellRing {
+  0%, 100% { transform: rotate(0); }
+  10%, 30%, 50% { transform: rotate(-15deg); }
+  20%, 40% { transform: rotate(15deg); }
+  60% { transform: rotate(0); }
+}
+
+.push-perm-text strong {
+  display: block;
+  font-size: 13px;
+  font-weight: 800;
+  color: #FFFDF0;
+}
+
+.push-perm-text span {
+  font-size: 11px;
+  color: var(--text-gold);
+}
+
+.push-perm-actions {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  flex-shrink: 0;
+}
+
+.enable-push-btn {
+  background: var(--primary-gradient);
+  color: #08080B;
+  border: none;
+  padding: 7px 16px;
+  border-radius: var(--radius-full);
+  font-family: var(--font-heading);
+  font-weight: 900;
+  font-size: 12px;
+  cursor: pointer;
+  box-shadow: var(--shadow-gold);
+  transition: all 0.2s ease;
+  white-space: nowrap;
+}
+
+.enable-push-btn:hover {
+  transform: translateY(-1px);
+  filter: brightness(1.1);
+}
+
+.dismiss-push-btn {
+  background: transparent;
+  border: none;
+  color: var(--text-muted);
+  font-size: 16px;
+  cursor: pointer;
+  padding: 4px;
+}
+
+.dismiss-push-btn:hover {
+  color: white;
+}
+
+@media (max-width: 600px) {
+  .push-permission-banner {
+    padding: 10px 14px;
+    flex-direction: column;
+    align-items: flex-start;
+  }
+  .push-perm-actions {
+    width: 100%;
+    justify-content: space-between;
+    margin-top: 4px;
+  }
+  .enable-push-btn {
+    flex: 1;
+    text-align: center;
+  }
+}
+
+/* ==========================================================================
    GREEN CART NOTIFICATION TOAST & FLY-TO-CART
    ========================================================================== */
 .cart-toast {
