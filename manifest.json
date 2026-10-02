@@ -1,24 +1,57 @@
 {
-  "name": "AZFC Fast Food",
+  "id": "/hot-and-taste/",
+  "name": "AZFC Fast & Crispy",
   "short_name": "AZFC",
+  "description": "Install AZFC App for Exclusive 30% OFF Flash Deals & Secret Promo Codes",
   "start_url": "./index.html",
+  "scope": "./",
   "display": "standalone",
+  "display_override": ["standalone", "minimal-ui", "window-controls-overlay"],
   "background_color": "#08080B",
   "theme_color": "#D4AF37",
-  "orientation": "portrait-primary",
-  "description": "AZFC Fast & Crispy - Official Luxury Online Ordering App Lahore",
+  "orientation": "portrait",
+  "categories": ["food", "shopping", "lifestyle"],
+  "prefer_related_applications": false,
   "icons": [
     {
       "src": "https://images.unsplash.com/photo-1513104890138-7c749659a591?auto=format&fit=crop&w=192&h=192&q=80",
       "sizes": "192x192",
       "type": "image/jpeg",
-      "purpose": "any maskable"
+      "purpose": "any"
+    },
+    {
+      "src": "https://images.unsplash.com/photo-1513104890138-7c749659a591?auto=format&fit=crop&w=192&h=192&q=80",
+      "sizes": "192x192",
+      "type": "image/jpeg",
+      "purpose": "maskable"
     },
     {
       "src": "https://images.unsplash.com/photo-1513104890138-7c749659a591?auto=format&fit=crop&w=512&h=512&q=80",
       "sizes": "512x512",
       "type": "image/jpeg",
-      "purpose": "any maskable"
+      "purpose": "any"
+    },
+    {
+      "src": "https://images.unsplash.com/photo-1513104890138-7c749659a591?auto=format&fit=crop&w=512&h=512&q=80",
+      "sizes": "512x512",
+      "type": "image/jpeg",
+      "purpose": "maskable"
+    }
+  ],
+  "shortcuts": [
+    {
+      "name": "Trending Deals",
+      "short_name": "Deals",
+      "description": "View 30% OFF Fast Food Deals",
+      "url": "./index.html#deals",
+      "icons": [{ "src": "https://images.unsplash.com/photo-1513104890138-7c749659a591?auto=format&fit=crop&w=192&h=192&q=80", "sizes": "192x192" }]
+    },
+    {
+      "name": "Crown Crust Pizzas",
+      "short_name": "Pizzas",
+      "description": "Order Stuffed Crust Pizzas",
+      "url": "./index.html#pizzas",
+      "icons": [{ "src": "https://images.unsplash.com/photo-1513104890138-7c749659a591?auto=format&fit=crop&w=192&h=192&q=80", "sizes": "192x192" }]
     }
   ]
 }

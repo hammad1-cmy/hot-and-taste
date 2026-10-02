@@ -1,5 +1,5 @@
-// AZFC Service Worker for PWA App Installation & Push Notifications
-const CACHE_NAME = 'azfc-gold-v3.0';
+// AZFC Official Service Worker - Instant App Install & Asset Cache Engine
+const CACHE_NAME = 'azfc-gold-v3.1';
 const ASSETS_TO_CACHE = [
   './',
   './index.html',

@@ -1070,28 +1070,43 @@ document.addEventListener('DOMContentLoaded', () => {
 });
 
 // ==========================================
-// 11. PWA SERVICE WORKER & APP INSTALL PROMPT
+// 11. PWA SERVICE WORKER & INSTANT 1-CLICK APP INSTALL ENGINE
 // ==========================================
+let deferredPrompt = null;
+
+// Register Service Worker
 if ('serviceWorker' in navigator) {
   window.addEventListener('load', () => {
     navigator.serviceWorker.register('./sw.js')
       .then(reg => {
-        console.log('🔥 Hot & Taste PWA Service Worker Active:', reg.scope);
+        console.log('👑 AZFC PWA Service Worker Registered:', reg.scope);
       })
       .catch(err => {
-        console.warn('PWA Service Worker Registration Failed:', err);
+        console.warn('PWA Service Worker Registration Error:', err);
       });
   });
 }
 
-let deferredPrompt = null;
+// Intercept browser install prompt immediately
 window.addEventListener('beforeinstallprompt', (e) => {
+  // Prevent mini-infobar from appearing on mobile
   e.preventDefault();
+  // Stash the event so it can be triggered instantly on button click
   deferredPrompt = e;
+
   const banner = document.getElementById('pwaInstallBanner');
   if (banner && !sessionStorage.getItem('pwa_banner_dismissed')) {
     banner.style.display = 'flex';
   }
+});
+
+// Listen for successful installation
+window.addEventListener('appinstalled', () => {
+  console.log('🎉 AZFC App installed successfully on user device!');
+  const banner = document.getElementById('pwaInstallBanner');
+  if (banner) banner.style.display = 'none';
+  deferredPrompt = null;
+  showCartToast('👑 AZFC App installed successfully!');
 });
 
 document.addEventListener('DOMContentLoaded', () => {
@@ -1102,15 +1117,29 @@ document.addEventListener('DOMContentLoaded', () => {
   if (installBtn) {
     installBtn.addEventListener('click', async () => {
       if (deferredPrompt) {
+        // Show the native Android/iOS/Desktop install prompt immediately
         deferredPrompt.prompt();
         const { outcome } = await deferredPrompt.userChoice;
         if (outcome === 'accepted') {
-          console.log('Customer accepted PWA install');
+          console.log('User accepted the AZFC install prompt');
           if (banner) banner.style.display = 'none';
+        } else {
+          console.log('User dismissed the AZFC install prompt');
         }
         deferredPrompt = null;
       } else {
-        alert("To install: Tap your browser's share or menu icon (⋮) and tap 'Add to Home Screen' / 'Install App'.");
+        // Direct browser fallback for iOS Safari or browsers without beforeinstallprompt
+        const isIOS = /iPad|iPhone|iPod/.test(navigator.userAgent) && !window.MSStream;
+        if (isIOS) {
+          alert("📲 To Install AZFC App on iPhone/iPad:\n1. Tap the Share icon (square with arrow ↑) at the bottom.\n2. Scroll down and tap 'Add to Home Screen'.");
+        } else {
+          // If already in standalone mode or direct browser prompt
+          if (window.matchMedia('(display-mode: standalone)').matches) {
+            alert("👑 AZFC App is already installed on your device!");
+          } else {
+            alert("⚡ To complete installation: Tap browser menu (⋮) and choose 'Install App' or 'Add to Home Screen'.");
+          }
+        }
       }
     });
   }
