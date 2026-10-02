@@ -1019,3 +1019,53 @@ function handleWhatsAppCheckout() {
   const encodedUrl = `https://wa.me/${currentBranch.phone}?text=${encodeURIComponent(message)}`;
   window.open(encodedUrl, '_blank');
 }
+
+// ==========================================
+// 10. REAL-TIME DEAL BROADCAST NOTIFICATION LISTENER
+// ==========================================
+function checkPromoBroadcast() {
+  try {
+    const raw = localStorage.getItem('hot_taste_broadcast_promo');
+    if (!raw) return;
+    const promo = JSON.parse(raw);
+    if (!promo || !promo.active) return;
+
+    // Check if dismissed in this session
+    if (sessionStorage.getItem('dismissed_promo_' + promo.id)) return;
+
+    const banner = document.getElementById('promoPushBanner');
+    const tagEl = document.getElementById('promoBannerTag');
+    const titleEl = document.getElementById('promoBannerTitle');
+    const msgEl = document.getElementById('promoBannerMsg');
+    const closeBtn = document.getElementById('promoBannerCloseBtn');
+
+    if (banner && titleEl && msgEl) {
+      if (tagEl) tagEl.textContent = promo.tag || '🔥 HOT DEAL';
+      titleEl.textContent = promo.title;
+      msgEl.textContent = promo.message;
+      banner.classList.add('active');
+
+      if (closeBtn) {
+        closeBtn.onclick = () => {
+          banner.classList.remove('active');
+          sessionStorage.setItem('dismissed_promo_' + promo.id, 'true');
+        };
+      }
+    }
+  } catch (e) {
+    console.warn('Promo listener error:', e);
+  }
+}
+
+// Storage event listener for live cross-tab deal notification
+window.addEventListener('storage', (e) => {
+  if (e.key === 'hot_taste_broadcast_promo') {
+    checkPromoBroadcast();
+  }
+});
+
+// Initialize Promo check on storefront load
+document.addEventListener('DOMContentLoaded', () => {
+  setTimeout(checkPromoBroadcast, 1200);
+});
+

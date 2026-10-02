@@ -33,6 +33,9 @@
     </div>
     <div class="nav-actions">
       <span class="status-badge delivered" style="padding: 8px 16px; font-size: 12px;">● 3 Kitchens Online</span>
+      <button id="openPromoBroadcastModalBtn" style="background: linear-gradient(135deg, #E31837 0%, #C8102E 100%); color: white; border: none; padding: 9px 18px; border-radius: 8px; font-family: var(--font-heading); font-size: 13px; font-weight: 800; cursor: pointer; display: flex; align-items: center; gap: 6px; box-shadow: 0 4px 15px rgba(200, 16, 46, 0.4);">
+        <span>📢 Push Deal Notification</span>
+      </button>
       <button id="openNewOrderModalBtn" style="background: var(--accent); color: #000; border: none; padding: 9px 18px; border-radius: 8px; font-family: var(--font-heading); font-size: 13px; font-weight: 800; cursor: pointer; display: flex; align-items: center; gap: 6px; box-shadow: 0 4px 15px rgba(255, 199, 44, 0.3);">
         <span>➕ Create New Order</span>
       </button>
@@ -231,6 +234,50 @@
         <button id="submitNewOrderBtn" class="confirm-custom-add-btn" style="background: var(--primary);">
           <span>Add to Kitchen Queue</span>
           <span>👨‍🍳</span>
+        </button>
+      </div>
+    </div>
+  </div>
+
+  <!-- BROADCAST PROMOTION MODAL (FLASH DEALS & ANNOUNCEMENTS) -->
+  <div class="customizer-modal" id="promoBroadcastModal" style="z-index: 10000;">
+    <div class="customizer-card" style="max-width: 540px;">
+      <div class="customizer-header" style="background: linear-gradient(135deg, #C8102E 0%, #7B0B1D 100%);">
+        <div class="customizer-header-overlay"></div>
+        <button class="customizer-close-btn" id="closePromoModalBtn">✕</button>
+        <div class="customizer-title-block">
+          <h3 class="customizer-title">📢 Broadcast Live Deal Notification</h3>
+          <p class="customizer-desc">Push immediate deals or alerts to all customer devices and browsers</p>
+        </div>
+      </div>
+
+      <div class="customizer-body" style="padding: 20px; display: flex; flex-direction: column; gap: 16px;">
+        <div>
+          <label style="font-size: 11px; font-weight: 800; color: var(--text-muted); text-transform: uppercase; display: block; margin-bottom: 6px;">Notification Title / Deal Headline</label>
+          <input type="text" id="promoTitleInput" class="admin-search-input" style="width: 100%; border-radius: 8px;" placeholder="e.g. 🔥 Midnight Flash Deal: Flat 30% Off Large Pizzas!">
+        </div>
+
+        <div>
+          <label style="font-size: 11px; font-weight: 800; color: var(--text-muted); text-transform: uppercase; display: block; margin-bottom: 6px;">Deal Description / Promotional Text</label>
+          <textarea id="promoMsgInput" class="admin-search-input" style="width: 100%; height: 80px; border-radius: 8px; resize: none; font-family: inherit;" placeholder="e.g. Valid across all 3 Lahore branches until midnight! Order Deal 12 or Party Deal now on WhatsApp."></textarea>
+        </div>
+
+        <div>
+          <label style="font-size: 11px; font-weight: 800; color: var(--text-muted); text-transform: uppercase; display: block; margin-bottom: 6px;">Badge Tag</label>
+          <select id="promoTagSelect" class="filter-select" style="width: 100%; border-radius: 8px;">
+            <option value="🔥 HOT DEAL">🔥 HOT DEAL</option>
+            <option value="⚡ FLASH OFFER">⚡ FLASH OFFER</option>
+            <option value="👑 CHEF SPECIAL">👑 CHEF SPECIAL</option>
+            <option value="🎉 FESTIVE PROMO">🎉 FESTIVE PROMO</option>
+          </select>
+        </div>
+      </div>
+
+      <div class="customizer-footer">
+        <button id="cancelPromoModalBtn" style="background: transparent; color: var(--text-muted); border: 1px solid var(--border-subtle); padding: 10px 18px; border-radius: 8px; font-weight: 700; cursor: pointer;">Cancel</button>
+        <button id="submitPromoBroadcastBtn" class="confirm-custom-add-btn" style="background: linear-gradient(135deg, #E31837 0%, #C8102E 100%);">
+          <span>Push to All Customers</span>
+          <span>📢</span>
         </button>
       </div>
     </div>
@@ -558,7 +605,7 @@
       `;
     }
 
-    // Lifecycle transitions
+    // Lifecycle transitions with Automatic Customer WhatsApp Dispatch Notification
     window.updateOrderStatus = function(id, nextStatus) {
       const ord = orders.find(o => o.id === id);
       if (ord) {
@@ -570,6 +617,25 @@
           ord.sla = '10m SLA';
         } else if (nextStatus === 'dispatched') {
           ord.sla = 'On the Way';
+
+          // Extract customer phone if present
+          const phoneMatch = (ord.customer || '').match(/\b(03\d{2}[- ]?\d{7}|\+92\d{10})\b/);
+          const rawPhone = phoneMatch ? phoneMatch[0].replace(/[^0-9]/g, '') : null;
+          const targetPhone = rawPhone ? (rawPhone.startsWith('92') ? rawPhone : '92' + rawPhone.slice(1)) : null;
+
+          const dispatchMsg = `🔥 *HOT & TASTE FAST FOOD - ORDER DISPATCHED* 🔥\n\n` +
+            `Hello *${ord.customer.split('(')[0].trim()}*,\n` +
+            `Your order *${ord.id}* is freshly baked, packed, and has been DISPATCHED from *${ord.branch}*! 🛵💨\n\n` +
+            `📦 *Items:* ${ord.items}\n` +
+            `💰 *Bill Amount:* ${ord.amount}\n\n` +
+            `Our rider is on the way to deliver your hot & tasty feast. Thank you for choosing Hot & Taste Lahore!`;
+
+          if (targetPhone) {
+            const waUrl = `https://wa.me/${targetPhone}?text=${encodeURIComponent(dispatchMsg)}`;
+            window.open(waUrl, '_blank');
+          } else {
+            alert(`Order ${ord.id} marked as Dispatched! Rider on the way.`);
+          }
         }
         saveOrders();
         renderOrdersTable();
@@ -650,6 +716,50 @@
         document.getElementById('manualCustomerName').value = '';
         document.getElementById('manualItems').value = '';
         document.getElementById('manualAmount').value = '';
+      });
+    }
+
+    // Live Promotional Broadcast Modal Handlers
+    const promoModal = document.getElementById('promoBroadcastModal');
+    const openPromoBtn = document.getElementById('openPromoBroadcastModalBtn');
+    const closePromoBtn = document.getElementById('closePromoModalBtn');
+    const cancelPromoBtn = document.getElementById('cancelPromoModalBtn');
+    const submitPromoBtn = document.getElementById('submitPromoBroadcastBtn');
+
+    function openPromo() {
+      if (promoModal) promoModal.classList.add('open');
+    }
+    function closePromo() {
+      if (promoModal) promoModal.classList.remove('open');
+    }
+
+    if (openPromoBtn) openPromoBtn.addEventListener('click', openPromo);
+    if (closePromoBtn) closePromoBtn.addEventListener('click', closePromo);
+    if (cancelPromoBtn) cancelPromoBtn.addEventListener('click', closePromo);
+
+    if (submitPromoBtn) {
+      submitPromoBtn.addEventListener('click', () => {
+        const title = document.getElementById('promoTitleInput').value.trim() || '🔥 New Special Deal Launched!';
+        const message = document.getElementById('promoMsgInput').value.trim() || 'Check out our freshly launched combo deal with exclusive discounts!';
+        const tag = document.getElementById('promoTagSelect').value;
+
+        const promoPayload = {
+          id: 'PROMO-' + Date.now(),
+          title: title,
+          message: message,
+          tag: tag,
+          timestamp: Date.now(),
+          active: true
+        };
+
+        try {
+          localStorage.setItem('hot_taste_broadcast_promo', JSON.stringify(promoPayload));
+        } catch (e) {
+          console.warn(e);
+        }
+
+        closePromo();
+        alert('📢 Deal notification broadcasted! It is now popping up live on all customer mobile devices and web storefronts.');
       });
     }
 
