@@ -1,54 +1,60 @@
 /* ==========================================================================
-   HOT & TASTE FAST FOOD - LUXURY FAST-FOOD DESIGN SYSTEM (RED DOMINANT)
-   Appetite-Stimulating Visual Architecture & Conversion-Optimized Tokens
+   AZFC (AZ FAST & CRISPY) - ULTRA-PREMIUM GOLD & OBSIDIAN DESIGN SYSTEM
+   World-Class Restaurant App Architecture • 30-Year Expert Tier Polish
    ========================================================================== */
 
 :root {
-  /* Fast-Food Appetite Red Dominance */
-  --primary: #C8102E;                  /* Official Deep Fast-Food Red */
-  --primary-bright: #E31837;           /* High-vis active red */
-  --primary-glow: rgba(200, 16, 46, 0.45);
-  --primary-subtle: rgba(200, 16, 46, 0.12);
-  --primary-hover: #A50C24;
+  /* Royal 24K Gold & Champagne Primary Accents */
+  --primary: #D4AF37;                  /* Sovereign Metallic 24K Gold */
+  --primary-bright: #FFDF73;           /* High-luminance Champagne Gold */
+  --primary-glow: rgba(212, 175, 55, 0.45);
+  --primary-subtle: rgba(212, 175, 55, 0.12);
+  --primary-hover: #BF9522;
+  --primary-gradient: linear-gradient(135deg, #FFF0A8 0%, #D4AF37 50%, #996515 100%);
+  --gold-sheen: linear-gradient(90deg, #D4AF37 0%, #FFF5C0 50%, #D4AF37 100%);
 
-  /* Sizzling Cheddar Gold / Amber (Conversion Anchors, Crusts & Badges) */
-  --accent: #FFC72C;                   /* Fast-food golden yellow */
-  --accent-warm: #FF9E0B;              /* Sizzling amber */
-  --accent-glow: rgba(255, 199, 44, 0.35);
-  --accent-subtle: rgba(255, 199, 44, 0.12);
+  /* Warm Amber & Flame Accents (Secondary conversion triggers) */
+  --accent: #E5A93C;                   /* Amber gold */
+  --accent-warm: #C5832B;              /* Deep toasted bronze */
+  --accent-glow: rgba(229, 169, 60, 0.35);
+  --accent-subtle: rgba(229, 169, 60, 0.12);
 
-  /* Deep Appetizing Dark Surfaces */
-  --bg-dark: #0E0E13;                  /* Main background */
-  --bg-surface: #15151E;               /* Headers, sidebars, elevated bars */
-  --bg-card: #1C1C27;                  /* Menu cards, modal body */
-  --bg-card-hover: #252535;            /* Interactive hover */
-  --bg-subtle: #222230;
+  /* Deep Luxury Obsidian & Noir Surfaces */
+  --bg-dark: #08080B;                  /* Pure Obsidian Void */
+  --bg-surface: #101015;               /* Premium Frosted Header & Bar */
+  --bg-card: #15151E;                  /* Elevated luxury card */
+  --bg-card-hover: #1D1D2A;            /* Interactive hover */
+  --bg-subtle: #1F1F2C;
+  --bg-glass: rgba(16, 16, 21, 0.88);
 
   /* Text & Contrast Layers */
-  --text-main: #FFFFFF;                /* Headings, titles, prices (100% white) */
-  --text-muted: #A5A5BA;               /* Secondary text */
-  --text-subtle: #6E6E85;
+  --text-main: #FFFFFF;                /* Headings, titles, prices */
+  --text-gold: #F3E5AB;                /* Champagne text accent */
+  --text-muted: #A2A2B8;               /* Secondary text */
+  --text-subtle: #68687D;
   --border-subtle: rgba(255, 255, 255, 0.08);
-  --border-red: rgba(200, 16, 46, 0.35);
-  --border-accent: rgba(255, 199, 44, 0.3);
+  --border-gold: rgba(212, 175, 55, 0.35);
+  --border-gold-glow: rgba(212, 175, 55, 0.6);
+  --border-red: rgba(212, 175, 55, 0.35);
+  --border-accent: rgba(229, 169, 60, 0.3);
 
   /* Status Colors (KDS & SLA) */
-  --status-pending: #F59E0B;
-  --status-cooking: #3B82F6;
-  --status-dispatched: #8B5CF6;
-  --status-delivered: #10B981;
-  --status-danger: #EF4444;
+  --status-pending: #E5A93C;
+  --status-cooking: #60A5FA;
+  --status-dispatched: #A78BFA;
+  --status-delivered: #34D399;
+  --status-danger: #F87171;
 
   /* Typography */
   --font-heading: 'Outfit', sans-serif;
   --font-body: 'Plus Jakarta Sans', sans-serif;
 
   /* Elevations */
-  --shadow-sm: 0 4px 12px rgba(0, 0, 0, 0.3);
-  --shadow-md: 0 8px 24px rgba(0, 0, 0, 0.45);
-  --shadow-lg: 0 16px 40px rgba(0, 0, 0, 0.6);
-  --shadow-red: 0 8px 25px rgba(200, 16, 46, 0.4);
-  --shadow-gold: 0 8px 25px rgba(255, 199, 44, 0.3);
+  --shadow-sm: 0 4px 12px rgba(0, 0, 0, 0.5);
+  --shadow-md: 0 8px 24px rgba(0, 0, 0, 0.65);
+  --shadow-lg: 0 16px 40px rgba(0, 0, 0, 0.8);
+  --shadow-gold: 0 8px 30px rgba(212, 175, 55, 0.32);
+  --shadow-red: 0 8px 30px rgba(212, 175, 55, 0.32);
   --radius-sm: 8px;
   --radius-md: 14px;
   --radius-lg: 20px;
@@ -125,41 +131,46 @@ header::before {
 .logo-badge {
   width: 44px;
   height: 44px;
-  background: linear-gradient(135deg, var(--primary-bright) 0%, var(--primary) 100%);
+  background: var(--primary-gradient);
   border-radius: 12px;
   display: flex;
   align-items: center;
   justify-content: center;
   font-size: 24px;
-  box-shadow: 0 4px 15px var(--primary-glow);
-  border: 1px solid rgba(255, 255, 255, 0.2);
-  animation: flamePulse 2s infinite ease-in-out;
+  box-shadow: 0 4px 18px var(--primary-glow);
+  border: 1px solid rgba(255, 223, 115, 0.4);
+  animation: goldPulse 2.5s infinite ease-in-out;
 }
 
-@keyframes flamePulse {
+@keyframes goldPulse {
   0%, 100% { transform: scale(1); box-shadow: 0 4px 15px var(--primary-glow); }
-  50% { transform: scale(1.05); box-shadow: 0 6px 22px rgba(227, 24, 55, 0.65); }
+  50% { transform: scale(1.05); box-shadow: 0 6px 24px rgba(212, 175, 55, 0.7); }
 }
 
 .brand-title {
   font-family: var(--font-heading);
   font-size: 22px;
   font-weight: 900;
-  letter-spacing: -0.5px;
-  color: var(--text-main);
+  letter-spacing: 0.5px;
+  background: linear-gradient(135deg, #FFFFFF 30%, #FFDF73 100%);
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
   line-height: 1.1;
   text-transform: uppercase;
 }
 
 .brand-title span {
-  color: var(--accent);
+  background: var(--primary-gradient);
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
 }
 
 .brand-subtitle {
   font-size: 11px;
-  color: var(--text-muted);
+  color: var(--text-gold);
+  opacity: 0.85;
   font-weight: 600;
-  letter-spacing: 0.5px;
+  letter-spacing: 0.8px;
   text-transform: uppercase;
 }
 
@@ -172,7 +183,7 @@ header::before {
 .branch-select-pill {
   background: var(--bg-card);
   color: var(--text-main);
-  border: 1px solid var(--border-subtle);
+  border: 1px solid var(--border-gold);
   padding: 8px 16px;
   border-radius: var(--radius-full);
   font-size: 13px;
@@ -184,38 +195,45 @@ header::before {
 }
 
 .branch-select-pill:hover, .branch-select-pill:focus {
-  border-color: var(--primary);
-  box-shadow: 0 0 10px var(--primary-glow);
+  border-color: var(--primary-bright);
+  box-shadow: 0 0 14px var(--primary-glow);
 }
 
 .cart-toggle-btn {
-  background: linear-gradient(135deg, var(--primary) 0%, var(--primary-hover) 100%);
-  color: white;
-  border: none;
+  background: var(--primary-gradient);
+  color: #0A0A0E;
+  border: 1px solid rgba(255, 255, 255, 0.3);
   padding: 8px 18px;
   border-radius: var(--radius-full);
-  font-weight: 700;
+  font-weight: 800;
   font-size: 13.5px;
   font-family: var(--font-heading);
   display: flex;
   align-items: center;
   gap: 8px;
   cursor: pointer;
-  box-shadow: var(--shadow-red);
+  box-shadow: var(--shadow-gold);
   transition: transform 0.15s ease, box-shadow 0.15s ease;
 }
 
 .cart-toggle-btn:hover {
   transform: translateY(-2px);
-  box-shadow: 0 6px 20px rgba(200, 16, 46, 0.6);
+  box-shadow: 0 6px 24px rgba(212, 175, 55, 0.65);
 }
 
 .cart-badge {
-  background: var(--accent);
-  color: #0E0E13;
+  background: #0A0A0E;
+  color: #FFDF73;
+  border: 1px solid #FFDF73;
   font-size: 11px;
   font-weight: 900;
   width: 20px;
+  height: 20px;
+  border-radius: 50%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
   height: 20px;
   border-radius: 50%;
   display: flex;
@@ -312,8 +330,8 @@ header::before {
 .hero-slide-overlay {
   position: absolute;
   inset: 0;
-  background: linear-gradient(90deg, rgba(14, 14, 19, 0.95) 0%, rgba(14, 14, 19, 0.7) 50%, rgba(14, 14, 19, 0.2) 100%),
-              linear-gradient(0deg, rgba(200, 16, 46, 0.25) 0%, transparent 60%);
+  background: linear-gradient(90deg, rgba(8, 8, 11, 0.96) 0%, rgba(8, 8, 11, 0.75) 50%, rgba(8, 8, 11, 0.3) 100%),
+              linear-gradient(0deg, rgba(212, 175, 55, 0.18) 0%, transparent 60%);
 }
 
 .hero-slide-content {
@@ -326,16 +344,16 @@ header::before {
   display: inline-flex;
   align-items: center;
   gap: 6px;
-  background: var(--primary);
-  color: white;
+  background: var(--primary-gradient);
+  color: #08080B;
   padding: 4px 14px;
   border-radius: var(--radius-full);
   font-size: 11.5px;
-  font-weight: 800;
+  font-weight: 900;
   text-transform: uppercase;
   letter-spacing: 0.5px;
   margin-bottom: 12px;
-  box-shadow: 0 4px 12px var(--primary-glow);
+  box-shadow: 0 4px 14px var(--primary-glow);
 }
 
 .hero-title {
@@ -343,12 +361,14 @@ header::before {
   font-size: 38px;
   font-weight: 900;
   line-height: 1.1;
-  letter-spacing: -1px;
+  letter-spacing: -0.5px;
   margin-bottom: 10px;
 }
 
 .hero-title span {
-  color: var(--accent);
+  background: var(--primary-gradient);
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
 }
 
 .hero-desc {
@@ -368,7 +388,7 @@ header::before {
   font-family: var(--font-heading);
   font-size: 32px;
   font-weight: 900;
-  color: var(--accent);
+  color: var(--primary-bright);
   display: flex;
   align-items: baseline;
   gap: 6px;
@@ -382,16 +402,16 @@ header::before {
 }
 
 .hero-order-btn {
-  background: linear-gradient(135deg, var(--primary-bright) 0%, var(--primary) 100%);
-  color: white;
-  border: none;
+  background: var(--primary-gradient);
+  color: #08080B;
+  border: 1px solid rgba(255, 255, 255, 0.4);
   padding: 12px 28px;
   border-radius: var(--radius-full);
   font-family: var(--font-heading);
   font-size: 15px;
-  font-weight: 800;
+  font-weight: 900;
   cursor: pointer;
-  box-shadow: var(--shadow-red);
+  box-shadow: var(--shadow-gold);
   transition: all 0.2s ease;
   display: flex;
   align-items: center;
@@ -400,7 +420,7 @@ header::before {
 
 .hero-order-btn:hover {
   transform: translateY(-2px) scale(1.02);
-  box-shadow: 0 8px 28px rgba(227, 24, 55, 0.7);
+  box-shadow: 0 8px 30px rgba(212, 175, 55, 0.7);
 }
 
 .carousel-arrow {
@@ -871,16 +891,16 @@ header::before {
 }
 
 .confirm-custom-add-btn {
-  background: linear-gradient(135deg, var(--primary-bright) 0%, var(--primary) 100%);
-  color: white;
-  border: none;
+  background: var(--primary-gradient);
+  color: #08080B;
+  border: 1px solid rgba(255, 255, 255, 0.3);
   padding: 12px 28px;
   border-radius: var(--radius-full);
   font-family: var(--font-heading);
   font-size: 14.5px;
-  font-weight: 800;
+  font-weight: 900;
   cursor: pointer;
-  box-shadow: var(--shadow-red);
+  box-shadow: var(--shadow-gold);
   display: flex;
   align-items: center;
   gap: 8px;
@@ -889,7 +909,7 @@ header::before {
 
 .confirm-custom-add-btn:hover {
   transform: translateY(-2px);
-  box-shadow: 0 6px 20px rgba(227, 24, 55, 0.7);
+  box-shadow: 0 6px 22px rgba(212, 175, 55, 0.7);
 }
 
 /* ==========================================================================
@@ -1104,7 +1124,8 @@ header::before {
    TOP PWA APP INSTALL BANNER
    ========================================================================== */
 .pwa-install-topbar {
-  background: linear-gradient(90deg, #7B0B1D 0%, #C8102E 50%, #FFC72C 100%);
+  background: linear-gradient(90deg, #0A0A0E 0%, #1A1A24 40%, #996515 80%, #D4AF37 100%);
+  border-bottom: 1px solid rgba(212, 175, 55, 0.4);
   color: #FFFFFF;
   padding: 8px 16px;
   display: flex;
@@ -1112,7 +1133,7 @@ header::before {
   justify-content: space-between;
   gap: 12px;
   font-size: 13px;
-  box-shadow: 0 4px 15px rgba(200, 16, 46, 0.35);
+  box-shadow: 0 4px 18px rgba(0, 0, 0, 0.6);
   position: relative;
   z-index: 1001;
 }
@@ -1124,8 +1145,8 @@ header::before {
 }
 
 .pwa-app-icon {
-  background: #FFFFFF;
-  color: #C8102E;
+  background: var(--primary-gradient);
+  color: #0A0A0E;
   width: 30px;
   height: 30px;
   border-radius: 8px;
@@ -1134,7 +1155,7 @@ header::before {
   justify-content: center;
   font-size: 16px;
   font-weight: 900;
-  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.3);
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.5);
 }
 
 .pwa-install-info {
@@ -1146,14 +1167,14 @@ header::before {
   font-family: var(--font-heading);
   font-weight: 900;
   font-size: 13px;
-  color: #FFFFFF;
+  color: #FFDF73;
   letter-spacing: 0.2px;
 }
 
 .pwa-app-desc {
   font-size: 11px;
-  color: #FFF2F2;
-  opacity: 0.92;
+  color: #DCDCE6;
+  opacity: 0.95;
 }
 
 .pwa-install-actions {
@@ -1164,13 +1185,13 @@ header::before {
 }
 
 .pwa-install-btn {
-  background: #0E0E12;
-  color: #FFC72C;
-  border: 1px solid #FFC72C;
+  background: var(--primary-gradient);
+  color: #0A0A0E;
+  border: 1px solid rgba(255, 255, 255, 0.4);
   padding: 6px 14px;
   border-radius: 20px;
   font-family: var(--font-heading);
-  font-weight: 800;
+  font-weight: 900;
   font-size: 12px;
   cursor: pointer;
   box-shadow: 0 2px 10px rgba(0, 0, 0, 0.4);

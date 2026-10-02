@@ -1001,14 +1001,14 @@ function handleWhatsAppCheckout() {
     console.warn('Storage sync failed', e);
   }
 
-  const message = `🔥 *HOT & TASTE FAST FOOD ORDER* 🔥\n` +
+  const message = `👑 *AZFC FAST & CRISPY ORDER* 👑\n` +
     `📍 *Branch:* ${currentBranch.name}\n` +
     `🆔 *Order Ref:* ${orderId}\n` +
     `------------------------------------\n` +
     `${itemsSummary}\n` +
     `------------------------------------\n` +
     `💵 *Items Subtotal:* Rs. ${subtotal}\n` +
-    `🚚 *Delivery Fee:* Rs. ${deliveryFee} ${deliveryFee === 0 ? '(FREE Promo)' : ''}\n` +
+    `🚚 *Delivery Fee:* Rs. ${deliveryFee} ${deliveryFee === 0 ? '(FREE VIP Promo)' : ''}\n` +
     `💰 *Grand Total:* Rs. ${grandTotal}\n\n` +
     `🏠 *Customer Delivery Details:*\n` +
     `Name: \n` +

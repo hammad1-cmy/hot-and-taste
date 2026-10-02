@@ -1,12 +1,12 @@
 {
-  "name": "Hot & Taste Fast Food",
-  "short_name": "Hot & Taste",
+  "name": "AZFC Fast Food",
+  "short_name": "AZFC",
   "start_url": "./index.html",
   "display": "standalone",
-  "background_color": "#0E0E12",
-  "theme_color": "#C8102E",
+  "background_color": "#08080B",
+  "theme_color": "#D4AF37",
   "orientation": "portrait-primary",
-  "description": "Hot & Taste Fast Food & Pizza Experts - Lahore Official Online Ordering App",
+  "description": "AZFC Fast & Crispy - Official Luxury Online Ordering App Lahore",
   "icons": [
     {
       "src": "https://images.unsplash.com/photo-1513104890138-7c749659a591?auto=format&fit=crop&w=192&h=192&q=80",

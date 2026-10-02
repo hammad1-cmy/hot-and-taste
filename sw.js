@@ -1,9 +1,10 @@
-// Hot & Taste Service Worker for PWA App Installation & Push Notifications
-const CACHE_NAME = 'hot-taste-v2.1';
+// AZFC Service Worker for PWA App Installation & Push Notifications
+const CACHE_NAME = 'azfc-gold-v3.0';
 const ASSETS_TO_CACHE = [
   './',
   './index.html',
-  './styles.css?v=2.1',
+  './admin.html',
+  './styles.css?v=3.0',
   './app.js',
   './manifest.json'
 ];
