@@ -1117,31 +1117,36 @@ document.addEventListener('DOMContentLoaded', () => {
   if (installBtn) {
     installBtn.addEventListener('click', async () => {
       if (deferredPrompt) {
-        // Show the native Android/iOS/Desktop install prompt immediately
-        deferredPrompt.prompt();
-        const { outcome } = await deferredPrompt.userChoice;
-        if (outcome === 'accepted') {
-          console.log('User accepted the AZFC install prompt');
-          if (banner) banner.style.display = 'none';
-        } else {
-          console.log('User dismissed the AZFC install prompt');
+        try {
+          deferredPrompt.prompt();
+          const { outcome } = await deferredPrompt.userChoice;
+          if (outcome === 'accepted') {
+            if (banner) banner.style.display = 'none';
+            showCartToast('👑 AZFC App Installing...');
+          }
+        } catch (err) {
+          console.error('Install prompt error:', err);
         }
         deferredPrompt = null;
       } else {
-        // Direct browser fallback for iOS Safari or browsers without beforeinstallprompt
-        const isIOS = /iPad|iPhone|iPod/.test(navigator.userAgent) && !window.MSStream;
-        if (isIOS) {
-          alert("📲 To Install AZFC App on iPhone/iPad:\n1. Tap the Share icon (square with arrow ↑) at the bottom.\n2. Scroll down and tap 'Add to Home Screen'.");
-        } else {
-          // If already in standalone mode or direct browser prompt
-          if (window.matchMedia('(display-mode: standalone)').matches) {
-            alert("👑 AZFC App is already installed on your device!");
-          } else {
-            alert("⚡ To complete installation: Tap browser menu (⋮) and choose 'Install App' or 'Add to Home Screen'.");
-          }
+        const guideModal = document.getElementById('pwaGuideModal');
+        if (guideModal) {
+          guideModal.classList.add('open');
         }
       }
     });
+  }
+
+  // Modal Close Handlers
+  const guideCloseBtn = document.getElementById('pwaGuideCloseBtn');
+  const guideActionBtn = document.getElementById('pwaGuideActionBtn');
+  const guideModal = document.getElementById('pwaGuideModal');
+
+  if (guideCloseBtn && guideModal) {
+    guideCloseBtn.addEventListener('click', () => guideModal.classList.remove('open'));
+  }
+  if (guideActionBtn && guideModal) {
+    guideActionBtn.addEventListener('click', () => guideModal.classList.remove('open'));
   }
 
   if (dismissBtn && banner) {
