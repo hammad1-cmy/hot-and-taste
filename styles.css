@@ -1395,10 +1395,11 @@ body {
   position: absolute;
   inset: 0;
   background: linear-gradient(180deg, rgba(8, 8, 11, 0.3) 0%, rgba(17, 18, 23, 0.95) 100%);
+  pointer-events: none;
 }
 .modal-close-btn {
   position: relative;
-  z-index: 10;
+  z-index: 20;
   align-self: flex-end;
   background: rgba(8, 8, 11, 0.7);
   border: 1px solid var(--border-subtle);
@@ -1414,6 +1415,7 @@ body {
 .modal-cover-info {
   position: relative;
   z-index: 10;
+  pointer-events: none;
 }
 .modal-category-tag {
   background: var(--primary-gradient);
@@ -2414,6 +2416,29 @@ body {
   .cart-drawer {
     width: 100%;
     max-width: 100%;
+  }
+
+  /* Full Screen / Bottom Sheet Modal on Mobile (Daily Deli / UberEats pattern) */
+  .modal-overlay {
+    padding: 0 !important;
+    align-items: flex-end !important;
+  }
+  .modal-dialog {
+    max-width: 100% !important;
+    width: 100% !important;
+    max-height: 88vh !important;
+    border-radius: 20px 20px 0 0 !important;
+    margin: 0 !important;
+  }
+  .modal-cover {
+    height: 160px !important;
+    padding: 14px !important;
+  }
+  .modal-item-name {
+    font-size: 19px !important;
+  }
+  .modal-body-scroll {
+    padding: 16px !important;
   }
 
   /* Fixed Mobile Bottom App Navigation */
