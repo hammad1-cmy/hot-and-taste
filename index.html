@@ -1,301 +1,598 @@
-<!-- Fact-Forcing Declaration:
-  Callers/Importers: Customer fast-food storefront for Lahore branches.
-  Affected API: Storefront online ordering and WhatsApp checkout serializer.
-  Data Schemas: Cart Item { id, itemId, name, basePrice, unitPrice, crust, spice, addons, notes, qty }.
-  User Instruction: "remove top urgency banner (hamza from gulshan ravi)", "admin shouldnt have access through customor app fix that", "when in cart shows green notification in cart"
--->
 <!DOCTYPE html>
 <html lang="en">
 <head>
-  <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>AZFC | Official Online Ordering & Fast Food</title>
-
-  <!-- Modern Typography -->
-  <link rel="preconnect" href="https://fonts.googleapis.com">
-  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-  <link href="https://fonts.googleapis.com/css2?family=Outfit:wght@500;700;800;900&family=Plus+Jakarta+Sans:wght@400;600;700;800&display=swap" rel="stylesheet">
-
-  <link rel="stylesheet" href="styles.css?v=4.0">
-  <link rel="manifest" href="manifest.json">
-  <link rel="icon" type="image/png" sizes="192x192" href="icon-192.png">
-  <link rel="apple-touch-icon" href="icon-192.png">
-  <meta name="theme-color" content="#D4AF37">
-  <meta name="mobile-web-app-capable" content="yes">
-  <meta name="apple-mobile-web-app-capable" content="yes">
-  <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
-  <meta name="apple-mobile-web-app-title" content="AZFC">
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=5.0, user-scalable=yes" />
+  <title>AZFC | Sovereign Crispy Chicken & Stone-Fired Pizzas</title>
+  <meta name="description" content="AZFC - Lahore's premier sovereign crispy fried chicken, stone-fired crown crust pizzas, and gourmet smashburgers. Express 25-minute dispatch." />
+  <meta name="theme-color" content="#991B1B" />
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700;800;900&family=Cabinet+Grotesk:wght@800;900&display=swap" rel="stylesheet" />
+  <link rel="stylesheet" href="styles.css?v=8.0" />
 </head>
-<body>
+<body class="theme-dark">
 
-  <!-- Top PWA App Download & Instant 1-Click Install Banner -->
-  <div id="pwaInstallBanner" class="pwa-install-topbar">
-    <div class="pwa-install-left">
-      <div class="pwa-app-icon">👑</div>
-      <div class="pwa-install-info">
-        <span class="pwa-app-title">🔥 Install AZFC App for Best Deals & Promo Codes</span>
-        <span class="pwa-app-desc">Tap Install to get instant 30% OFF vouchers, secret promo codes & live kitchen alerts!</span>
+  <!-- 1. Top Announcement Bar (No error banners) -->
+  <div class="announcement-strip" role="banner">
+    <div class="announcement-inner">
+      <div class="announcement-ticker">
+        <span class="ticker-pill">FAST LAHORE DISPATCH</span>
+        <span class="ticker-text">🔥 Order in under 60 seconds • Fresh, Hot Delivery in 25–30 Mins across Lahore!</span>
       </div>
-    </div>
-    <div class="pwa-install-actions">
-      <button id="pwaInstallBtn" class="pwa-install-btn">⚡ Install Now</button>
-      <button id="pwaDismissBtn" class="pwa-dismiss-btn" aria-label="Dismiss">✕</button>
+      <div class="announcement-hubs">
+        <span>📍 3 Kitchen Hubs Active: Khuda Baksh Rd • Dohlanwal Mor • Sodiwal</span>
+      </div>
     </div>
   </div>
 
-  <!-- PWA Install Step-by-Step Interactive Guide Modal (For iOS / Browsers needing explicit prompt) -->
-  <div id="pwaGuideModal" class="pwa-guide-modal" role="dialog" aria-modal="true" aria-labelledby="pwaGuideTitle">
-    <div class="pwa-guide-dialog">
-      <div class="pwa-guide-header">
-        <div class="pwa-guide-brand">
-          <div class="pwa-guide-icon">👑</div>
-          <div>
-            <h3 id="pwaGuideTitle" class="pwa-guide-title">Install AZFC App</h3>
-            <p class="pwa-guide-sub">Instant Access, 30% OFF Deals & Kitchen Alerts</p>
+  <!-- 2. Main Sticky Navigation Header -->
+  <header class="master-header sticky-header" id="masterHeader">
+    <div class="header-container">
+      <div class="header-left">
+        <a href="#hero" class="brand-identity" aria-label="AZFC Home">
+          <div class="brand-emblem-svg">
+            <svg width="40" height="40" viewBox="0 0 100 100" fill="none" xmlns="http://www.w3.org/2000/svg">
+              <rect width="100" height="100" rx="22" fill="#991B1B"/>
+              <path d="M50 12L85 32V68L50 88L15 68V32L50 12Z" stroke="#F59E0B" stroke-width="4" fill="rgba(245,158,11,0.08)"/>
+              <path d="M30 65L42 35H58L70 65H58.5L56 57H44L41.5 65H30ZM46.5 48.5H53.5L50 39.5L46.5 48.5Z" fill="#F59E0B"/>
+            </svg>
           </div>
-        </div>
-        <button id="pwaGuideCloseBtn" class="pwa-guide-close" aria-label="Close">✕</button>
-      </div>
-      <div class="pwa-guide-body">
-        <div class="pwa-step-card">
-          <div class="pwa-step-num">1</div>
-          <div class="pwa-step-content">
-            <strong id="pwaStep1Title">Tap Browser Menu</strong>
-            <p id="pwaStep1Desc">Tap the <strong>Share</strong> button <span style="display:inline-block; font-size:16px;">⎋ / ↑</span> on Safari, or tap the <strong>Menu (⋮)</strong> icon on Chrome.</p>
+          <div class="brand-text-block">
+            <span class="brand-title">AZFC</span>
+            <span class="brand-motto">CRISPY CHICKEN & PIZZA</span>
           </div>
-        </div>
-        <div class="pwa-step-card">
-          <div class="pwa-step-num">2</div>
-          <div class="pwa-step-content">
-            <strong>Choose "Add to Home Screen"</strong>
-            <p>Scroll down and tap <strong>"Add to Home Screen"</strong> or <strong>"Install App"</strong>.</p>
+        </a>
+      </div>
+
+      <!-- Quick Category Anchor Links -->
+      <nav class="header-nav-pills" aria-label="Quick Categories">
+        <a href="#cat-combos" class="nav-pill active">🔥 Deals</a>
+        <a href="#cat-burgers" class="nav-pill">Burgers</a>
+        <a href="#cat-pizzas" class="nav-pill">Pizzas</a>
+        <a href="#cat-fries" class="nav-pill">Fries</a>
+        <a href="#cat-shawarma" class="nav-pill">Shawarmas</a>
+        <a href="#cat-drinks" class="nav-pill">Beverages</a>
+      </nav>
+
+      <!-- Right Header Actions -->
+      <div class="header-actions">
+        <!-- Live Tracker Button -->
+        <button class="header-btn tracker-btn" id="openTrackerBtn" aria-label="Track Live Order">
+          <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2"><path d="M12 2v4M12 18v4M4.93 4.93l2.83 2.83M16.24 16.24l2.83 2.83M2 12h4M18 12h4M4.93 19.07l2.83-2.83M16.24 7.76l2.83-2.83"></path></svg>
+          <span class="btn-text">Track Order</span>
+        </button>
+
+        <!-- Cart Trigger Button -->
+        <button class="header-btn cart-trigger-btn" id="openCartBtn" aria-label="Open Shopping Cart">
+          <div class="cart-icon-wrap">
+            <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2"><path d="M6 2L3 6v14a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2V6l-3-4z"></path><line x1="3" y1="6" x2="21" y2="6"></line><path d="M16 10a4 4 0 0 1-8 0"></path></svg>
+            <span class="cart-badge-count" id="cartBadgeCount">0</span>
           </div>
-        </div>
-        <div class="pwa-step-card">
-          <div class="pwa-step-num">3</div>
-          <div class="pwa-step-content">
-            <strong>Launch & Enjoy VIP Perks</strong>
-            <p>Open <strong>AZFC</strong> directly from your phone's home screen anytime!</p>
+          <div class="cart-btn-label">
+            <span class="cart-label-title">Cart</span>
+            <span class="cart-label-amount" id="cartHeaderAmount">Rs. 0</span>
           </div>
-        </div>
+        </button>
       </div>
-      <div class="pwa-guide-footer">
-        <button id="pwaGuideActionBtn" class="pwa-guide-action-btn">⚡ Got It, Let's Install</button>
-      </div>
-    </div>
-  </div>
-
-  <!-- Permission Banner to Enable Android & Phone OS Push Notifications -->
-  <div id="pushPermissionBanner" class="push-permission-banner">
-    <div class="push-perm-left">
-      <div class="push-bell-icon">🔔</div>
-      <div class="push-perm-text">
-        <strong>Enable Deal Alerts & Secret Discounts</strong>
-        <span>Get instant notifications on your phone lock screen when new Lahore branch deals drop!</span>
-      </div>
-    </div>
-    <div class="push-perm-actions">
-      <button id="enablePushBtn" class="enable-push-btn">⚡ Allow Alerts</button>
-      <button id="dismissPushBtn" class="dismiss-push-btn" aria-label="Dismiss">✕</button>
-    </div>
-  </div>
-
-  <!-- Live Deal Broadcast Push Notification Banner (Triggered from Admin) -->
-  <div id="promoPushBanner" class="promo-push-banner" role="alert">
-    <div class="promo-icon-box">👑</div>
-    <div class="promo-content-box">
-      <span class="promo-tag-pill" id="promoBannerTag">👑 VIP EXCLUSIVE</span>
-      <div class="promo-title-text" id="promoBannerTitle">AZFC Golden Feast: 30% OFF!</div>
-      <div class="promo-body-text" id="promoBannerMsg">Fresh hot crispy deals available across all Lahore branches. Order now!</div>
-    </div>
-    <button class="promo-close-btn" id="promoBannerCloseBtn" aria-label="Dismiss Announcement">✕</button>
-  </div>
-
-  <!-- Green Notification Toast for Cart Additions -->
-  <div id="cartToast" class="cart-toast">
-    <span class="toast-icon">✓</span>
-    <span id="toastMsg">Added to cart successfully!</span>
-  </div>
-
-  <!-- Top Navigation Bar (Customer View - Zero Admin Links) -->
-  <header>
-    <div class="brand-container">
-      <div class="logo-badge">👑</div>
-      <div>
-        <h1 class="brand-title">AZFC</h1>
-        <p class="brand-subtitle">Fast & Crispy • Pizza & Burgers • Lahore</p>
-      </div>
-    </div>
-
-    <div class="nav-actions">
-      <!-- Live Notification Toggle Indicator -->
-      <button id="notifPrefToggleBtn" class="cart-toggle-btn" style="background: rgba(255, 255, 255, 0.04); border: 1px solid var(--border-subtle); padding: 8px 12px; font-size: 12px;" title="Notification Alerts Settings">
-        <span id="notifStatusIcon">🔔</span>
-        <span id="notifStatusText">Alerts ON</span>
-      </button>
-
-      <!-- Live Rider Tracking Direct Link -->
-      <a href="rider.html" class="cart-toggle-btn" style="text-decoration: none; background: rgba(52, 211, 153, 0.12); color: #34D399; border: 1px solid rgba(52, 211, 153, 0.3); padding: 8px 12px; font-size: 12px;" title="Track Live Riders">
-        <span>🛵 Track Order</span>
-      </a>
-
-      <!-- Branch Selector Pill -->
-      <select id="branchSelect" class="branch-select-pill" title="Select Lahore Branch"></select>
-
-      <!-- Cart Toggle Button -->
-      <button id="cartToggleBtn" class="cart-toggle-btn">
-        <span>🛒 Cart</span>
-        <span id="cartBadge" class="cart-badge">0</span>
-      </button>
     </div>
   </header>
 
-  <!-- STOREFRONT VIEW -->
-  <main id="storefrontView">
-    <!-- Promotional Hero Deals Carousel Slider -->
-    <div class="hero-carousel-wrapper">
-      <div class="hero-carousel" id="heroCarousel">
-        <div class="hero-slides-track" id="heroSlidesTrack">
-          <!-- Slide 1 -->
-          <div class="hero-slide" style="background-image: url('https://images.unsplash.com/photo-1594212699903-ec8a3eca50f5?auto=format&fit=crop&w=1400&q=80');">
-            <div class="hero-slide-overlay"></div>
-            <div class="hero-slide-content">
-              <span class="hero-tag">🔥 Trending Deal of the Day</span>
-              <h2 class="hero-title">Deal 12 Mega Feast: <span>Zinger + Small Pizza + Drink</span></h2>
-              <p class="hero-desc">Savor our signature crispy chicken zinger alongside hot stone-baked Italian pizza with chilled cold drink.</p>
-              <div class="hero-cta-group">
-                <span class="hero-deal-price">Rs. 830 <span style="font-size: 13px; text-decoration: line-through; opacity: 0.7; font-weight: 500;">Rs. 1080</span></span>
-                <button class="hero-order-btn" onclick="openItemCustomizer('deal_12')">⚡ Customize & Order</button>
-              </div>
-            </div>
-          </div>
-          <!-- Slide 2 -->
-          <div class="hero-slide" style="background-image: url('https://images.unsplash.com/photo-1534308983496-4fabb1a015ee?auto=format&fit=crop&w=1400&q=80');">
-            <div class="hero-slide-overlay"></div>
-            <div class="hero-slide-content">
-              <span class="hero-tag">👑 Crown Crust & Kabab Stuffed</span>
-              <h2 class="hero-title">Party Deal Supreme: <span>3 Large Pizzas + 1.5L Drink</span></h2>
-              <p class="hero-desc">Stuffed with melted mozzarella cheese pockets and seekh kabab crusts baked fresh at Khuda Baksh Rd, Dohlanwal & Sodiwal.</p>
-              <div class="hero-cta-group">
-                <span class="hero-deal-price">Rs. 3,950</span>
-                <button class="hero-order-btn" onclick="openItemCustomizer('party_deal')">🍕 Order Party Deal</button>
-              </div>
-            </div>
-          </div>
-          <!-- Slide 3 -->
-          <div class="hero-slide" style="background-image: url('https://images.unsplash.com/photo-1585109649139-366815a0d713?auto=format&fit=crop&w=1400&q=80');">
-            <div class="hero-slide-overlay"></div>
-            <div class="hero-slide-content">
-              <span class="hero-tag">🍟 Lahore Signature Sensation</span>
-              <h2 class="hero-title">Special Pizza Fries: <span>Smothered in Pizza Sauce & Mozzarella</span></h2>
-              <p class="hero-desc">Golden crispy fries smothered in rich pizza sauce, chicken tikka chunks, black olives and thick melted cheese.</p>
-              <div class="hero-cta-group">
-                <span class="hero-deal-price">Rs. 490</span>
-                <button class="hero-order-btn" onclick="openItemCustomizer('pizza_fries')">🍟 Order Loaded Fries</button>
-              </div>
-            </div>
-          </div>
+  <!-- 3. KFC-Style Single Focus Hero Section -->
+  <section class="hero-section" id="hero">
+    <div class="hero-inner">
+      <div class="hero-content">
+        <div class="hero-badge">⭐ LAHORE'S FAVORITE QSR</div>
+        <h1 class="hero-title">Family Feast — Fresh, Hot, Lahore.</h1>
+        <p class="hero-subtext">Fired fresh to order in 25 minutes.</p>
+        <div class="hero-cta-group">
+          <button class="hero-order-btn" id="heroOrderNowBtn" onclick="openItemCustomizer('deal-sovereign')">
+            <span>Order Now — Rs. 3,200</span>
+            <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><polyline points="9 18 15 12 9 6"></polyline></svg>
+          </button>
+          <a href="#menuAnchor" class="hero-explore-btn">View Menu</a>
         </div>
-
-        <!-- Carousel Navigation Controls -->
-        <button class="carousel-arrow prev" id="carouselPrev" aria-label="Previous Slide">‹</button>
-        <button class="carousel-arrow next" id="carouselNext" aria-label="Next Slide">›</button>
-        <div class="carousel-dots" id="carouselDots">
-          <button class="carousel-dot active" data-slide="0"></button>
-          <button class="carousel-dot" data-slide="1"></button>
-          <button class="carousel-dot" data-slide="2"></button>
-        </div>
+      </div>
+      <div class="hero-visual">
+        <img src="https://images.unsplash.com/photo-1555396273-367ea4eb4db5?auto=format&fit=crop&w=1200&q=80" alt="AZFC Sovereign Family Feast" class="hero-hero-image" />
       </div>
     </div>
+  </section>
 
-    <!-- Sticky Category Nav -->
-    <nav class="category-nav" id="categoryNav"></nav>
+  <!-- 4. Featured Category Filter Navigation Bar -->
+  <nav class="category-sticky-bar" id="categoryNav" aria-label="Menu Category Filter">
+    <div class="category-nav-inner">
+      <button class="cat-tab-btn active" data-category="all">
+        <span class="tab-icon">✨</span>
+        <span>All Items</span>
+      </button>
+      <button class="cat-tab-btn" data-category="combos">
+        <span class="tab-icon">🔥</span>
+        <span>Deals</span>
+      </button>
+      <button class="cat-tab-btn" data-category="burgers">
+        <span class="tab-icon">🍔</span>
+        <span>Burgers</span>
+      </button>
+      <button class="cat-tab-btn" data-category="pizzas">
+        <span class="tab-icon">🍕</span>
+        <span>Pizzas</span>
+      </button>
+      <button class="cat-tab-btn" data-category="fries">
+        <span class="tab-icon">🍟</span>
+        <span>Loaded Fries</span>
+      </button>
+      <button class="cat-tab-btn" data-category="shawarma">
+        <span class="tab-icon">🌯</span>
+        <span>Shawarmas</span>
+      </button>
+      <button class="cat-tab-btn" data-category="drinks">
+        <span class="tab-icon">🥤</span>
+        <span>Drinks & Shakes</span>
+      </button>
+    </div>
+  </nav>
 
-    <!-- Menu Section -->
-    <div class="menu-container">
-      <div class="section-header">
-        <h2 class="section-title">
-          <span>Freshly Prepared Menu</span>
-          <span class="section-badge">100% Authentic Deals & Pricing</span>
-        </h2>
-      </div>
-
-      <!-- Dynamic Food Cards Grid -->
-      <div class="menu-grid" id="menuGrid"></div>
+  <!-- 5. Main Categorized Menu Grid -->
+  <main class="storefront-main" id="menuAnchor">
+    <div class="menu-container" id="menuContainer">
+      <!-- Injected dynamically by app.js categorized menu generator with 8-word descriptions and crossed-out savings -->
     </div>
   </main>
 
-  <!-- ITEM CUSTOMIZATION MODAL (CONFIGURATOR) -->
-  <div class="customizer-modal" id="customizerModal">
-    <div class="customizer-card">
-      <div class="customizer-header" id="modalHeaderImg">
-        <div class="customizer-header-overlay"></div>
-        <button class="customizer-close-btn" id="modalCloseBtn">✕</button>
-        <div class="customizer-title-block">
-          <h3 class="customizer-title" id="modalItemTitle">Customize Your Order</h3>
-          <p class="customizer-desc" id="modalItemDesc">Select your crust, spice level and toppings</p>
+  <!-- 6. Social Proof & Customer Reviews Section (Multinational Standard) -->
+  <section class="social-proof-section" id="reviews">
+    <div class="section-container">
+      <div class="rating-summary-banner">
+        <div class="rating-stars">★★★★★</div>
+        <div class="rating-score">4.9 / 5.0</div>
+        <div class="rating-meta">Based on 2,400+ Verified Lahore Orders</div>
+      </div>
+
+      <div class="reviews-grid">
+        <div class="review-card">
+          <div class="review-header">
+            <div class="reviewer-info">
+              <span class="reviewer-name">Hamza Tariq</span>
+              <span class="reviewer-loc">📍 DHA Phase 5, Lahore</span>
+            </div>
+            <span class="review-rating">★★★★★</span>
+          </div>
+          <p class="review-body">"The Sovereign Family Deal was delivered piping hot in 22 minutes. The Crown Crust pizza was loaded with real cheese, and the Zingers were super crispy."</p>
+          <span class="review-item-tag">Ordered: Sovereign Family Feast</span>
+        </div>
+
+        <div class="review-card">
+          <div class="review-header">
+            <div class="reviewer-info">
+              <span class="reviewer-name">Zainab Bilal</span>
+              <span class="reviewer-loc">📍 Gulberg III, Lahore</span>
+            </div>
+            <span class="review-rating">★★★★★</span>
+          </div>
+          <p class="review-body">"Best loaded fries in Lahore hands down! Animal style sauce is authentic and burgers are huge. Ordered via WhatsApp and got live tracking immediately."</p>
+          <span class="review-item-tag">Ordered: Animal Style Loaded Fries + Mighty Zinger</span>
+        </div>
+
+        <div class="review-card">
+          <div class="review-header">
+            <div class="reviewer-info">
+              <span class="reviewer-name">Usman Farooq</span>
+              <span class="reviewer-loc">📍 Johar Town, Lahore</span>
+            </div>
+            <span class="review-rating">★★★★★</span>
+          </div>
+          <p class="review-body">"AZFC puts international chains to shame on taste and portion size. Strikethrough deal prices give real savings. 10/10 recommend."</p>
+          <span class="review-item-tag">Ordered: Royal Crown Crust Pizza + Shake</span>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- 7. How Your Food Reaches You (4-Stage Pipeline with Real Timestamps) -->
+  <section class="delivery-pipeline-section">
+    <div class="section-container">
+      <div class="section-title-wrap">
+        <span class="badge-gold">EXPRESS KITCHEN SLA</span>
+        <h2>How Your Food Reaches You Hot & Fresh</h2>
+        <p>From stone-fired ovens to your doorstep in 25–30 minutes.</p>
+      </div>
+
+      <div class="pipeline-steps-grid">
+        <div class="pipe-card">
+          <div class="pipe-step-num">01</div>
+          <div class="pipe-icon-box">⚡</div>
+          <h3>Order Received</h3>
+          <span class="pipe-timestamp">0–2 Minutes</span>
+          <p>Instantly routed to the nearest active Lahore kitchen terminal.</p>
+        </div>
+
+        <div class="pipe-card">
+          <div class="pipe-step-num">02</div>
+          <div class="pipe-icon-box">🔥</div>
+          <h3>Prepared Fresh</h3>
+          <span class="pipe-timestamp">12–15 Minutes</span>
+          <p>Chicken fried to golden crisp & pizza baked in stone-hearth ovens.</p>
+        </div>
+
+        <div class="pipe-card">
+          <div class="pipe-step-num">03</div>
+          <div class="pipe-icon-box">🛵</div>
+          <h3>Dispatched Hot</h3>
+          <span class="pipe-timestamp">10 Minutes Transit</span>
+          <p>Thermal-sealed inside insulated delivery boxes on motorbikes.</p>
+        </div>
+
+        <div class="pipe-card">
+          <div class="pipe-step-num">04</div>
+          <div class="pipe-icon-box">🏡</div>
+          <h3>Delivered to Door</h3>
+          <span class="pipe-timestamp">25–30 Mins Total</span>
+          <p>Piping hot meal handed over with contactless or cash payment.</p>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- 8. Brand Heritage & Kitchen Standards (Placed after Menu) -->
+  <section class="brand-story-section">
+    <div class="section-container">
+      <div class="story-grid">
+        <div class="story-text">
+          <span class="badge-gold">ESTABLISHED IN LAHORE</span>
+          <h2>Crafted With 100% Real Ingredients</h2>
+          <p>At AZFC, we believe great fast food requires no compromises. We use 100% real dairy mozzarella, fresh farm chicken marinated for 12 hours in our proprietary spice blend, and hand-tossed artisan dough fermented daily.</p>
+          <div class="story-features">
+            <div class="story-feat-item">
+              <strong>✨ 12-Spice Chicken</strong>
+              <span>Hand-breaded fresh per order</span>
+            </div>
+            <div class="story-feat-item">
+              <strong>🧀 100% Dairy Mozzarella</strong>
+              <span>Zero artificial cheese analogues</span>
+            </div>
+            <div class="story-feat-item">
+              <strong>🛵 Express Motorbike Fleet</strong>
+              <span>Dedicated riders for all 3 hubs</span>
+            </div>
+          </div>
+        </div>
+        <div class="story-visual">
+          <img src="https://images.unsplash.com/photo-1513104890138-7c749659a591?auto=format&fit=crop&w=800&q=80" alt="AZFC Kitchen Craft" class="story-img" />
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- 9. Lahore Kitchen Hubs & WhatsApp Orders -->
+  <section class="kitchen-hubs-section" id="branches">
+    <div class="section-container">
+      <div class="section-title-wrap">
+        <span class="badge-gold">3 LAHORE LOCATIONS</span>
+        <h2>Order Direct From Your Nearest Kitchen</h2>
+      </div>
+
+      <div class="hubs-grid">
+        <div class="hub-card">
+          <div class="hub-badge">Hub 01</div>
+          <h3>Khuda Baksh Rd Branch</h3>
+          <p class="hub-address">Khuda Baksh Road, Umar Park, Lahore</p>
+          <div class="hub-hours">🕒 12:00 PM – 03:00 AM</div>
+          <div class="hub-actions">
+            <a href="https://wa.me/923038755099?text=Hi%20AZFC,%20I%20want%20to%20order%20from%20Khuda%20Baksh%20Branch" target="_blank" class="hub-wa-btn">
+              <span>Order via WhatsApp</span>
+            </a>
+          </div>
+        </div>
+
+        <div class="hub-card">
+          <div class="hub-badge">Hub 02</div>
+          <h3>Dohlanwal Mor Branch</h3>
+          <p class="hub-address">Main Dohlanwal Mor, Near Qazafi Chowk, Lahore</p>
+          <div class="hub-hours">🕒 12:00 PM – 03:00 AM</div>
+          <div class="hub-actions">
+            <a href="https://wa.me/923234907914?text=Hi%20AZFC,%20I%20want%20to%20order%20from%20Dohlanwal%20Branch" target="_blank" class="hub-wa-btn">
+              <span>Order via WhatsApp</span>
+            </a>
+          </div>
+        </div>
+
+        <div class="hub-card">
+          <div class="hub-badge">Hub 03</div>
+          <h3>Sodiwal Main Rd Branch</h3>
+          <p class="hub-address">Moon Market, Main Sodiwal Road, Lahore</p>
+          <div class="hub-hours">🕒 12:00 PM – 03:00 AM</div>
+          <div class="hub-actions">
+            <a href="https://wa.me/923098755099?text=Hi%20AZFC,%20I%20want%20to%20order%20from%20Sodiwal%20Branch" target="_blank" class="hub-wa-btn">
+              <span>Order via WhatsApp</span>
+            </a>
+          </div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- 10. Step-by-Step Meal Builder & Dynamic QSR Customizer Modal -->
+  <div class="modal-overlay" id="customizerModal" role="dialog" aria-modal="true" aria-labelledby="modalItemTitle">
+    <div class="modal-dialog">
+      <div class="modal-cover" id="modalCover">
+        <button class="modal-close-btn" id="modalCloseBtn" aria-label="Close Customizer">
+          <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><line x1="18" y1="6" x2="6" y2="18"></line><line x1="6" y1="6" x2="18" y2="18"></line></svg>
+        </button>
+        <div class="modal-cover-gradient"></div>
+        <div class="modal-cover-info">
+          <span class="modal-category-tag" id="modalCategoryTag">PIZZA</span>
+          <h2 class="modal-item-name" id="modalItemTitle">Item Title</h2>
+          <p class="modal-item-desc" id="modalItemDesc">Description</p>
         </div>
       </div>
 
-      <div class="customizer-body" id="modalCustomizerBody">
-        <!-- Dynamically Populated by app.js -->
+      <div class="modal-body-scroll" id="modalCustomizerBody">
+        <div id="customizerOptionsDynamic"></div>
+
+        <div class="custom-step-group">
+          <div class="custom-section-title">
+            <span>Special Chef Cooking Instructions</span>
+            <span class="section-opt">Optional</span>
+          </div>
+          <input type="text" id="modalCookingNotes" class="modal-notes-input" placeholder="e.g. Extra crispy fries, sauce packed separately, no onions..." />
+        </div>
       </div>
 
-      <div class="customizer-footer">
-        <div>
-          <span style="font-size: 11px; color: var(--text-muted); text-transform: uppercase; font-weight: 700; display: block;">Total Price</span>
-          <div class="customizer-total-price" id="modalPriceDisplay">Rs. 0</div>
+      <div class="modal-footer-bar">
+        <div class="modal-qty-control">
+          <button class="qty-btn" id="modalQtyMinus" aria-label="Decrease quantity">−</button>
+          <span class="qty-number" id="modalQtyDisplay">1</span>
+          <button class="qty-btn" id="modalQtyPlus" aria-label="Increase quantity">+</button>
         </div>
-        <button class="confirm-custom-add-btn" id="modalConfirmBtn">
-          <span>Add To Order</span>
-          <span style="font-size: 16px;">🛒</span>
+        <button class="modal-add-btn" id="modalConfirmBtn">
+          <span>Add to Cart</span>
+          <span class="btn-price-tag" id="modalPriceDisplay">Rs. 0</span>
         </button>
       </div>
     </div>
   </div>
 
-  <!-- Cart Drawer Overlay & Sidebar -->
-  <div class="cart-overlay" id="cartOverlay"></div>
-  <aside class="cart-drawer" id="cartDrawer">
-    <div class="cart-header">
-      <h3 class="cart-title">Your Order Cart</h3>
-      <button class="cart-close-btn" id="cartCloseBtn" aria-label="Close Cart">✕</button>
+  <!-- 10.5. Mandatory Delivery Location & Customer Details Modal -->
+  <div class="modal-overlay" id="checkoutDetailsModal" role="dialog" aria-modal="true" aria-labelledby="checkoutModalTitle">
+    <div class="modal-dialog checkout-details-dialog">
+      <div class="checkout-modal-header">
+        <div>
+          <span class="tracker-sub">Express Kitchen Dispatch</span>
+          <h2 class="checkout-modal-title" id="checkoutModalTitle">Delivery Details & Location</h2>
+        </div>
+        <button class="modal-close-btn" id="closeCheckoutDetailsBtn" aria-label="Close Details Modal">
+          <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><line x1="18" y1="6" x2="6" y2="18"></line><line x1="6" y1="6" x2="18" y2="18"></line></svg>
+        </button>
+      </div>
+
+      <form id="checkoutDetailsForm" class="checkout-details-form" onsubmit="return false;">
+        <div class="checkout-mode-indicator">
+          <span id="checkoutModeBadge">Delivery Order</span>
+          <span class="checkout-mode-sla" id="checkoutModeSla">⚡ 25-35 Mins Express Promise</span>
+        </div>
+
+        <div class="form-input-group">
+          <label for="custFullName">Customer Full Name <span class="req-star">*</span></label>
+          <div class="input-with-icon">
+            <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2"></path><circle cx="12" cy="7" r="4"></circle></svg>
+            <input type="text" id="custFullName" required placeholder="e.g. Hamza Tariq" autocomplete="name" />
+          </div>
+        </div>
+
+        <div class="form-input-group">
+          <label for="custPhone">Active Mobile Number (For Rider SMS/Call) <span class="req-star">*</span></label>
+          <div class="input-with-icon">
+            <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M22 16.92v3a2 2 0 0 1-2.18 2 19.79 19.79 0 0 1-8.63-3.07 19.5 19.5 0 0 1-6-6 19.79 19.79 0 0 1-3.07-8.67A2 2 0 0 1 4.11 2h3a2 2 0 0 1 2 1.72 12.84 12.84 0 0 0 .7 2.81 2 2 0 0 1-.45 2.11L8.09 9.91a16 16 0 0 0 6 6l1.27-1.27a2 2 0 0 1 2.11-.45 12.84 12.84 0 0 0 2.81.7A2 2 0 0 1 22 16.92z"></path></svg>
+            <input type="tel" id="custPhone" required placeholder="0300-1234567" pattern="^((\+92)|(0092)|(03))[0-9]{2}[-]?[0-9]{7}$" autocomplete="tel" />
+          </div>
+        </div>
+
+        <div class="form-input-group">
+          <label for="custAddress">Complete Street Address & Landmark <span class="req-star">*</span></label>
+          <div class="input-with-icon">
+            <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M21 10c0 7-9 13-9 13s-9-6-9-13a9 9 0 0 1 18 0z"></path><circle cx="12" cy="10" r="3"></circle></svg>
+            <input type="text" id="custAddress" required placeholder="House #, Street name, Sector, Near Landmark" />
+          </div>
+        </div>
+
+        <div class="form-input-group">
+          <label for="custBranchSelect">Select Nearest Lahore Kitchen Hub <span class="req-star">*</span></label>
+          <div class="input-with-icon">
+            <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="3" y="3" width="18" height="18" rx="2" ry="2"></rect><line x1="3" y1="9" x2="21" y2="9"></line><line x1="9" y1="21" x2="9" y2="9"></line></svg>
+            <select id="custBranchSelect" class="form-select-clean" required>
+              <option value="Khuda Baksh Rd Hub">Branch 1 - Khuda Baksh Rd Hub (Umar Park)</option>
+              <option value="Dohlanwal Mor Hub">Branch 2 - Dohlanwal Mor Hub (Qazafi Chowk)</option>
+              <option value="Sodiwal Main Rd Hub">Branch 3 - Moon Market, Sodiwal Hub</option>
+            </select>
+          </div>
+        </div>
+
+        <div class="checkout-summary-mini">
+          <div class="mini-summary-line">
+            <span>Total Payable:</span>
+            <strong id="checkoutPayableAmount" style="color: var(--color-primary); font-size: 16px;">Rs. 0</strong>
+          </div>
+          <div class="mini-summary-line">
+            <span>Payment Method:</span>
+            <strong id="checkoutPaymentMethodName" style="color: var(--color-emerald-light);">Cash on Delivery</strong>
+          </div>
+        </div>
+
+        <button type="button" class="confirm-order-submit-btn" id="confirmCheckoutSubmitBtn">
+          <span>Confirm & Transmit Order to Kitchen</span>
+          <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><polyline points="20 6 9 17 4 12"></polyline></svg>
+        </button>
+      </form>
     </div>
+  </div>
 
-    <!-- Psychological Free Delivery Threshold Bar -->
-    <div class="free-delivery-meter">
-      <div class="meter-text" id="freeDeliveryText">
-        <span>Add Rs. 670 more for FREE Lahore Delivery</span>
-        <span>55%</span>
+  <!-- 11. Live 4-Stage KDS Order Tracker Modal -->
+  <div class="modal-overlay" id="orderTrackerModal" role="dialog" aria-modal="true">
+    <div class="modal-dialog tracker-dialog">
+      <div class="tracker-header">
+        <div>
+          <span class="tracker-sub">Active Kitchen Order</span>
+          <h2 class="tracker-title">Order Status: <span id="trackerOrderId">No Active Order</span></h2>
+        </div>
+        <button class="modal-close-btn" id="trackerCloseBtn" aria-label="Close Tracker">
+          <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><line x1="18" y1="6" x2="6" y2="18"></line><line x1="6" y1="6" x2="18" y2="18"></line></svg>
+        </button>
       </div>
-      <div class="meter-bar-bg">
-        <div class="meter-bar-fill" id="freeDeliveryProgress" style="width: 55%;"></div>
+
+      <div class="tracker-empty-box" id="trackerEmptyState">
+        <div class="tracker-empty-icon-wrap">
+          <svg width="40" height="40" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round">
+            <rect x="1" y="3" width="15" height="13"></rect>
+            <polygon points="16 8 20 8 23 11 23 16 16 16 8"></polygon>
+            <circle cx="5.5" cy="18.5" r="2.5"></circle>
+            <circle cx="18.5" cy="18.5" r="2.5"></circle>
+          </svg>
+        </div>
+        <h3 class="tracker-empty-title">No Active Delivery in Progress</h3>
+        <p class="tracker-empty-desc">You haven't placed an order yet. Select your favorite items from the menu to track kitchen cooking and motorbike dispatch in real time!</p>
+        <button class="tracker-browse-btn" id="trackerBrowseMenuBtn">Browse Menu Now</button>
+      </div>
+
+      <div class="tracker-body hidden" id="trackerActiveState">
+        <div class="eta-box">
+          <div class="eta-label">Estimated Delivery Arrival</div>
+          <div class="eta-time" id="trackerEtaTimer">25:00 min</div>
+          <div class="eta-branch" id="trackerBranchName">Dispatched from Branch 1 (Khuda Baksh Rd)</div>
+        </div>
+
+        <div class="progress-track">
+          <div class="progress-bar-fill" id="trackerProgressBar" style="width: 10%;"></div>
+          <div class="step-node active" id="stepNode1">
+            <div class="node-icon">
+              <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"></path><polyline points="14 2 14 8 20 8"></polyline><line x1="16" y1="13" x2="8" y2="13"></line><line x1="16" y1="17" x2="8" y2="17"></line></svg>
+            </div>
+            <div class="node-label">Received</div>
+          </div>
+          <div class="step-node" id="stepNode2">
+            <div class="node-icon">
+              <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M8.5 14.5A2.5 2.5 0 0 0 11 12c0-1.38-.5-2-1-3-1.072-2.143-.224-4.054 2-6 .5 2.5 2 4.9 4 6.5 2 1.6 3 3.5 3 5.5a7 7 0 1 1-14 0c0-1.153.433-2.294 1-3a2.5 2.5 0 0 0 2.5 2.5z"></path></svg>
+            </div>
+            <div class="node-label">In Oven</div>
+          </div>
+          <div class="step-node" id="stepNode3">
+            <div class="node-icon">
+              <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M21 16V8a2 2 0 0 0-1-1.73l-7-4a2 2 0 0 0-2 0l-7 4A2 2 0 0 0 3 8v8a2 2 0 0 0 1 1.73l7 4a2 2 0 0 0 2 0l7-4A2 2 0 0 0 21 16z"></path><polyline points="3.27 6.96 12 12.01 20.73 6.96"></polyline><line x1="12" y1="22.08" x2="12" y2="12"></line></svg>
+            </div>
+            <div class="node-label">Dispatched</div>
+          </div>
+          <div class="step-node" id="stepNode4">
+            <div class="node-icon">
+              <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M22 11.08V12a10 10 0 1 1-5.93-9.14"></path><polyline points="22 4 12 14.01 9 11.01"></polyline></svg>
+            </div>
+            <div class="node-label">Delivered</div>
+          </div>
+        </div>
+
+        <div class="rider-contact-row" id="riderContactBox">
+          <div class="rider-avatar">
+            <svg width="28" height="28" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round">
+              <circle cx="12" cy="4.5" r="2.5"></circle>
+              <rect x="2.5" y="8" width="5.5" height="8.5" rx="1.5" fill="rgba(245,158,11,0.2)"></rect>
+              <path d="M8 9.5h5.5a2 2 0 0 1 2 2v4.5"></path>
+              <path d="M15.5 12l4-2.5"></path>
+              <path d="M10 16l2 5"></path>
+              <path d="M15 16l2.5 5"></path>
+            </svg>
+          </div>
+          <div class="rider-details" style="flex: 1;">
+            <strong id="trackerRiderName">Ali Raza (Fleet Motorbike #01)</strong>
+            <span id="trackerRiderPhoneLabel">Direct Motorbike Dispatch • Rider: 03074484814</span>
+          </div>
+          <a href="https://wa.me/923074484814" target="_blank" class="rider-action-btn" id="trackerRiderWaBtn" style="display: inline-flex; align-items: center; gap: 6px; background: rgba(16, 185, 129, 0.15); border: 1px solid rgba(16, 185, 129, 0.4); color: #10B981; padding: 6px 12px; border-radius: 8px; text-decoration: none; font-size: 0.78rem; font-weight: 700;">
+            <svg width="14" height="14" viewBox="0 0 24 24" fill="currentColor"><path d="M17.472 14.382c-.297-.149-1.758-.867-2.03-.967-.273-.099-.471-.148-.67.15-.197.297-.767.966-.94 1.164-.173.199-.347.223-.644.075-.297-.15-1.255-.463-2.39-1.475-.883-.788-1.48-1.761-1.653-2.059-.173-.297-.018-.458.13-.606.134-.133.298-.347.446-.52.149-.174.198-.298.298-.497.099-.198.05-.371-.025-.52-.075-.149-.669-1.612-.916-2.207-.242-.579-.487-.5-.669-.51-.173-.008-.371-.01-.57-.01-.198 0-.52.074-.792.372-.272.297-1.04 1.016-1.04 2.479 0 1.462 1.065 2.875 1.213 3.074.149.198 2.096 3.2 5.077 4.487.709.306 1.262.489 1.694.625.712.227 1.36.195 1.871.118.571-.085 1.758-.719 2.006-1.413.248-.694.248-1.289.173-1.413-.074-.124-.272-.198-.57-.347m-5.421 7.403h-.004a9.87 9.87 0 01-5.031-1.378l-.361-.214-3.741.982.998-3.648-.235-.374a9.86 9.86 0 01-1.51-5.26c.001-5.45 4.436-9.884 9.888-9.884 2.64 0 5.122 1.03 6.988 2.898a9.825 9.825 0 012.893 6.994c-.003 5.45-4.437 9.886-9.888 9.886m8.413-18.297A11.815 11.815 0 0012.05 0C5.495 0 .16 5.335.157 11.892c0 2.096.547 4.142 1.588 5.945L.057 24l6.305-1.654a11.882 11.882 0 005.683 1.448h.005c6.554 0 11.89-5.335 11.893-11.893a11.821 11.821 0 00-3.48-8.413z"/></svg>
+            <span>WhatsApp Rider</span>
+          </a>
+        </div>
       </div>
     </div>
+  </div>
 
-    <div class="cart-items-list" id="cartItemsList"></div>
-
-    <div class="cart-footer">
-      <div class="cart-summary-row">
-        <span>Items Subtotal</span>
-        <span id="cartSubtotal">Rs. 0</span>
+  <!-- 12. Slide-out Smart Cart Drawer -->
+  <aside class="cart-drawer" id="cartDrawer" role="dialog" aria-modal="true" aria-labelledby="cartHeading">
+    <div class="cart-drawer-header">
+      <div class="cart-header-title">
+        <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M6 2L3 6v14a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2V6l-3-4z"></path><line x1="3" y1="6" x2="21" y2="6"></line></svg>
+        <h2 id="cartHeading">Your Cart</h2>
       </div>
-      <div class="cart-summary-row">
-        <span>Lahore City Delivery Fee</span>
-        <span>Rs. 100</span>
-      </div>
-      <div class="cart-summary-row total">
-        <span>Grand Total</span>
-        <span id="cartTotal">Rs. 0</span>
-      </div>
-
-      <button class="checkout-btn" id="checkoutBtn">
-        <span>Confirm & Order via WhatsApp</span>
-        <span style="font-size: 18px;">➔</span>
+      <button class="modal-close-btn" id="closeCartBtn" aria-label="Close Cart">
+        <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><line x1="18" y1="6" x2="6" y2="18"></line><line x1="6" y1="6" x2="18" y2="18"></line></svg>
       </button>
+    </div>
+
+    <!-- Free Delivery Progress Indicator -->
+    <div class="free-delivery-banner" id="freeDeliveryBanner">
+      <div class="free-delivery-text">
+        <span id="freeDeliveryMsg">Add Rs. 650 more for <strong>FREE Delivery!</strong></span>
+      </div>
+      <div class="free-delivery-meter">
+        <div class="free-delivery-fill" id="freeDeliveryFill" style="width: 65%;"></div>
+      </div>
+    </div>
+
+    <div class="cart-items-scroll" id="cartItemsList">
+      <!-- Injected by app.js -->
+    </div>
+
+    <div class="cart-drawer-footer">
+      <div class="cart-summary-line">
+        <span>Order Mode</span>
+        <span id="cartModeText" style="color: var(--color-primary); font-weight: 800; text-transform: uppercase;">Delivery</span>
+      </div>
+      <div class="cart-summary-line">
+        <span>Subtotal</span>
+        <span id="cartSubtotalText">Rs. 0</span>
+      </div>
+      <div class="cart-summary-line">
+        <span>Delivery Charge</span>
+        <span id="cartDeliveryFeeText" style="color: #34D399;">Rs. 100</span>
+      </div>
+      <div class="cart-total-line">
+        <span>Total Payable</span>
+        <span id="cartGrandTotalText">Rs. 0</span>
+      </div>
+
+      <div class="checkout-actions">
+        <button class="checkout-btn cod-btn" id="codCheckoutBtn">
+          <span>Place Cash on Delivery</span>
+          <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><line x1="5" y1="12" x2="19" y2="12"></line><polyline points="12 5 19 12 12 19"></polyline></svg>
+        </button>
+        <button class="checkout-btn wa-btn" id="waCheckoutBtn">
+          <span>Order via WhatsApp Direct</span>
+          <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M21 11.5a8.38 8.38 0 0 1-.9 3.8 8.5 8.5 0 0 1-7.6 4.7 8.38 8.38 0 0 1-3.8-.9L3 21l1.9-5.7a8.38 8.38 0 0 1-.9-3.8 8.5 8.5 0 0 1 4.7-7.6 8.38 8.38 0 0 1 3.8-.9h.5a8.48 8.48 0 0 1 8 8v.5z"></path></svg>
+        </button>
+      </div>
     </div>
   </aside>
 
-  <script src="app.js"></script>
+  <!-- 13. Persistent Mobile Bottom Navigation Bar (QSR Standard) -->
+  <nav class="mobile-bottom-nav" aria-label="Mobile Navigation">
+    <a href="#menuAnchor" class="mobile-nav-item active">
+      <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="3" y="3" width="7" height="7"></rect><rect x="14" y="3" width="7" height="7"></rect><rect x="14" y="14" width="7" height="7"></rect><rect x="3" y="14" width="7" height="7"></rect></svg>
+      <span>Menu</span>
+    </a>
+    <button class="mobile-nav-item" id="mobileBottomCartBtn" onclick="toggleCartDrawer(true)">
+      <div class="mobile-cart-wrap">
+        <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M6 2L3 6v14a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2V6l-3-4z"></path><line x1="3" y1="6" x2="21" y2="6"></line><path d="M16 10a4 4 0 0 1-8 0"></path></svg>
+        <span class="mobile-cart-badge" id="mobileCartBadge">0</span>
+      </div>
+      <span>Cart</span>
+    </button>
+    <button class="mobile-nav-item" id="mobileBottomTrackBtn" onclick="openOrderTracker()">
+      <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="10"></circle><polyline points="12 6 12 12 16 14"></polyline></svg>
+      <span>Track</span>
+    </button>
+  </nav>
+
+  <!-- Backdrop Dimmer for Cart & Modals -->
+  <div class="modal-backdrop-dimmer" id="drawerBackdrop"></div>
+
+  <!-- Master Application Controller -->
+  <script src="app.js?v=8.0"></script>
 </body>
 </html>

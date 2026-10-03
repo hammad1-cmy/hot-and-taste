@@ -1,1301 +1,1464 @@
-/**
- * HOT & TASTE FAST FOOD - CORE JAVASCRIPT ENGINE & ARCHITECTURE
- * Multi-Branch Ordering, Behavioral Psychology Triggers & KDS Stream
- */
+/* Fact-Forcing Declaration:
+  Importers/Callers: index.html line 482 via <script src="app.js"></script>.
+  Affected API: Master QSR category database, continuous menu renderer with themed hero banners, 2-way IntersectionObserver scrollspy engine, slide-out cart drawer, and live KDS 4-step order tracker sync.
+  Data Schemas:
+    CartItem: { cartItemId: string, id: string, name: string, price: number, image: string, qty: number, options: object, notes: string }
+    OrderRecord: { id: string, orderNumber: string, items: CartItem[], total: number, branch: string, type: string, status: string, time: string, instructions: string }
+  User Verbatim Instruction: "i really like the dr zesty part and its placement right below , also its animation i really enjoy and love that adopt that part , regarding revrse engineering you failed at that as in kfc if you see closely few deals appear than there is a option of full menu than we click ther than whole menu is shown starting from deals than we go down than show burger with a banner of burger and attractive match theme than burger starts so also on upper side which is shown switch automatically from deal to burger thanscroll more down than to loaded fries banner also on upper side automatically switch from burger to loaded fries , if you wanna understand what i mean , check kfc or most importantly to understand and before implementation check website of restaurant name 'daily deli co.' ... yes also at last show make diagram which can be understand even by five year old child ,of order processing , like how you will track in steps , like first recieve , than prepare freshly than dispatch and than deliver . also at last also a section tellign story and also number to contact"
+*/
 
 // ==========================================
-// 1. DATA DICTIONARIES (100% VERIFIED MENU)
+// 1. MASTER MENU DATABASE ACROSS QSR CATEGORIES
 // ==========================================
-const LAHORE_BRANCHES = [
-  { id: 'branch_1', name: 'Branch 1: Umar Park Khuda Baksh Rd', phone: '923038755099' },
-  { id: 'branch_2', name: 'Branch 2: Dohlanwal Mor Near Goga Pan Shop', phone: '923082070044' },
-  { id: 'branch_3', name: 'Branch 3: Sodiwal Main Road Lahore', phone: '923253664664' }
-];
-
 const MENU_CATEGORIES = [
-  { id: 'deals', name: '🔥 Super Deals (1-17)' },
-  { id: 'party_deals', name: '👑 Mega & Party Deals' },
-  { id: 'pizzas', name: '🍕 Stone-Baked Pizzas' },
-  { id: 'burgers', name: '🍔 Zinger & Burgers' },
-  { id: 'shawarma_rolls', name: '🌯 Shawarma & Rolls' },
-  { id: 'starters_fries', name: '🍟 Loaded Pizza Fries & Wings' }
+  {
+    id: 'combos',
+    slug: 'cat-combos',
+    name: 'Deals & Combos',
+    icon: '🔥',
+    kicker: 'Signature Box Meals',
+    title: 'Hot Combos & Family Feasts',
+    desc: 'Complete curated meals paired with seasoned fries and chilled drinks for individuals, couples & families.',
+    themeClass: 'theme-combos'
+  },
+  {
+    id: 'burgers',
+    slug: 'cat-burgers',
+    name: 'Burgers',
+    icon: '',
+    kicker: '100% Prime Angus & 12-Spice Crispy Chicken',
+    title: 'Burgers',
+    desc: 'Buttery brioche buns toasted in garlic butter, stacked with double-smashed beef or golden crunchy fillets.',
+    themeClass: 'theme-burgers'
+  },
+  {
+    id: 'pizzas',
+    slug: 'cat-pizzas',
+    name: 'Pizzas',
+    icon: '',
+    kicker: '24-Hour Fermented Dough',
+    title: 'Stone-Fired Pizzas',
+    desc: 'Hand-stretched dough topped with San Marzano style sauce, rich dairy mozzarella, and charred in 450°C stone ovens.',
+    themeClass: 'theme-pizzas'
+  },
+  {
+    id: 'fries',
+    slug: 'cat-fries',
+    name: 'Loaded Fries & Sides',
+    icon: '',
+    kicker: 'Crispy Golden Sides',
+    title: 'Loaded Fries & Bites',
+    desc: 'Golden crisp skin-on fries smothered in aged cheddar sauce, jalapeno ranch, and smoked chicken chunks.',
+    themeClass: 'theme-fries'
+  },
+  {
+    id: 'shawarmas',
+    slug: 'cat-shawarmas',
+    name: 'Shawarmas',
+    icon: '',
+    kicker: 'Charcoal Flame Roasted',
+    title: 'Artisan Shawarmas & Wraps',
+    desc: 'Marinated chicken spit-roasted over hot coals, wrapped in warm Lebanese pita with authentic toum garlic cream.',
+    themeClass: 'theme-shawarmas'
+  },
+  {
+    id: 'beverages',
+    slug: 'cat-beverages',
+    name: 'Beverages',
+    icon: '',
+    kicker: 'Frosty Quenchers',
+    title: 'Chilled Drinks & Shakes',
+    desc: 'Ice-cold carbonated sodas, rich Belgian chocolate shakes, and creamy vanilla milkshakes.',
+    themeClass: 'theme-beverages'
+  }
 ];
 
 const MENU_ITEMS = [
-  // Super Deals 1-17
+  // 1. Deals & Combos
   {
-    id: 'deal_1',
-    category: 'deals',
-    name: 'Deal 1',
-    desc: '1 Small Pizza + 1 Regular Drink',
-    price: 470,
-    oldPrice: 580,
-    badge: 'Popular',
-    image: 'https://images.unsplash.com/photo-1513104890138-7c749659a591?auto=format&fit=crop&w=600&q=80',
-    type: 'deal',
-    hasSpice: true,
-    hasCrust: true
+    id: 'deal-sovereign',
+    name: 'Sovereign Family Feast',
+    category: 'combos',
+    price: 3200,
+    originalPrice: 4200,
+    desc: '2 Angus Burgers, 14" Crown Pizza, Loaded Fries, Drinks.',
+    image: 'https://images.unsplash.com/photo-1555396273-367ea4eb4db5?auto=format&fit=crop&w=600&q=80',
+    badge: 'Deal',
+    badgeClass: 'badge-deal',
+    options: {
+      flavours: ['Smoky BBQ Blend', 'Spicy Peri Peri Fusion', 'Tikka Charcoal Sensation'],
+      spiceLevels: ['Mild Tangy', 'Medium Zesty', 'Flaming Hot Extra'],
+      drinks: ['4x Chilled Coca-Cola (330ml)', '4x Chilled Sprite (330ml)', '4x Chilled Fanta (330ml)', '2x Coke + 2x Sprite'],
+      sauces: ['Garlic Mayo Dip (2x)', 'Chipotle Fire Sauce (2x)', 'Jalapeno Ranch (2x)', 'Honey Mustard (2x)'],
+      crusts: ['Royal Crown Kebab Stuffed', 'Deep Pan Fluffy', 'Thin Italian Hand-Tossed']
+    }
   },
   {
-    id: 'deal_2',
-    category: 'deals',
-    name: 'Deal 2',
-    desc: '1 Medium Pizza + 1 500ml Drink',
-    price: 950,
-    oldPrice: 1150,
-    badge: 'Save 17%',
-    image: 'https://images.unsplash.com/photo-1565299624946-b28f40a0ae38?auto=format&fit=crop&w=600&q=80',
-    type: 'deal',
-    hasSpice: true,
-    hasCrust: true
-  },
-  {
-    id: 'deal_3',
-    category: 'deals',
-    name: 'Deal 3',
-    desc: '1 Large Pizza + 1.5L Drink',
-    price: 1350,
-    oldPrice: 1650,
-    badge: 'Family Size',
-    image: 'https://images.unsplash.com/photo-1534308983496-4fabb1a015ee?auto=format&fit=crop&w=600&q=80',
-    type: 'deal',
-    hasSpice: true,
-    hasCrust: true
-  },
-  {
-    id: 'deal_4',
-    category: 'deals',
-    name: 'Deal 4',
-    desc: '1 Zinger Burger + 1 Regular Drink',
-    price: 420,
-    oldPrice: 520,
-    badge: 'Hot Seller',
-    image: 'https://images.unsplash.com/photo-1568901346375-23c9450c58cd?auto=format&fit=crop&w=600&q=80',
-    type: 'burger_deal',
-    hasSpice: true
-  },
-  {
-    id: 'deal_5',
-    category: 'deals',
-    name: 'Deal 5',
-    desc: '1 Chicken Patty Burger + 1 Regular Drink',
-    price: 320,
-    oldPrice: 400,
-    badge: 'Budget Pick',
-    image: 'https://images.unsplash.com/photo-1550547660-d9450f859349?auto=format&fit=crop&w=600&q=80',
-    type: 'burger_deal',
-    hasSpice: true
-  },
-  {
-    id: 'deal_6',
-    category: 'deals',
-    name: 'Deal 6',
-    desc: '1 Chicken Shawarma + 1 Regular Drink',
-    price: 260,
-    oldPrice: 320,
-    badge: 'Best Value',
-    image: 'https://images.unsplash.com/photo-1626700051175-6818013e1d4f?auto=format&fit=crop&w=600&q=80',
-    type: 'wrap_deal',
-    hasSpice: true
-  },
-  {
-    id: 'deal_7',
-    category: 'deals',
-    name: 'Deal 7',
-    desc: '1 Zinger Shawarma + 1 Regular Drink',
-    price: 340,
-    oldPrice: 420,
-    badge: 'Crispy Wrap',
-    image: 'https://images.unsplash.com/photo-1626700051175-6818013e1d4f?auto=format&fit=crop&w=600&q=80',
-    type: 'wrap_deal',
-    hasSpice: true
-  },
-  {
-    id: 'deal_8',
-    category: 'deals',
-    name: 'Deal 8',
-    desc: '1 Chicken Paratha Roll + 1 Regular Drink',
-    price: 340,
-    oldPrice: 410,
-    badge: 'Desi Flavour',
-    image: 'https://images.unsplash.com/photo-1601050690597-df0568f70950?auto=format&fit=crop&w=600&q=80',
-    type: 'wrap_deal',
-    hasSpice: true
-  },
-  {
-    id: 'deal_9',
-    category: 'deals',
-    name: 'Deal 9',
-    desc: '1 Zinger Paratha Roll + 1 Regular Drink',
-    price: 410,
-    oldPrice: 500,
-    badge: 'Chef Choice',
-    image: 'https://images.unsplash.com/photo-1601050690597-df0568f70950?auto=format&fit=crop&w=600&q=80',
-    type: 'wrap_deal',
-    hasSpice: true
-  },
-  {
-    id: 'deal_10',
-    category: 'deals',
-    name: 'Deal 10',
-    desc: '2 Zinger Burgers + 2 Regular Drinks',
-    price: 820,
-    oldPrice: 1040,
-    badge: 'Twin Combo',
-    image: 'https://images.unsplash.com/photo-1568901346375-23c9450c58cd?auto=format&fit=crop&w=600&q=80',
-    type: 'burger_deal',
-    hasSpice: true
-  },
-  {
-    id: 'deal_11',
-    category: 'deals',
-    name: 'Deal 11',
-    desc: '2 Chicken Burgers + 2 Regular Drinks',
-    price: 620,
-    oldPrice: 800,
-    badge: 'Twin Saver',
-    image: 'https://images.unsplash.com/photo-1550547660-d9450f859349?auto=format&fit=crop&w=600&q=80',
-    type: 'burger_deal',
-    hasSpice: true
-  },
-  {
-    id: 'deal_12',
-    category: 'deals',
-    name: 'Deal 12 (Mega Zinger-Pizza Combo)',
-    desc: '1 Zinger Burger + 1 Small Pizza + 1 Regular Drink',
-    price: 830,
-    oldPrice: 1080,
-    badge: '🔥 #1 MOST ORDERED',
+    id: 'deal-duo',
+    name: 'Zesty Duo Smash Box',
+    category: 'combos',
+    price: 1899,
+    originalPrice: 2400,
+    desc: '2 Angus Smashburgers, Seasoned Crinkle Fries, 2 Drinks.',
     image: 'https://images.unsplash.com/photo-1594212699903-ec8a3eca50f5?auto=format&fit=crop&w=600&q=80',
-    type: 'deal',
-    hasSpice: true,
-    hasCrust: true
+    badge: 'Popular',
+    badgeClass: 'badge-popular',
+    options: {
+      flavours: ['Signature House Blend', 'Smoky Jalapeno BBQ', 'Creamy Mushroom Garlic'],
+      spiceLevels: ['Mild Classic', 'Medium Spice', 'Extra Hot Fire'],
+      drinks: ['2x Chilled Coca-Cola', '2x Chilled Sprite', '1x Coke + 1x Sprite'],
+      sauces: ['Secret Smash Sauce', 'Garlic Mayo Dip', 'Chipotle Sauce']
+    }
   },
   {
-    id: 'deal_13',
-    category: 'deals',
-    name: 'Deal 13',
-    desc: '1 Zinger Burger + 1 Chicken Shawarma + 1 Reg Drink',
-    price: 620,
-    oldPrice: 780,
-    badge: 'Combo Saver',
+    id: 'deal-solo-crisp',
+    name: 'Crunch Master Solo Box',
+    category: 'combos',
+    price: 999,
+    originalPrice: 1300,
+    desc: '1 Mighty Zinger Burger, Golden Fries, 1 Chilled Drink.',
     image: 'https://images.unsplash.com/photo-1568901346375-23c9450c58cd?auto=format&fit=crop&w=600&q=80',
-    type: 'burger_deal',
-    hasSpice: true
-  },
-  {
-    id: 'deal_14',
-    category: 'deals',
-    name: 'Deal 14',
-    desc: '1 Zinger Burger + 1 Zinger Shawarma + 1 Reg Drink',
-    price: 700,
-    oldPrice: 860,
-    badge: 'Double Crispy',
-    image: 'https://images.unsplash.com/photo-1568901346375-23c9450c58cd?auto=format&fit=crop&w=600&q=80',
-    type: 'burger_deal',
-    hasSpice: true
-  },
-  {
-    id: 'deal_15',
-    category: 'deals',
-    name: 'Deal 15',
-    desc: '1 Small Pizza + 1 Chicken Shawarma + 1 Reg Drink',
-    price: 670,
-    oldPrice: 830,
-    badge: 'Top Combo',
-    image: 'https://images.unsplash.com/photo-1513104890138-7c749659a591?auto=format&fit=crop&w=600&q=80',
-    type: 'deal',
-    hasSpice: true,
-    hasCrust: true
-  },
-  {
-    id: 'deal_16',
-    category: 'deals',
-    name: 'Deal 16',
-    desc: '1 Small Pizza + 1 Zinger Shawarma + 1 Reg Drink',
-    price: 750,
-    oldPrice: 920,
-    badge: 'Supreme Deal',
-    image: 'https://images.unsplash.com/photo-1513104890138-7c749659a591?auto=format&fit=crop&w=600&q=80',
-    type: 'deal',
-    hasSpice: true,
-    hasCrust: true
-  },
-  {
-    id: 'deal_17',
-    category: 'deals',
-    name: 'Deal 17',
-    desc: '1 Zinger Burger + 1 French Fries + 1 Reg Drink',
-    price: 630,
-    oldPrice: 790,
-    badge: 'Classic Feast',
-    image: 'https://images.unsplash.com/photo-1568901346375-23c9450c58cd?auto=format&fit=crop&w=600&q=80',
-    type: 'burger_deal',
-    hasSpice: true
+    badge: 'Chef Special',
+    badgeClass: 'badge-chef',
+    options: {
+      flavours: ['Authentic 12-Spice Crispy', 'Peri Peri Glaze', 'Sweet Chili Crunch'],
+      spiceLevels: ['Mild Herb', 'Medium Hot', 'Atomic Fire Crunch'],
+      drinks: ['Chilled Coca-Cola', 'Chilled Sprite', 'Chilled Fanta', 'Fresh Mineral Water'],
+      sauces: ['Spicy Garlic Cream', 'Sweet Chili Mayo', 'Tangy BBQ']
+    }
   },
 
-  // Mega & Party Deals
+  // 2. Burgers
   {
-    id: 'party_deal',
-    category: 'party_deals',
-    name: 'Party Deal (3 Large Pizzas + Drink)',
-    desc: '3 Fresh Large Pizzas + 1.5L Chilled Drink (Feeds 8-10)',
-    price: 3950,
-    oldPrice: 4800,
-    badge: '👑 HUGE SAVINGS',
-    image: 'https://images.unsplash.com/photo-1534308983496-4fabb1a015ee?auto=format&fit=crop&w=600&q=80',
-    type: 'pizza',
-    hasSpice: true,
-    hasCrust: true
-  },
-  {
-    id: 'family_deal_1',
-    category: 'party_deals',
-    name: 'Family Deal 1 (2 Large Pizzas)',
-    desc: '2 Fresh Large Pizzas + 1.5L Chilled Drink (Feeds 5-7)',
-    price: 2650,
-    oldPrice: 3200,
-    badge: 'Family Favorite',
-    image: 'https://images.unsplash.com/photo-1565299624946-b28f40a0ae38?auto=format&fit=crop&w=600&q=80',
-    type: 'pizza',
-    hasSpice: true,
-    hasCrust: true
-  },
-  {
-    id: 'family_deal_2',
-    category: 'party_deals',
-    name: 'Family Deal 2 (2 Medium Pizzas)',
-    desc: '2 Fresh Medium Pizzas + 1.5L Chilled Drink (Feeds 4-5)',
-    price: 1850,
-    oldPrice: 2250,
-    badge: 'Weekend Saver',
-    image: 'https://images.unsplash.com/photo-1513104890138-7c749659a591?auto=format&fit=crop&w=600&q=80',
-    type: 'pizza',
-    hasSpice: true,
-    hasCrust: true
-  },
-
-  // Pizzas
-  {
-    id: 'p_fajita',
-    category: 'pizzas',
-    name: 'Chicken Fajita Pizza',
-    desc: 'Marinated spicy fajita chicken, crisp onions, green peppers & mozzarella',
-    price: 450,
-    badge: 'Authentic',
-    image: 'https://images.unsplash.com/photo-1565299624946-b28f40a0ae38?auto=format&fit=crop&w=600&q=80',
-    type: 'pizza',
-    hasSpice: true,
-    hasCrust: true
-  },
-  {
-    id: 'p_tikka',
-    category: 'pizzas',
-    name: 'Chicken Tikka Pizza',
-    desc: 'Traditional smoked chicken tikka chunks with fresh onions and herbs',
-    price: 450,
-    badge: 'Desi Classic',
-    image: 'https://images.unsplash.com/photo-1513104890138-7c749659a591?auto=format&fit=crop&w=600&q=80',
-    type: 'pizza',
-    hasSpice: true,
-    hasCrust: true
-  },
-  {
-    id: 'p_special',
-    category: 'pizzas',
-    name: 'Hot & Taste Special Pizza',
-    desc: 'Loaded combo of smoked chicken, sausages, black olives, mushrooms & double cheese',
-    price: 520,
-    badge: '👑 House Special',
-    image: 'https://images.unsplash.com/photo-1534308983496-4fabb1a015ee?auto=format&fit=crop&w=600&q=80',
-    type: 'pizza',
-    hasSpice: true,
-    hasCrust: true
-  },
-
-  // Burgers
-  {
-    id: 'b_zinger',
+    id: 'burg-smash-classic',
+    name: 'Double Prime Angus Smash Burger',
     category: 'burgers',
-    name: 'Crispy Zinger Burger',
-    desc: 'Whole chicken breast fillet coated in spicy crispy crust with garlic mayo',
-    price: 380,
-    badge: 'Crispy Gold',
-    image: 'https://images.unsplash.com/photo-1568901346375-23c9450c58cd?auto=format&fit=crop&w=600&q=80',
-    type: 'burger',
-    hasSpice: true
-  },
-  {
-    id: 'b_tower',
-    category: 'burgers',
-    name: 'Tower Double Zinger Burger',
-    desc: 'Double crispy fillet stack with melted cheese slice and hash brown',
-    price: 560,
-    badge: 'Monster Stack',
+    price: 1099,
+    originalPrice: 1350,
+    desc: 'Twin Angus patties, melted Wisconsin cheddar, caramelized onions.',
     image: 'https://images.unsplash.com/photo-1586190848861-99aa4a171e90?auto=format&fit=crop&w=600&q=80',
-    type: 'burger',
-    hasSpice: true
+    badge: 'Popular',
+    badgeClass: 'badge-popular',
+    options: {
+      flavours: ['Original Brioche Sensation', 'Smoked Pepper Jack Style', 'Caramelized Onion Deluxe'],
+      spiceLevels: ['Mild Savory', 'Medium Peppery', 'Spicy Jalapeno Loaded'],
+      drinks: ['No Drink', 'Add Chilled Coca-Cola (+Rs. 150)', 'Add Sprite (+Rs. 150)', 'Add Belgian Chocolate Shake (+Rs. 450)'],
+      sauces: ['Secret House Smash Sauce', 'Chipotle Fire Aioli', 'Smoky BBQ Dip']
+    }
   },
   {
-    id: 'b_patty',
+    id: 'burg-mighty-zinger',
+    name: 'Mighty 12-Spice Zinger Tower',
     category: 'burgers',
-    name: 'Chicken Patty Burger',
-    desc: 'Tender chicken minced patty with iceberg lettuce and savory house sauce',
-    price: 260,
-    badge: 'Classic',
-    image: 'https://images.unsplash.com/photo-1550547660-d9450f859349?auto=format&fit=crop&w=600&q=80',
-    type: 'burger',
-    hasSpice: true
+    price: 650,
+    originalPrice: 850,
+    desc: 'Crispy 12-spice breast fillet, cheddar cheese, garlic emulsion.',
+    image: 'https://images.unsplash.com/photo-1625813506062-0aeb1d7a094b?auto=format&fit=crop&w=600&q=80',
+    badge: 'Chef Special',
+    badgeClass: 'badge-chef',
+    options: {
+      flavours: ['Mighty Extra Crispy', 'Ghost Pepper Glaze (+Rs. 60)', 'Honey Butter Crunch'],
+      spiceLevels: ['Medium Kick', 'Very Spicy Hot', 'Extra Hot Dynamite'],
+      drinks: ['No Drink', 'Add Chilled Coca-Cola (+Rs. 150)', 'Add Sprite (+Rs. 150)'],
+      sauces: ['Spicy Garlic Emulsion', 'Creamy Mayo Ranch', 'Sweet Chili Dip']
+    }
+  },
+  {
+    id: 'burg-truffle-beef',
+    name: 'Truffle Mushroom Swiss Smash',
+    category: 'burgers',
+    price: 1250,
+    originalPrice: 1550,
+    desc: 'Angus beef, sauteed butter portobello mushrooms, Swiss Emmental.',
+    image: 'https://images.unsplash.com/photo-1568901346375-23c9450c58cd?auto=format&fit=crop&w=600&q=80',
+    badge: 'Chef Special',
+    badgeClass: 'badge-chef',
+    options: {
+      flavours: ['Black Truffle Essence', 'Double Swiss Mushroom Lux', 'Herb Garlic Butter Glaze'],
+      spiceLevels: ['Mild Creamy Savory', 'Medium Peppery'],
+      drinks: ['No Drink', 'Add Chilled Coke (+Rs. 150)', 'Add Belgian Thick Shake (+Rs. 450)'],
+      sauces: ['Black Truffle Aioli', 'Garlic Herb Butter Dip', 'Smoky Truffle BBQ']
+    }
   },
 
-  // Shawarma & Rolls
+  // 3. Pizzas
   {
-    id: 's_chicken',
-    category: 'shawarma_rolls',
-    name: 'Chicken Shawarma',
-    desc: 'Sliced spiced chicken in soft pita bread with signature garlic sauce & pickles',
-    price: 200,
-    badge: 'Lahore Favorite',
-    image: 'https://images.unsplash.com/photo-1626700051175-6818013e1d4f?auto=format&fit=crop&w=600&q=80',
-    type: 'wrap',
-    hasSpice: true
+    id: 'piz-crown-tikka',
+    name: 'Royal Crown Crust Chicken Tikka (14")',
+    category: 'pizzas',
+    price: 1850,
+    originalPrice: 2200,
+    desc: 'Stuffed kebab crown crust, charcoal chicken tikka, mozzarella.',
+    image: 'https://images.unsplash.com/photo-1513104890138-7c749659a591?auto=format&fit=crop&w=600&q=80',
+    badge: 'Popular',
+    badgeClass: 'badge-popular',
+    options: {
+      crusts: ['Royal Crown Kebab Stuffed', 'Cheese Burst Stuffed Rim (+Rs. 250)', 'Italian Thin Hand-Tossed', 'Thick Golden Deep Pan'],
+      flavours: ['Lahori Charcoal Tikka', 'Spicy Mughlai Fusion', 'Creamy Tikka Supreme'],
+      spiceLevels: ['Mild Zesty', 'Medium Hot Tikka', 'Fiery Red Chili Blast'],
+      sauces: ['Garlic Herb Ranch Dip', 'Chipotle Chili Mayo', 'Tangy BBQ Sauce'],
+      drinks: ['No Drink', 'Add 1.5L Coca-Cola (+Rs. 280)', 'Add 1.5L Sprite (+Rs. 280)']
+    }
   },
   {
-    id: 's_zinger',
-    category: 'shawarma_rolls',
-    name: 'Zinger Shawarma',
-    desc: 'Crispy fried chicken strips wrapped with spicy garlic dip and veggies',
-    price: 280,
-    badge: 'Crispy Crunch',
-    image: 'https://images.unsplash.com/photo-1626700051175-6818013e1d4f?auto=format&fit=crop&w=600&q=80',
-    type: 'wrap',
-    hasSpice: true
+    id: 'piz-fajita-supreme',
+    name: 'Creamy Fajita Supreme Stone Pizza (14")',
+    category: 'pizzas',
+    price: 1799,
+    originalPrice: 2150,
+    desc: 'Mexican marinated chicken, charred bell peppers, mushrooms, mozzarella.',
+    image: 'https://images.unsplash.com/photo-1534308983496-4fabb1a015ee?auto=format&fit=crop&w=600&q=80',
+    badge: 'Chef Special',
+    badgeClass: 'badge-chef',
+    options: {
+      crusts: ['Italian Stone-Baked Thin', 'Cheese Burst (+Rs. 250)', 'Royal Crown Stuffed (+Rs. 300)', 'Deep Pan'],
+      flavours: ['Creamy Herb Fajita', 'Spicy Mexican Ranchero', 'Smoky BBQ Fajita'],
+      spiceLevels: ['Mild Herb Cream', 'Medium Jalapeno Kick', 'Extra Spicy Mexican Fire'],
+      sauces: ['Jalapeno Ranch Dip', 'Garlic Mayo', 'Spicy Chipotle']
+    }
   },
   {
-    id: 's_paratha',
-    category: 'shawarma_rolls',
-    name: 'Chicken Paratha Roll',
-    desc: 'Crispy golden fried paratha rolled with grilled chicken chunks & onions',
-    price: 280,
-    badge: 'Crispy Paratha',
-    image: 'https://images.unsplash.com/photo-1601050690597-df0568f70950?auto=format&fit=crop&w=600&q=80',
-    type: 'wrap',
-    hasSpice: true
+    id: 'piz-cheese-classic',
+    name: 'Triple Cheese Margherita (14")',
+    category: 'pizzas',
+    price: 1450,
+    originalPrice: 1750,
+    desc: 'Buffalo mozzarella, aged parmesan, fresh aromatic basil leaves.',
+    image: 'https://images.unsplash.com/photo-1604382355076-af4b0eb60143?auto=format&fit=crop&w=600&q=80',
+    badge: 'Deal',
+    badgeClass: 'badge-deal',
+    options: {
+      crusts: ['Hand-Tossed Classic Italian', 'Thin & Crispy Crust', 'Cheese Stuffed Edge (+Rs. 250)'],
+      flavours: ['Classic San Marzano Basil', 'Garlic Herb Butter Infused', 'Four-Cheese Supreme'],
+      spiceLevels: ['Mild Authentic Italian', 'Red Chili Flake Sprinkle'],
+      sauces: ['Garlic Herb Dip', 'Fiery Marinara Dip']
+    }
   },
 
-  // Starters, Fries & Wings
+  // 4. Loaded Fries & Sides
   {
-    id: 'pizza_fries',
-    category: 'starters_fries',
-    name: 'Special Loaded Pizza Fries',
-    desc: 'Golden crispy fries smothered in pizza sauce, mozzarella cheese, chicken tikka chunks and black olives',
-    price: 490,
-    badge: '🔥 CHEF SIGNATURE',
-    image: 'https://images.unsplash.com/photo-1585109649139-366815a0d713?auto=format&fit=crop&w=600&q=80',
-    type: 'fries',
-    hasSpice: true
-  },
-  {
-    id: 'wings_10',
-    category: 'starters_fries',
-    name: 'Hot Crispy Wings (10 Pcs)',
-    desc: '10 pieces of seasoned crispy fried chicken wings with spicy dipping sauce',
-    price: 490,
-    badge: 'Sharing Basket',
-    image: 'https://images.unsplash.com/photo-1527477321005-4d45d314bc31?auto=format&fit=crop&w=600&q=80',
-    type: 'wings',
-    hasSpice: true
-  },
-  {
-    id: 'cheese_fries',
-    category: 'starters_fries',
-    name: 'Loaded Cheesy Jalapeno Fries',
-    desc: 'Crispy french fries topped with hot cheddar cheese sauce & sliced jalapenos',
-    price: 380,
-    badge: 'Spicy Cheese',
+    id: 'fries-animal-style',
+    name: 'Signature Animal Style Loaded Fries',
+    category: 'fries',
+    price: 650,
+    originalPrice: 850,
+    desc: 'Crispy skin-on fries, minced beef, caramelized onions, cheddar.',
     image: 'https://images.unsplash.com/photo-1576107232684-1279f3908594?auto=format&fit=crop&w=600&q=80',
-    type: 'fries',
-    hasSpice: true
+    badge: 'Popular',
+    badgeClass: 'badge-popular',
+    options: {
+      flavours: ['Classic Angus Beef Animal Style', 'Smoked Chicken Chunk Loaded', 'Crispy Bacon & Chive Style'],
+      spiceLevels: ['Mild Creamy Cheddar', 'Medium Jalapeno Tang', 'Extra Hot Fire Drizzle'],
+      sauces: ['Secret Animal Sauce (Extra)', 'Jalapeno Ranch', 'Chipotle Mayo']
+    }
+  },
+  {
+    id: 'fries-cheese-jalapeno',
+    name: 'Fiery Jalapeno Melt Fries',
+    category: 'fries',
+    price: 550,
+    originalPrice: 700,
+    desc: 'Gooey liquid queso, pickled jalapenos, smoky paprika dusting.',
+    image: 'https://images.unsplash.com/photo-1585109649139-366815a0d713?auto=format&fit=crop&w=600&q=80',
+    badge: 'Chef Special',
+    badgeClass: 'badge-chef',
+    options: {
+      flavours: ['Spicy Queso Loaded', 'Smoky BBQ Drizzle', 'Herb Parmesan Dust'],
+      spiceLevels: ['Mild Cheesy', 'Medium Hot Jalapeno', 'Flamin Volcano Heat'],
+      sauces: ['Liquid Queso Dip', 'Garlic Mayo Dip', 'Chipotle Sauce']
+    }
+  },
+  {
+    id: 'side-crunchy-strips',
+    name: '12-Spice Crispy Chicken Tenders (6 Pcs)',
+    category: 'fries',
+    price: 650,
+    originalPrice: 800,
+    desc: 'Whole chicken tenders in 12-spice batter, honey dip.',
+    image: 'https://images.unsplash.com/photo-1562967914-608f82629710?auto=format&fit=crop&w=600&q=80',
+    badge: 'Chef Special',
+    badgeClass: 'badge-chef',
+    options: {
+      flavours: ['12-Spice Original Crispy', 'Fiery Nashville Hot Glaze', 'Garlic Parmesan Rub'],
+      spiceLevels: ['Mild Savory', 'Medium Kick', 'Dynamite Heat'],
+      sauces: ['Garlic Honey Dip', 'Chipotle Mayo', 'Jalapeno Ranch']
+    }
+  },
+
+  // 5. Shawarmas
+  {
+    id: 'shaw-lebanese-spit',
+    name: 'Charcoal Spit-Roasted Chicken Shawarma',
+    category: 'shawarmas',
+    price: 499,
+    originalPrice: 650,
+    desc: 'Wood-roasted marinated chicken, Lebanese toum garlic, pickles, pita.',
+    image: 'https://images.unsplash.com/photo-1529006557810-274b9b2fc783?auto=format&fit=crop&w=600&q=80',
+    badge: 'Popular',
+    badgeClass: 'badge-popular',
+    options: {
+      flavours: ['Authentic Beirut Garlic Toum', 'Spicy Peri Peri Charcoal', 'Tahini Herb Sensation'],
+      spiceLevels: ['Mild Garlic Rich', 'Medium Spicy', 'Extra Hot Chili Toum'],
+      sauces: ['Authentic Toum Garlic Cream', 'Spicy Harissa Mayo', 'Sesame Tahini']
+    }
+  },
+  {
+    id: 'shaw-cheese-platter',
+    name: 'Cheesy Shawarma Platter Bowl',
+    category: 'shawarmas',
+    price: 799,
+    originalPrice: 999,
+    desc: 'Shredded spiced chicken over seasoned rice, mozzarella, toum.',
+    image: 'https://images.unsplash.com/photo-1561651823-34feb02250e4?auto=format&fit=crop&w=600&q=80',
+    badge: 'Chef Special',
+    badgeClass: 'badge-chef',
+    options: {
+      flavours: ['Melted Mozzarella Platter', 'Smoky Charcoal BBQ Platter', 'Garlic Mayo Explosion'],
+      spiceLevels: ['Mild Fragrant', 'Medium Zesty', 'Extra Hot Fire'],
+      sauces: ['Garlic Mayo Toum (Extra)', 'Harissa Chili Dip', 'Creamy Ranch']
+    }
+  },
+
+  // 6. Beverages
+  {
+    id: 'bev-shake-chocolate',
+    name: 'Belgian Chocolate Thick Shake',
+    category: 'beverages',
+    price: 550,
+    originalPrice: 700,
+    desc: 'Dark Belgian chocolate ganache, rich dairy soft serve.',
+    image: 'https://images.unsplash.com/photo-1572490122747-3968b75cc699?auto=format&fit=crop&w=600&q=80',
+    badge: 'Popular',
+    badgeClass: 'badge-popular',
+    options: {
+      flavours: ['Dark Belgian Chocolate Ganache', 'Nutella Hazelnut Swirl (+Rs. 100)', 'Oreo Cookie Crunch (+Rs. 80)'],
+      sauces: ['Whipped Dairy Cream (Included)', 'Extra Chocolate Fudge Drizzle (+Rs. 50)']
+    }
+  },
+  {
+    id: 'bev-coke-can',
+    name: 'Chilled Soft Drink Can (330ml)',
+    category: 'beverages',
+    price: 150,
+    originalPrice: 180,
+    desc: 'Ice-cold carbonated can: Coca-Cola, Sprite, or Fanta.',
+    image: 'https://images.unsplash.com/photo-1551024709-8f23befc6f87?auto=format&fit=crop&w=600&q=80',
+    badge: 'Deal',
+    badgeClass: 'badge-deal',
+    options: {
+      drinks: ['Chilled Coca-Cola (330ml)', 'Chilled Sprite (330ml)', 'Chilled Fanta Orange (330ml)', 'Fresh Mineral Water (500ml)']
+    }
   }
 ];
 
-// Crust Upgrades & Customization Add-ons
-const CRUST_OPTIONS = [
-  { id: 'pan', name: 'Classic Pan Crust', price: 0 },
-  { id: 'crown', name: '👑 Crown Crust (Cheese Pockets)', price: 150 },
-  { id: 'kabab', name: '🍢 Seekh Kabab Stuffed Crust', price: 200 }
-];
-
-const SPICE_OPTIONS = [
-  { id: 'mild', name: 'Mild 😊', price: 0 },
-  { id: 'medium', name: 'Medium Spicy 🔥', price: 0, default: true },
-  { id: 'extra_hot', name: 'Extra Hot 🌶️', price: 0 }
-];
-
-const IMPULSE_ADDONS = [
-  { id: 'garlic_dip', name: 'Garlic Mayo Dip', price: 60 },
-  { id: 'fiery_sauce', name: 'Fiery Chili Sauce', price: 50 },
-  { id: 'extra_cheese', name: 'Extra Mozzarella Melt', price: 120 }
-];
-
 // ==========================================
-// 2. STATE MANAGEMENT & STORE
+// 2. APPLICATION STATE & LOCALSTORAGE REPOSITORY
 // ==========================================
-let currentBranch = LAHORE_BRANCHES[0];
-let activeCategory = 'deals';
-let cart = [];
-let activeConfigItem = null;
-let currentSlideIndex = 0;
-let slideInterval = null;
+class StorefrontState {
+  constructor() {
+    this.cart = this.loadCart();
+    this.currentCategory = 'combos';
+    this.orderMode = 'delivery';
+    this.currentBranch = 'Khuda Baksh Rd Hub';
+    this.searchQuery = '';
+    this.activeFilter = 'all';
+    this.isCartOpen = false;
+    this.customizingItem = null;
+    this.customQty = 1;
+    this.customSelectedOptions = {};
+  }
 
-// ==========================================
-// 3. SECURITY UTILITY: XSS SANITIZATION
-// ==========================================
-function sanitizeHTML(str) {
-  if (typeof str !== 'string') return '';
-  const p = document.createElement('p');
-  p.textContent = str;
-  return p.innerHTML;
+  loadCart() {
+    try {
+      const data = localStorage.getItem('azfc_cart');
+      return data ? JSON.parse(data) : [];
+    } catch {
+      return [];
+    }
+  }
+
+  saveCart() {
+    try {
+      localStorage.setItem('azfc_cart', JSON.stringify(this.cart));
+      window.dispatchEvent(new Event('cartUpdated'));
+    } catch (e) {
+      console.error('Failed to save cart to localStorage', e);
+    }
+  }
+
+  addToCart(item, qty = 1, options = {}, notes = '') {
+    const cartItemId = `${item.id}-${JSON.stringify(options)}-${notes.trim()}`;
+    const existingIndex = this.cart.findIndex(i => i.cartItemId === cartItemId);
+
+    if (existingIndex > -1) {
+      this.cart[existingIndex].qty += qty;
+    } else {
+      this.cart.push({
+        cartItemId,
+        id: item.id,
+        name: item.name,
+        price: item.price,
+        image: item.image,
+        qty: qty,
+        options: options,
+        notes: notes.trim()
+      });
+    }
+    this.saveCart();
+  }
+
+  removeFromCart(cartItemId) {
+    this.cart = this.cart.filter(i => i.cartItemId !== cartItemId);
+    this.saveCart();
+  }
+
+  updateQty(cartItemId, delta) {
+    const item = this.cart.find(i => i.cartItemId === cartItemId);
+    if (!item) return;
+    item.qty += delta;
+    if (item.qty <= 0) {
+      this.removeFromCart(cartItemId);
+    } else {
+      this.saveCart();
+    }
+  }
+
+  clearCart() {
+    this.cart = [];
+    this.saveCart();
+  }
+
+  getCartCount() {
+    return this.cart.reduce((sum, item) => sum + item.qty, 0);
+  }
+
+  getCartSubtotal() {
+    return this.cart.reduce((sum, item) => sum + (item.price * item.qty), 0);
+  }
 }
 
+const state = new StorefrontState();
+
 // ==========================================
-// 4. UI INITIALIZATION & EVENT LISTENERS
+// 3. UI INITIALIZATION & CONTINUOUS MENU RENDERING
 // ==========================================
 document.addEventListener('DOMContentLoaded', () => {
-  initBranchSelector();
+  renderCategoryPills();
+  renderCategorizedMenu();
+  initScrollspy();
   initHeroCarousel();
-  initCategoryNav();
-  renderMenuGrid();
-  initCartDrawer();
-  initModalHandlers();
+  bindGlobalEvents();
+  syncCartUI();
+  listenToKdsStorageSync();
 });
 
-function initBranchSelector() {
-  const branchSelect = document.getElementById('branchSelect');
-  if (!branchSelect) return;
+// Render Sticky Category Navigation Rail
+function renderCategoryPills() {
+  const container = document.getElementById('categoryNav');
+  if (!container) return;
 
-  branchSelect.innerHTML = LAHORE_BRANCHES.map(b =>
-    `<option value="${b.id}">${sanitizeHTML(b.name)}</option>`
-  ).join('');
-
-  branchSelect.addEventListener('change', (e) => {
-    const selected = LAHORE_BRANCHES.find(b => b.id === e.target.value);
-    if (selected) {
-      currentBranch = selected;
-    }
-  });
-}
-
-// ==========================================
-// 5. HERO CAROUSEL LOGIC
-// ==========================================
-function initHeroCarousel() {
-  const track = document.getElementById('heroSlidesTrack');
-  const dots = document.querySelectorAll('.carousel-dot');
-  const prevBtn = document.getElementById('carouselPrev');
-  const nextBtn = document.getElementById('carouselNext');
-  const carousel = document.getElementById('heroCarousel');
-
-  if (!track) return;
-
-  function goToSlide(idx) {
-    currentSlideIndex = idx;
-    track.style.transform = `translateX(-${idx * 33.333}%)`;
-    dots.forEach((dot, dIdx) => {
-      dot.classList.toggle('active', dIdx === idx);
-    });
-  }
-
-  if (prevBtn) {
-    prevBtn.addEventListener('click', () => {
-      const newIdx = (currentSlideIndex - 1 + 3) % 3;
-      goToSlide(newIdx);
-    });
-  }
-
-  if (nextBtn) {
-    nextBtn.addEventListener('click', () => {
-      const newIdx = (currentSlideIndex + 1) % 3;
-      goToSlide(newIdx);
-    });
-  }
-
-  dots.forEach(dot => {
-    dot.addEventListener('click', () => {
-      const idx = parseInt(dot.getAttribute('data-slide') || '0', 10);
-      goToSlide(idx);
-    });
-  });
-
-  function startAutoSlide() {
-    slideInterval = setInterval(() => {
-      goToSlide((currentSlideIndex + 1) % 3);
-    }, 5000);
-  }
-
-  if (carousel) {
-    carousel.addEventListener('mouseenter', () => clearInterval(slideInterval));
-    carousel.addEventListener('mouseleave', startAutoSlide);
-  }
-  startAutoSlide();
-}
-
-// ==========================================
-// 6. CATEGORY NAV & MENU RENDERING
-// ==========================================
-function initCategoryNav() {
-  const nav = document.getElementById('categoryNav');
-  if (!nav) return;
-
-  nav.innerHTML = MENU_CATEGORIES.map(cat => `
-    <button class="category-pill ${cat.id === activeCategory ? 'active' : ''}" data-cat="${cat.id}">
-      ${cat.name}
-    </button>
+  container.innerHTML = MENU_CATEGORIES.map((cat, idx) => `
+    <a href="#${cat.slug}" class="category-pill ${idx === 0 ? 'active' : ''}" data-cat="${cat.id}">
+      <span>${cat.icon}</span>
+      <span>${cat.name}</span>
+    </a>
   `).join('');
 
-  nav.querySelectorAll('.category-pill').forEach(btn => {
-    btn.addEventListener('click', () => {
-      nav.querySelectorAll('.category-pill').forEach(b => b.classList.remove('active'));
-      btn.classList.add('active');
-      activeCategory = btn.getAttribute('data-cat') || 'deals';
-      renderMenuGrid();
+  // Smooth scroll click handler
+  container.querySelectorAll('.category-pill').forEach(pill => {
+    pill.addEventListener('click', (e) => {
+      e.preventDefault();
+      const targetId = pill.getAttribute('href').substring(1);
+      const targetEl = document.getElementById(targetId);
+      if (targetEl) {
+        targetEl.scrollIntoView({ behavior: 'smooth', block: 'start' });
+        highlightPill(pill.dataset.cat);
+      }
     });
   });
 }
 
-function renderMenuGrid() {
-  const grid = document.getElementById('menuGrid');
-  if (!grid) return;
+// Render Continuous Categorized Menu with Themed Banners (Daily Deli Co. & KFC Pattern)
+function renderCategorizedMenu() {
+  const container = document.getElementById('menuContainer') || document.getElementById('categorizedMenuContainer');
+  if (!container) return;
 
-  const items = MENU_ITEMS.filter(i => activeCategory === 'all' || i.category === activeCategory);
+  let query = state.searchQuery.toLowerCase().trim();
+  let filter = state.activeFilter;
 
-  grid.innerHTML = items.map(item => `
-    <div class="menu-card" id="card-${item.id}">
-      <div class="card-img-wrapper">
-        <img src="${item.image}" class="card-img" alt="${sanitizeHTML(item.name)}" loading="lazy">
-        ${item.badge ? `<span class="card-badge ${item.badge.includes('🔥') || item.badge.includes('👑') ? 'gold' : ''}">${sanitizeHTML(item.badge)}</span>` : ''}
-      </div>
-      <div class="card-body">
-        <div class="card-header">
-          <h3 class="card-title">${sanitizeHTML(item.name)}</h3>
-        </div>
-        <p class="card-desc">${sanitizeHTML(item.desc)}</p>
-        <div class="card-footer">
-          <div class="price-block">
-            <span class="card-price">Rs. ${item.price}</span>
-            ${item.oldPrice ? `<span class="card-old-price">Rs. ${item.oldPrice}</span>` : ''}
-          </div>
-          <button class="add-btn" onclick="openItemCustomizer('${item.id}', event)">
-            <span>Customize</span>
-            <span>➔</span>
-          </button>
-        </div>
-      </div>
-    </div>
-  `).join('');
-}
+  const html = MENU_CATEGORIES.map(cat => {
+    // Filter items belonging to this category
+    let items = MENU_ITEMS.filter(item => item.category === cat.id);
 
-// ==========================================
-// 7. ITEM CUSTOMIZER MODAL & BEZIER FLY PHYSICS
-// ==========================================
-window.openItemCustomizer = function(itemId, event) {
-  const item = MENU_ITEMS.find(i => i.id === itemId);
-  if (!item) return;
-
-  activeConfigItem = {
-    ...item,
-    selectedCrust: item.hasCrust ? CRUST_OPTIONS[0] : null,
-    selectedSpice: item.hasSpice ? SPICE_OPTIONS[1] : null,
-    selectedAddons: [],
-    specialNotes: '',
-    currentComputedPrice: item.price
-  };
-
-  const modal = document.getElementById('customizerModal');
-  const title = document.getElementById('modalItemTitle');
-  const desc = document.getElementById('modalItemDesc');
-  const headerImg = document.getElementById('modalHeaderImg');
-  const body = document.getElementById('modalCustomizerBody');
-
-  if (title) title.textContent = item.name;
-  if (desc) desc.textContent = item.desc;
-  if (headerImg) headerImg.style.backgroundImage = `url('${item.image}')`;
-
-  if (body) {
-    let html = '';
-
-    // Crust Upgrades
-    if (item.hasCrust) {
-      html += `
-        <div>
-          <div class="customizer-section-title">
-            <span>Pizza Crust Upgrade</span>
-            <span style="font-size: 11px; color: var(--accent);">Optional</span>
-          </div>
-          <div class="options-grid">
-            ${CRUST_OPTIONS.map((c, idx) => `
-              <div class="option-pill ${idx === 0 ? 'active' : ''}" onclick="selectCrust('${c.id}', this)">
-                <span class="option-pill-name">${c.name}</span>
-                <span class="option-pill-price">${c.price === 0 ? 'Included' : `+Rs. ${c.price}`}</span>
-              </div>
-            `).join('')}
-          </div>
-        </div>
-      `;
+    if (query) {
+      items = items.filter(i => i.name.toLowerCase().includes(query) || i.desc.toLowerCase().includes(query));
     }
+    if (filter === 'deals') items = items.filter(i => i.badge === 'Deal');
+    if (filter === 'popular') items = items.filter(i => i.badge === 'Popular');
+    if (filter === 'chef') items = items.filter(i => i.badge === 'Chef Special');
 
-    // Spice Levels
-    if (item.hasSpice) {
-      html += `
-        <div>
-          <div class="customizer-section-title">
-            <span>Spice Preference</span>
-            <span style="font-size: 11px; color: var(--accent);">Included</span>
+    if (items.length === 0) return '';
+
+    return `
+      <section class="menu-category-section" id="${cat.slug}" data-category-id="${cat.id}">
+        <!-- Themed Atmospheric Visual Hero Banner -->
+        <div class="category-theme-banner ${cat.themeClass}">
+          <div class="banner-content">
+            <span class="banner-kicker">${cat.kicker}</span>
+            <h3 class="banner-title">${cat.icon} ${cat.title}</h3>
+            <p class="banner-desc">${cat.desc}</p>
           </div>
-          <div class="options-grid">
-            ${SPICE_OPTIONS.map((s) => `
-              <div class="option-pill ${s.default ? 'active' : ''}" onclick="selectSpice('${s.id}', this)">
-                <span class="option-pill-name">${s.name}</span>
-                <span class="option-pill-price">Rs. 0</span>
+        </div>
+
+        <!-- Category Items Grid -->
+        <div class="menu-grid">
+          ${items.map(item => `
+            <div class="menu-card" data-item-id="${item.id}">
+              <div class="card-media">
+                <img src="${item.image}" alt="${item.name}" class="card-img" loading="lazy" />
+                <div class="badge-tag-wrap">
+                  <span class="badge-tag ${item.badgeClass}">${item.badge}</span>
+                </div>
               </div>
-            `).join('')}
-          </div>
-        </div>
-      `;
-    }
-
-    // Impulse Add-ons & Dips
-    html += `
-      <div>
-        <div class="customizer-section-title">
-          <span>Add-ons & Dips</span>
-          <span style="font-size: 11px; color: var(--accent);">Extra</span>
-        </div>
-        <div class="options-grid">
-          ${IMPULSE_ADDONS.map(a => `
-            <div class="option-pill" onclick="toggleAddon('${a.id}', this)">
-              <span class="option-pill-name">${a.name}</span>
-              <span class="option-pill-price">+Rs. ${a.price}</span>
+              <div class="card-body">
+                <h4 class="card-title">${item.name}</h4>
+                <p class="card-desc">${item.desc}</p>
+                <div class="card-footer">
+                  <div class="card-pricing-wrap">
+                    ${item.originalPrice ? `<span class="card-original-price">Rs. ${item.originalPrice.toLocaleString()}</span>` : ''}
+                    <span class="card-price">Rs. ${item.price.toLocaleString()}</span>
+                  </div>
+                  <button class="card-action-btn" onclick="openItemCustomizer('${item.id}')" aria-label="Add ${item.name} to Cart">
+                    <span>Add to Cart +</span>
+                  </button>
+                </div>
+              </div>
             </div>
           `).join('')}
         </div>
-      </div>
-    `;
-
-    // Special Kitchen Notes
-    html += `
-      <div>
-        <div class="customizer-section-title">
-          <span>Special Kitchen Instructions</span>
-        </div>
-        <textarea id="modalSpecialNotes" class="custom-notes-input" rows="2" placeholder="E.g., Make it extra crispy, sauce on the side..."></textarea>
-      </div>
-    `;
-
-    body.innerHTML = html;
-  }
-
-  updateModalTotal();
-  if (modal) modal.classList.add('open');
-};
-
-window.selectCrust = function(crustId, el) {
-  const crust = CRUST_OPTIONS.find(c => c.id === crustId);
-  if (!crust || !activeConfigItem) return;
-  activeConfigItem.selectedCrust = crust;
-  el.parentElement.querySelectorAll('.option-pill').forEach(p => p.classList.remove('active'));
-  el.classList.add('active');
-  updateModalTotal();
-};
-
-window.selectSpice = function(spiceId, el) {
-  const spice = SPICE_OPTIONS.find(s => s.id === spiceId);
-  if (!spice || !activeConfigItem) return;
-  activeConfigItem.selectedSpice = spice;
-  el.parentElement.querySelectorAll('.option-pill').forEach(p => p.classList.remove('active'));
-  el.classList.add('active');
-};
-
-window.toggleAddon = function(addonId, el) {
-  const addon = IMPULSE_ADDONS.find(a => a.id === addonId);
-  if (!addon || !activeConfigItem) return;
-
-  const existsIdx = activeConfigItem.selectedAddons.findIndex(a => a.id === addonId);
-  if (existsIdx > -1) {
-    activeConfigItem.selectedAddons.splice(existsIdx, 1);
-    el.classList.remove('active');
-  } else {
-    activeConfigItem.selectedAddons.push(addon);
-    el.classList.add('active');
-  }
-  updateModalTotal();
-};
-
-function updateModalTotal() {
-  if (!activeConfigItem) return;
-  let total = activeConfigItem.price;
-  if (activeConfigItem.selectedCrust) total += activeConfigItem.selectedCrust.price;
-  activeConfigItem.selectedAddons.forEach(a => total += a.price);
-  activeConfigItem.currentComputedPrice = total;
-
-  const display = document.getElementById('modalPriceDisplay');
-  if (display) display.textContent = `Rs. ${total}`;
-}
-
-function initModalHandlers() {
-  const modal = document.getElementById('customizerModal');
-  const closeBtn = document.getElementById('modalCloseBtn');
-  const confirmBtn = document.getElementById('modalConfirmBtn');
-
-  if (closeBtn && modal) {
-    closeBtn.addEventListener('click', () => modal.classList.remove('open'));
-  }
-
-  if (confirmBtn && modal) {
-    confirmBtn.addEventListener('click', (e) => {
-      if (!activeConfigItem) return;
-      const notesEl = document.getElementById('modalSpecialNotes');
-      if (notesEl) activeConfigItem.specialNotes = notesEl.value.trim();
-
-      // Trigger GPU Parabolic Bezier Fly to Cart
-      triggerParabolicFlyToCart(e);
-
-      // Show Green Cart Notification Toast
-      showCartToast(`${activeConfigItem.name} added to cart!`);
-
-      // Add to Cart Array
-      cart.push({
-        id: Date.now() + '_' + Math.random().toString(36).substr(2, 4),
-        itemId: activeConfigItem.id,
-        name: activeConfigItem.name,
-        basePrice: activeConfigItem.price,
-        unitPrice: activeConfigItem.currentComputedPrice,
-        category: activeConfigItem.category,
-        crust: activeConfigItem.selectedCrust ? activeConfigItem.selectedCrust.name : null,
-        spice: activeConfigItem.selectedSpice ? activeConfigItem.selectedSpice.name : null,
-        addons: [...activeConfigItem.selectedAddons],
-        notes: activeConfigItem.specialNotes,
-        qty: 1
-      });
-
-      modal.classList.remove('open');
-      updateCartBadge();
-      renderCartDrawer();
-    });
-  }
-}
-
-// Show Cart Green Notification Toast
-function showCartToast(msg) {
-  const toast = document.getElementById('cartToast');
-  const toastMsg = document.getElementById('toastMsg');
-  if (!toast) return;
-  if (toastMsg && msg) toastMsg.textContent = msg;
-  toast.classList.add('show');
-  clearTimeout(window._toastTimeout);
-  window._toastTimeout = setTimeout(() => {
-    toast.classList.remove('show');
-  }, 2500);
-}
-
-// Parabolic Bezier Fly Animation
-function triggerParabolicFlyToCart(e) {
-  const cartBtn = document.getElementById('cartToggleBtn');
-  if (!cartBtn) return;
-
-  const startRect = e.target.getBoundingClientRect();
-  const endRect = cartBtn.getBoundingClientRect();
-
-  const ball = document.createElement('div');
-  ball.className = 'fly-ball';
-  ball.style.left = `${startRect.left + startRect.width / 2}px`;
-  ball.style.top = `${startRect.top + startRect.height / 2}px`;
-  document.body.appendChild(ball);
-
-  const deltaX = (endRect.left + endRect.width / 2) - (startRect.left + startRect.width / 2);
-  const deltaY = (endRect.top + endRect.height / 2) - (startRect.top + startRect.height / 2);
-
-  const anim = ball.animate([
-    { transform: 'translate(0, 0) scale(1.2)' },
-    { transform: `translate(${deltaX * 0.5}px, ${deltaY - 100}px) scale(1.5)` },
-    { transform: `translate(${deltaX}px, ${deltaY}px) scale(0.3)` }
-  ], {
-    duration: 600,
-    easing: 'cubic-bezier(0.2, 0.8, 0.2, 1)'
-  });
-
-  anim.onfinish = () => {
-    ball.remove();
-    cartBtn.animate([
-      { transform: 'scale(1)' },
-      { transform: 'scale(1.25)' },
-      { transform: 'scale(1)' }
-    ], { duration: 300 });
-  };
-}
-
-// ==========================================
-// 8. CART DRAWER & WHATSAPP SERIALIZER
-// ==========================================
-function initCartDrawer() {
-  const cartToggleBtn = document.getElementById('cartToggleBtn');
-  const cartCloseBtn = document.getElementById('cartCloseBtn');
-  const cartOverlay = document.getElementById('cartOverlay');
-  const cartDrawer = document.getElementById('cartDrawer');
-  const checkoutBtn = document.getElementById('checkoutBtn');
-
-  function openCart() {
-    if (cartDrawer) cartDrawer.classList.add('open');
-    if (cartOverlay) cartOverlay.classList.add('open');
-  }
-
-  function closeCart() {
-    if (cartDrawer) cartDrawer.classList.remove('open');
-    if (cartOverlay) cartOverlay.classList.remove('open');
-  }
-
-  if (cartToggleBtn) cartToggleBtn.addEventListener('click', openCart);
-  if (cartCloseBtn) cartCloseBtn.addEventListener('click', closeCart);
-  if (cartOverlay) cartOverlay.addEventListener('click', closeCart);
-
-  if (checkoutBtn) {
-    checkoutBtn.addEventListener('click', handleWhatsAppCheckout);
-  }
-}
-
-function updateCartBadge() {
-  const badge = document.getElementById('cartBadge');
-  const totalItems = cart.reduce((sum, item) => sum + item.qty, 0);
-  if (badge) badge.textContent = totalItems;
-}
-
-function renderCartDrawer() {
-  const list = document.getElementById('cartItemsList');
-  const subtotalEl = document.getElementById('cartSubtotal');
-  const totalEl = document.getElementById('cartTotal');
-  const freeDeliveryProgress = document.getElementById('freeDeliveryProgress');
-  const freeDeliveryText = document.getElementById('freeDeliveryText');
-
-  if (!list) return;
-
-  if (cart.length === 0) {
-    list.innerHTML = `
-      <div style="text-align: center; color: var(--text-muted); padding: 40px 20px;">
-        <span style="font-size: 40px; display: block; margin-bottom: 10px;">🛒</span>
-        <p style="font-weight: 700;">Your Cart is Empty</p>
-        <p style="font-size: 12px; margin-top: 4px;">Choose from our deals and pizzas to build your order</p>
-      </div>
-    `;
-    if (subtotalEl) subtotalEl.textContent = 'Rs. 0';
-    if (totalEl) totalEl.textContent = 'Rs. 0';
-    if (freeDeliveryProgress) freeDeliveryProgress.style.width = '0%';
-    return;
-  }
-
-  let subtotal = 0;
-
-  list.innerHTML = cart.map(item => {
-    const itemTotal = item.unitPrice * item.qty;
-    subtotal += itemTotal;
-
-    const metaParts = [];
-    if (item.crust) metaParts.push(`Crust: ${item.crust}`);
-    if (item.spice) metaParts.push(`Spice: ${item.spice}`);
-    if (item.addons.length > 0) metaParts.push(`Dips: ${item.addons.map(a => a.name).join(', ')}`);
-    if (item.notes) metaParts.push(`Note: "${item.notes}"`);
-
-    return `
-      <div class="cart-item-row">
-        <div class="cart-item-info">
-          <div class="cart-item-name">${sanitizeHTML(item.name)}</div>
-          <div class="cart-item-meta">${sanitizeHTML(metaParts.join(' | '))}</div>
-          <div class="cart-item-price">Rs. ${itemTotal}</div>
-        </div>
-        <div class="cart-item-controls">
-          <button class="qty-btn" onclick="changeQty('${item.id}', -1)">-</button>
-          <span style="font-size: 13px; font-weight: 800; min-width: 16px; text-align: center;">${item.qty}</span>
-          <button class="qty-btn" onclick="changeQty('${item.id}', 1)">+</button>
-        </div>
-      </div>
+      </section>
     `;
   }).join('');
 
-  const deliveryFee = subtotal >= 1500 ? 0 : 100;
-  const grandTotal = subtotal + deliveryFee;
+  if (!html) {
+    container.innerHTML = `
+      <div style="text-align: center; padding: 60px 20px; color: var(--text-muted);">
+        <p style="font-size: 16px; font-weight: 700;">No signature dishes found matching your search.</p>
+        <button onclick="clearSearch()" style="margin-top: 12px; background: var(--primary-gradient); border: none; padding: 8px 18px; border-radius: 20px; font-weight: 800; cursor: pointer;">Clear Search</button>
+      </div>
+    `;
+  } else {
+    container.innerHTML = html;
+  }
+}
 
-  if (subtotalEl) subtotalEl.textContent = `Rs. ${subtotal}`;
-  if (totalEl) totalEl.textContent = `Rs. ${grandTotal}`;
+// ==========================================
+// 4. TWO-WAY SCROLLSPY NAVIGATION ENGINE
+// ==========================================
+function syncHeaderHeightVar() {
+  const header = document.querySelector('.app-header');
+  if (!header) return;
+  const apply = () =>
+    document.documentElement.style.setProperty(
+      '--app-header-h',
+      `${Math.round(header.getBoundingClientRect().height)}px`
+    );
+  apply();
+  if (typeof ResizeObserver !== 'undefined') new ResizeObserver(apply).observe(header);
+  window.addEventListener('resize', apply);
+}
 
-  // Psychology: Free Delivery Progress Threshold (Rs. 1500 target)
-  const threshold = 1500;
-  const pct = Math.min(100, Math.round((subtotal / threshold) * 100));
-  if (freeDeliveryProgress) freeDeliveryProgress.style.width = `${pct}%`;
-  if (freeDeliveryText) {
-    if (subtotal >= threshold) {
-      freeDeliveryText.innerHTML = `<span>🎉 FREE Lahore Delivery Unlocked!</span><span>Rs. 0</span>`;
+function initScrollspy() {
+  const sections = document.querySelectorAll('.menu-category-section');
+  if (sections.length === 0) return;
+
+  syncHeaderHeightVar();
+
+  const observerOptions = {
+    root: null,
+    rootMargin: '-120px 0px -60% 0px',
+    threshold: 0
+  };
+
+  const observer = new IntersectionObserver((entries) => {
+    entries.forEach(entry => {
+      if (entry.isIntersecting) {
+        const catId = entry.target.getAttribute('data-category-id');
+        if (catId) {
+          highlightPill(catId);
+        }
+      }
+    });
+  }, observerOptions);
+
+  sections.forEach(section => observer.observe(section));
+}
+
+function highlightPill(catId) {
+  const pills = document.querySelectorAll('.category-pill');
+  pills.forEach(pill => {
+    if (pill.dataset.cat === catId) {
+      pill.classList.add('active');
+      pill.scrollIntoView({ behavior: 'smooth', block: 'nearest', inline: 'center' });
     } else {
-      const remaining = threshold - subtotal;
-      freeDeliveryText.innerHTML = `<span>Add Rs. ${remaining} more for FREE Delivery</span><span>${pct}%</span>`;
+      pill.classList.remove('active');
+    }
+  });
+}
+
+// ==========================================
+// 5. HERO CAROUSEL CONTROLLER
+// ==========================================
+let currentSlide = 0;
+let carouselTimer = null;
+
+function initHeroCarousel() {
+  const track = document.getElementById('carouselTrack');
+  const prevBtn = document.getElementById('prevSlideBtn');
+  const nextBtn = document.getElementById('nextSlideBtn');
+  const dots = document.querySelectorAll('.carousel-dot');
+
+  if (!track) return;
+
+  function updateCarousel() {
+    track.style.transform = `translateX(-${currentSlide * 33.3333}%)`;
+    dots.forEach((dot, idx) => {
+      dot.classList.toggle('active', idx === currentSlide);
+    });
+  }
+
+  function nextSlide() {
+    currentSlide = (currentSlide + 1) % 3;
+    updateCarousel();
+  }
+
+  function prevSlide() {
+    currentSlide = (currentSlide - 1 + 3) % 3;
+    updateCarousel();
+  }
+
+  if (nextBtn) nextBtn.addEventListener('click', (e) => { e.preventDefault(); nextSlide(); resetTimer(); });
+  if (prevBtn) prevBtn.addEventListener('click', (e) => { e.preventDefault(); prevSlide(); resetTimer(); });
+
+  dots.forEach(dot => {
+    dot.addEventListener('click', (e) => {
+      const targetIndex = e.target.dataset.index !== undefined ? parseInt(e.target.dataset.index, 10) : parseInt(e.target.dataset.slide, 10);
+      if (!isNaN(targetIndex)) {
+        currentSlide = targetIndex;
+        updateCarousel();
+        resetTimer();
+      }
+    });
+  });
+
+  // Wire Hero quick action buttons to open customizer
+  document.querySelectorAll('.hero-order-btn').forEach(btn => {
+    btn.addEventListener('click', (e) => {
+      e.preventDefault();
+      const itemId = btn.dataset.id;
+      if (itemId && window.openItemCustomizer) {
+        window.openItemCustomizer(itemId);
+      }
+    });
+  });
+
+  function startTimer() {
+    carouselTimer = setInterval(nextSlide, 5000);
+  }
+  function resetTimer() {
+    clearInterval(carouselTimer);
+    startTimer();
+  }
+  startTimer();
+}
+
+// ==========================================
+// 6. DYNAMIC QSR CUSTOMIZER MODAL (FLAVOURS, SPICE, DRINKS, SAUCES, CRUSTS)
+// ==========================================
+window.openItemCustomizer = function(itemId) {
+  const item = MENU_ITEMS.find(i => i.id === itemId);
+  if (!item) return;
+
+  state.customizingItem = item;
+  state.customQty = 1;
+  state.customSelectedOptions = {};
+
+  const modal = document.getElementById('customizerModal');
+  const img = document.getElementById('modalCover');
+  const cat = document.getElementById('modalCategoryTag');
+  const name = document.getElementById('modalItemTitle');
+  const desc = document.getElementById('modalItemDesc');
+  const price = document.getElementById('modalPriceDisplay');
+  const qty = document.getElementById('modalQtyDisplay');
+  const notes = document.getElementById('modalCookingNotes');
+  const dynamicContainer = document.getElementById('customizerOptionsDynamic');
+
+  if (img) img.style.backgroundImage = `url('${item.image}')`;
+  if (cat) cat.innerText = item.category.toUpperCase();
+  if (name) name.innerText = item.name;
+  if (desc) desc.innerText = item.desc;
+  if (price) price.innerText = `Rs. ${item.price.toLocaleString()}`;
+  if (qty) qty.innerText = '1';
+  if (notes) notes.value = '';
+
+  // Universal dynamic schema option builder
+  if (dynamicContainer) {
+    let optHtml = '';
+    const opts = item.options || {};
+
+    // 1. Crust / Base (Pizzas & Combos)
+    if (opts.crusts && opts.crusts.length > 0) {
+      optHtml += `
+        <div class="custom-step-group">
+          <div class="custom-section-title">
+            <span>1. Choose Crust Style</span>
+            <span class="section-opt">Required</span>
+          </div>
+          <div class="custom-options-grid">
+            ${opts.crusts.map((crust, idx) => `
+              <div class="custom-pill-opt ${idx === 0 ? 'selected' : ''}" onclick="selectOption(this, 'crust', '${crust.replace(/'/g, "\\'")}')">
+                <span>${crust}</span>
+              </div>
+            `).join('')}
+          </div>
+        </div>
+      `;
+      state.customSelectedOptions['crust'] = opts.crusts[0];
+    }
+
+    // 2. Flavour Style
+    if (opts.flavours && opts.flavours.length > 0) {
+      optHtml += `
+        <div class="custom-step-group">
+          <div class="custom-section-title">
+            <span>2. Select Flavour Style</span>
+            <span class="section-opt">Required</span>
+          </div>
+          <div class="custom-options-grid">
+            ${opts.flavours.map((flv, idx) => `
+              <div class="custom-pill-opt ${idx === 0 ? 'selected' : ''}" onclick="selectOption(this, 'flavour', '${flv.replace(/'/g, "\\'")}')">
+                <span>${flv}</span>
+              </div>
+            `).join('')}
+          </div>
+        </div>
+      `;
+      state.customSelectedOptions['flavour'] = opts.flavours[0];
+    }
+
+    // 3. Spice Level Intensity
+    if (opts.spiceLevels && opts.spiceLevels.length > 0) {
+      optHtml += `
+        <div class="custom-step-group">
+          <div class="custom-section-title">
+            <span>3. Spice Level Intensity</span>
+            <span class="section-opt">Required</span>
+          </div>
+          <div class="custom-options-grid">
+            ${opts.spiceLevels.map((spc, idx) => `
+              <div class="custom-pill-opt ${idx === 0 ? 'selected' : ''}" onclick="selectOption(this, 'spice', '${spc.replace(/'/g, "\\'")}')">
+                <span>${spc}</span>
+              </div>
+            `).join('')}
+          </div>
+        </div>
+      `;
+      state.customSelectedOptions['spice'] = opts.spiceLevels[0];
+    }
+
+    // 4. Chilled Drink Selection
+    if (opts.drinks && opts.drinks.length > 0) {
+      optHtml += `
+        <div class="custom-step-group">
+          <div class="custom-section-title">
+            <span>4. Chilled Beverage</span>
+            <span class="section-opt">${item.category === 'combos' ? 'Included' : 'Choice'}</span>
+          </div>
+          <div class="custom-options-grid">
+            ${opts.drinks.map((drk, idx) => `
+              <div class="custom-pill-opt ${idx === 0 ? 'selected' : ''}" onclick="selectOption(this, 'drink', '${drk.replace(/'/g, "\\'")}')">
+                <span>${drk}</span>
+              </div>
+            `).join('')}
+          </div>
+        </div>
+      `;
+      state.customSelectedOptions['drink'] = opts.drinks[0];
+    }
+
+    // 5. Signature Dipping Sauces
+    if (opts.sauces && opts.sauces.length > 0) {
+      optHtml += `
+        <div class="custom-step-group">
+          <div class="custom-section-title">
+            <span>5. Signature Dipping Sauce</span>
+            <span class="section-opt">Optional</span>
+          </div>
+          <div class="custom-options-grid">
+            ${opts.sauces.map((sauce, idx) => `
+              <div class="custom-pill-opt ${idx === 0 ? 'selected' : ''}" onclick="selectOption(this, 'sauce', '${sauce.replace(/'/g, "\\'")}')">
+                <span>${sauce}</span>
+              </div>
+            `).join('')}
+          </div>
+        </div>
+      `;
+      state.customSelectedOptions['sauce'] = opts.sauces[0];
+    }
+
+    dynamicContainer.innerHTML = optHtml;
+  }
+
+  if (modal) {
+    modal.classList.add('active');
+    document.body.style.overflow = 'hidden';
+  }
+};
+
+window.closeCustomizer = function() {
+  const modal = document.getElementById('customizerModal');
+  if (modal) {
+    modal.classList.remove('active');
+    document.body.style.overflow = '';
+  }
+};
+
+window.selectOption = function(el, key, val) {
+  const parent = el.parentElement;
+  if (parent) {
+    parent.querySelectorAll('.custom-pill-opt').forEach(p => p.classList.remove('selected'));
+  }
+  el.classList.add('selected');
+  state.customSelectedOptions[key] = val;
+};
+
+window.adjustCustomQty = function(delta) {
+  state.customQty = Math.max(1, state.customQty + delta);
+  const qtyEl = document.getElementById('modalQtyDisplay');
+  const priceEl = document.getElementById('modalPriceDisplay');
+  if (qtyEl) qtyEl.innerText = state.customQty;
+  if (priceEl && state.customizingItem) {
+    const total = state.customizingItem.price * state.customQty;
+    priceEl.innerText = `Rs. ${total.toLocaleString()}`;
+  }
+};
+
+window.confirmCustomizerAdd = function() {
+  if (!state.customizingItem) return;
+  const notes = document.getElementById('modalCookingNotes')?.value || '';
+  state.addToCart(state.customizingItem, state.customQty, state.customSelectedOptions, notes);
+  closeCustomizer();
+  showToast(`Added to Bucket • ${state.customQty}x ${state.customizingItem.name}`, 'success');
+  syncCartUI();
+};
+
+// ==========================================
+// 7. SLIDE-OUT CART DRAWER & KFC-STYLE CHECKOUT
+// ==========================================
+function syncCartUI() {
+  const badge = document.getElementById('cartBadge') || document.getElementById('cartBadgeCount') || document.getElementById('mobileCartBadge');
+  const countHeader = document.getElementById('cartDrawerCount') || document.getElementById('cartItemsCountHeader');
+  const itemsContainer = document.getElementById('cartDrawerItems') || document.getElementById('cartItemsList');
+  const subtotalEl = document.getElementById('cartSubtotal') || document.getElementById('cartSubtotalText');
+  const totalEl = document.getElementById('cartTotal') || document.getElementById('cartGrandTotalText');
+  const deliveryFeeEl = document.getElementById('cartDeliveryFeeText') || document.getElementById('cartDeliveryFee');
+  const meterFill = document.getElementById('freeDeliveryMeterFill') || document.getElementById('freeDeliveryFill');
+  const freeText = document.getElementById('freeDeliveryText') || document.getElementById('freeDeliveryMsg');
+  const cartModeText = document.getElementById('cartModeText');
+  const headerAmount = document.getElementById('cartHeaderAmount');
+
+  const count = state.getCartCount();
+  const subtotal = state.getCartSubtotal();
+  const deliveryFee = subtotal >= 2000 || subtotal === 0 ? 0 : 150;
+  const total = subtotal + deliveryFee;
+
+  document.querySelectorAll('#cartBadge, #cartBadgeCount, #mobileCartBadge').forEach(el => {
+    el.innerText = count;
+  });
+  if (headerAmount) headerAmount.innerText = `Rs. ${total.toLocaleString()}`;
+  if (countHeader) countHeader.innerText = `${count} Items`;
+  if (subtotalEl) subtotalEl.innerText = `Rs. ${subtotal.toLocaleString()}`;
+  if (deliveryFeeEl) {
+    deliveryFeeEl.innerText = deliveryFee === 0 ? 'FREE' : `Rs. ${deliveryFee}`;
+    deliveryFeeEl.style.color = deliveryFee === 0 ? '#34D399' : '#F59E0B';
+  }
+  if (totalEl) totalEl.innerText = `Rs. ${total.toLocaleString()}`;
+  if (cartModeText) cartModeText.innerText = state.orderMode || 'Delivery';
+
+  // Free delivery threshold meter (Rs. 2000)
+  if (meterFill) {
+    const pct = subtotal === 0 ? 0 : Math.min(100, (subtotal / 2000) * 100);
+    meterFill.style.width = `${pct}%`;
+  }
+  if (freeText) {
+    if (subtotal >= 2000) {
+      freeText.innerHTML = `<strong>🎉 You have Unlocked FREE Express Delivery!</strong>`;
+    } else {
+      const remaining = 2000 - subtotal;
+      freeText.innerHTML = `Add <strong>Rs. ${remaining.toLocaleString()}</strong> more for FREE Express Delivery!`;
+    }
+  }
+
+  if (itemsContainer) {
+    if (state.cart.length === 0) {
+      itemsContainer.innerHTML = `
+        <div style="text-align: center; padding: 48px 20px; color: var(--text-muted);">
+          <div style="font-size: 36px; margin-bottom: 12px; color: var(--color-gold);">
+            <svg width="48" height="48" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6"><circle cx="9" cy="21" r="1"></circle><circle cx="20" cy="21" r="1"></circle><path d="M1 1h4l2.68 13.39a2 2 0 0 0 2 1.61h9.72a2 2 0 0 0 2-1.61L23 6H6"></path></svg>
+          </div>
+          <p style="font-weight: 800; color: #FFF; font-size: 16px;">Your Bucket is Empty</p>
+          <p style="font-size: 13px; margin-top: 6px;">Add chef signature burgers, pizzas, or family feasts!</p>
+        </div>
+      `;
+    } else {
+      itemsContainer.innerHTML = state.cart.map(item => {
+        const safeId = encodeURIComponent(item.cartItemId);
+        return `
+        <div class="cart-item-card" data-id="${item.cartItemId}">
+          <img src="${item.image}" alt="${item.name}" class="cart-item-img" />
+          <div class="cart-item-info">
+            <h4 class="cart-item-name">${item.name}</h4>
+            <p class="cart-item-customs">
+              ${Object.values(item.options).filter(Boolean).join(' • ')}
+              ${item.notes ? `<br><em>Note: ${item.notes}</em>` : ''}
+            </p>
+            <div class="cart-item-bottom">
+              <span class="cart-item-price">Rs. ${(item.price * item.qty).toLocaleString()}</span>
+              <div class="cart-item-qty">
+                <button type="button" class="cart-qty-btn cart-qty-minus" onclick="window.updateItemQty(decodeURIComponent('${safeId}'), -1)" data-id="${item.cartItemId}" aria-label="Decrease quantity">−</button>
+                <span>${item.qty}</span>
+                <button type="button" class="cart-qty-btn cart-qty-plus" onclick="window.updateItemQty(decodeURIComponent('${safeId}'), 1)" data-id="${item.cartItemId}" aria-label="Increase quantity">+</button>
+              </div>
+              <button type="button" class="cart-delete-btn" onclick="window.removeItem(decodeURIComponent('${safeId}'))" data-id="${item.cartItemId}" aria-label="Remove item">
+                <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" style="pointer-events: none;"><polyline points="3 6 5 6 21 6"></polyline><path d="M19 6v14a2 2 0 0 1-2 2H7a2 2 0 0 1-2-2V6m3 0V4a2 2 0 0 1 2-2h4a2 2 0 0 1 2 2v2"></path></svg>
+              </button>
+            </div>
+          </div>
+        </div>
+      `;
+      }).join('');
     }
   }
 }
 
-window.changeQty = function(id, delta) {
-  const item = cart.find(i => i.id === id);
-  if (!item) return;
-  item.qty += delta;
-  if (item.qty <= 0) {
-    cart = cart.filter(i => i.id !== id);
-  }
-  updateCartBadge();
-  renderCartDrawer();
+// Unified Cart Event Delegation for rock-solid click handling
+function initCartItemDelegation() {
+  const container = document.getElementById('cartDrawerItems') || document.getElementById('cartItemsList');
+  if (!container || container._delegated) return;
+  container.addEventListener('click', (e) => {
+    const minusBtn = e.target.closest('.cart-qty-minus');
+    if (minusBtn) {
+      e.preventDefault();
+      e.stopPropagation();
+      const id = minusBtn.dataset.id;
+      if (id) window.updateItemQty(id, -1);
+      return;
+    }
+    const plusBtn = e.target.closest('.cart-qty-plus');
+    if (plusBtn) {
+      e.preventDefault();
+      e.stopPropagation();
+      const id = plusBtn.dataset.id;
+      if (id) window.updateItemQty(id, 1);
+      return;
+    }
+    const delBtn = e.target.closest('.cart-delete-btn');
+    if (delBtn) {
+      e.preventDefault();
+      e.stopPropagation();
+      const id = delBtn.dataset.id;
+      if (id) window.removeItem(id);
+      return;
+    }
+  });
+  container._delegated = true;
+}
+
+window.openCart = function() {
+  const drawer = document.getElementById('cartDrawer');
+  const dimmer = document.getElementById('drawerBackdrop');
+  if (drawer) drawer.classList.add('open');
+  if (dimmer) dimmer.classList.add('active');
+  document.body.style.overflow = 'hidden';
 };
 
-function handleWhatsAppCheckout() {
-  if (cart.length === 0) {
-    alert('Please add at least 1 item to your cart before ordering.');
+window.closeCart = function() {
+  const drawer = document.getElementById('cartDrawer');
+  const dimmer = document.getElementById('drawerBackdrop');
+  if (drawer) drawer.classList.remove('open');
+  if (dimmer) dimmer.classList.remove('active');
+  document.body.style.overflow = '';
+};
+
+window.updateItemQty = function(cartItemId, delta) {
+  state.updateQty(cartItemId, delta);
+  syncCartUI();
+};
+
+window.removeItem = function(cartItemId) {
+  state.removeFromCart(cartItemId);
+  syncCartUI();
+};
+
+// KFC Pakistan-Style Mandatory Location & Customer Details Flow
+let pendingCheckoutMethod = 'cod';
+
+window.checkoutCOD = function() {
+  if (state.cart.length === 0) {
+    showToast('Please add delicious items to your bucket first!', 'warning');
+    return;
+  }
+  pendingCheckoutMethod = 'cod';
+  promptCheckoutDetails();
+};
+
+window.checkoutWhatsApp = function() {
+  if (state.cart.length === 0) {
+    showToast('Please add delicious items to your bucket first!', 'warning');
+    return;
+  }
+  pendingCheckoutMethod = 'whatsapp';
+  promptCheckoutDetails();
+};
+
+function promptCheckoutDetails() {
+  closeCart();
+  const modal = document.getElementById('checkoutDetailsModal');
+  const payableEl = document.getElementById('checkoutPayableAmount');
+  const methodEl = document.getElementById('checkoutPaymentMethodName');
+  const branchSelect = document.getElementById('custBranchSelect');
+
+  const subtotal = state.getCartSubtotal();
+  const deliveryFee = subtotal >= 2000 ? 0 : 150;
+  const total = subtotal + deliveryFee;
+
+  if (payableEl) payableEl.innerText = `Rs. ${total.toLocaleString()}`;
+  if (methodEl) {
+    methodEl.innerText = pendingCheckoutMethod === 'cod' ? 'Cash on Delivery' : 'WhatsApp Order Confirmation';
+  }
+
+  // Auto-fill saved profile if available
+  try {
+    const savedProfile = JSON.parse(localStorage.getItem('azfc_customer_profile') || '{}');
+    if (savedProfile.fullName) document.getElementById('custFullName').value = savedProfile.fullName;
+    if (savedProfile.phone) document.getElementById('custPhone').value = savedProfile.phone;
+    if (savedProfile.address) document.getElementById('custAddress').value = savedProfile.address;
+    if (savedProfile.branch && branchSelect) branchSelect.value = savedProfile.branch;
+  } catch (e) {
+    console.log(e);
+  }
+
+  if (modal) {
+    modal.classList.add('active');
+    document.body.style.overflow = 'hidden';
+  }
+}
+
+window.closeCheckoutDetails = function() {
+  const modal = document.getElementById('checkoutDetailsModal');
+  if (modal) {
+    modal.classList.remove('active');
+    document.body.style.overflow = '';
+  }
+};
+
+window.confirmAndTransmitOrder = function() {
+  const nameInput = document.getElementById('custFullName');
+  const phoneInput = document.getElementById('custPhone');
+  const addressInput = document.getElementById('custAddress');
+  const branchSelect = document.getElementById('custBranchSelect');
+
+  const fullName = nameInput?.value.trim() || '';
+  const phone = phoneInput?.value.trim() || '';
+  const address = addressInput?.value.trim() || '';
+  const branch = branchSelect?.value || 'Khuda Baksh Rd Hub';
+
+  if (!fullName) {
+    alert('Please enter your full name for order delivery.');
+    nameInput?.focus();
     return;
   }
 
-  let subtotal = 0;
-  let itemsSummary = '';
-  const itemNames = [];
+  if (!phone || phone.length < 10) {
+    alert('Please enter a valid Pakistani mobile number (e.g. 0300-1234567).');
+    phoneInput?.focus();
+    return;
+  }
 
-  cart.forEach((item, index) => {
-    const itemTotal = item.unitPrice * item.qty;
-    subtotal += itemTotal;
-    itemNames.push(`${item.name} x ${item.qty}`);
+  if (!address) {
+    alert('Please enter your complete street address and landmark for the courier rider.');
+    addressInput?.focus();
+    return;
+  }
 
-    itemsSummary += `\n${index + 1}. *${item.name}* x ${item.qty} (Rs. ${itemTotal})`;
-    if (item.crust) itemsSummary += `\n   - Crust: ${item.crust}`;
-    if (item.spice) itemsSummary += `\n   - Spice: ${item.spice}`;
-    if (item.addons.length > 0) itemsSummary += `\n   - Add-ons: ${item.addons.map(a => a.name).join(', ')}`;
-    if (item.notes) itemsSummary += `\n   - Instructions: "${item.notes}"`;
-  });
+  // Cache customer profile
+  localStorage.setItem('azfc_customer_profile', JSON.stringify({ fullName, phone, address, branch }));
 
-  const deliveryFee = subtotal >= 1500 ? 0 : 100;
-  const grandTotal = subtotal + deliveryFee;
+  const subtotal = state.getCartSubtotal();
+  const deliveryFee = subtotal >= 2000 ? 0 : 150;
+  const total = subtotal + deliveryFee;
+  const orderId = 'HT-' + Math.floor(1000 + Math.random() * 9000);
 
-  // Sync order to Admin ERP & Kitchen KDS shared storage
-  const orderId = 'ORD-' + Math.floor(1000 + Math.random() * 9000);
-  const newKdsOrder = {
+  const orderRecord = {
     id: orderId,
-    customer: 'Online WhatsApp Customer',
-    branch: currentBranch.name,
-    branchId: currentBranch.id,
-    items: itemNames.join(', '),
-    amount: `Rs. ${grandTotal}`,
-    numericAmount: grandTotal,
-    category: cart[0]?.category || 'deals',
-    sla: '1m SLA',
-    slaType: 'fresh',
+    orderNumber: orderId,
+    customer: fullName,
+    customerPhone: phone,
+    customerAddress: address,
+    branch: branch,
+    branchId: branch.includes('Khuda') ? 'branch-1' : branch.includes('Dohlanwal') ? 'branch-2' : 'branch-3',
+    type: 'Delivery',
+    items: state.cart.map(i => `${i.name} (x${i.qty})${Object.values(i.options).length ? ' [' + Object.values(i.options).join(', ') + ']' : ''}`).join(', '),
+    specialNotes: state.cart.map(i => i.notes).filter(Boolean).join('; ') || address,
+    amount: `Rs. ${total.toLocaleString()}`,
+    numericAmount: total,
     status: 'pending',
+    time: new Date().toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' }),
     timestamp: Date.now()
   };
 
+  // Transmit to hot_taste_orders local storage KDS queue
+  let orders = [];
   try {
-    const existingKds = JSON.parse(localStorage.getItem('hot_taste_orders') || '[]');
-    existingKds.unshift(newKdsOrder);
-    localStorage.setItem('hot_taste_orders', JSON.stringify(existingKds));
-  } catch (e) {
-    console.warn('Storage sync failed', e);
+    const existing = localStorage.getItem('hot_taste_orders');
+    orders = existing ? JSON.parse(existing) : [];
+  } catch {
+    orders = [];
+  }
+  orders.unshift(orderRecord);
+  localStorage.setItem('hot_taste_orders', JSON.stringify(orders));
+  localStorage.setItem('azfc_active_order_id', orderId);
+
+  // Close details modal
+  closeCheckoutDetails();
+
+  // If WhatsApp checkout, open WhatsApp directly
+  if (pendingCheckoutMethod === 'whatsapp') {
+    let msg = `*NEW ORDER CONFIRMATION - AZFC HOT & TASTE PRO*\n`;
+    msg += `🏷️ *Order ID:* ${orderId}\n`;
+    msg += `👤 *Customer:* ${fullName} (${phone})\n`;
+    msg += `📍 *Delivery Address:* ${address}\n`;
+    msg += `🏢 *Kitchen Hub:* ${branch}\n\n`;
+    msg += `*Order Items:*\n`;
+    state.cart.forEach((i, idx) => {
+      msg += `${idx + 1}. *${i.name}* x${i.qty} - Rs. ${i.price * i.qty}\n`;
+      const optStr = Object.values(i.options).filter(Boolean).join(' • ');
+      if (optStr) msg += `   _${optStr}_\n`;
+      if (i.notes) msg += `   _Note: ${i.notes}_\n`;
+    });
+    msg += `\n*Total Payable:* *Rs. ${total}* (Cash on Delivery)`;
+    window.open(`https://wa.me/923014492190?text=${encodeURIComponent(msg)}`, '_blank');
   }
 
-  const message = `👑 *AZFC FAST & CRISPY ORDER* 👑\n` +
-    `📍 *Branch:* ${currentBranch.name}\n` +
-    `🆔 *Order Ref:* ${orderId}\n` +
-    `------------------------------------\n` +
-    `${itemsSummary}\n` +
-    `------------------------------------\n` +
-    `💵 *Items Subtotal:* Rs. ${subtotal}\n` +
-    `🚚 *Delivery Fee:* Rs. ${deliveryFee} ${deliveryFee === 0 ? '(FREE VIP Promo)' : ''}\n` +
-    `💰 *Grand Total:* Rs. ${grandTotal}\n\n` +
-    `🏠 *Customer Delivery Details:*\n` +
-    `Name: \n` +
-    `Phone: \n` +
-    `Delivery Address: \n` +
-    `Payment Method: Cash on Delivery (COD)`;
-
-  const encodedUrl = `https://wa.me/${currentBranch.phone}?text=${encodeURIComponent(message)}`;
-  window.open(encodedUrl, '_blank');
-}
+  // Clear cart and show active tracker
+  state.clearCart();
+  syncCartUI();
+  showToast(`Order ${orderId} transmitted to Kitchen!`, 'success');
+  openTracker();
+};
 
 // ==========================================
-// 10. REAL-TIME DEAL BROADCAST NOTIFICATION LISTENER & PHONE OS PUSH ENGINE
+// 8. LIVE KDS ORDER TRACKER MODAL & REALTIME 4-STAGE SYNC
 // ==========================================
-function checkPromoBroadcast() {
+window.openTracker = function() {
+  const modal = document.getElementById('orderTrackerModal');
+  if (modal) {
+    modal.classList.add('active');
+    document.body.style.overflow = 'hidden';
+    updateTrackerContent();
+  }
+};
+
+window.closeTracker = function() {
+  const modal = document.getElementById('orderTrackerModal');
+  if (modal) {
+    modal.classList.remove('active');
+    document.body.style.overflow = '';
+  }
+};
+
+function updateTrackerContent() {
+  const emptyState = document.getElementById('trackerEmptyState');
+  const activeState = document.getElementById('trackerActiveState');
+  const orderIdEl = document.getElementById('trackerOrderId');
+  const branchEl = document.getElementById('trackerBranchName');
+  const progressBar = document.getElementById('trackerProgressBar');
+  const etaTimer = document.getElementById('trackerEtaTimer');
+  const riderNameEl = document.getElementById('trackerRiderName');
+
+  let activeOrderId = localStorage.getItem('azfc_active_order_id');
+  let orders = [];
   try {
-    const raw = localStorage.getItem('hot_taste_broadcast_promo');
-    if (!raw) return;
-    const promo = JSON.parse(raw);
-    if (!promo || !promo.active) return;
-
-    // Check if dismissed in this session
-    if (sessionStorage.getItem('dismissed_promo_' + promo.id)) return;
-
-    // 1. In-App Visual Banner
-    const banner = document.getElementById('promoPushBanner');
-    const tagEl = document.getElementById('promoBannerTag');
-    const titleEl = document.getElementById('promoBannerTitle');
-    const msgEl = document.getElementById('promoBannerMsg');
-    const closeBtn = document.getElementById('promoBannerCloseBtn');
-
-    if (banner && titleEl && msgEl) {
-      if (tagEl) tagEl.textContent = promo.tag || '🔥 HOT DEAL';
-      titleEl.textContent = promo.title;
-      msgEl.textContent = promo.message;
-      banner.classList.add('active');
-
-      if (closeBtn) {
-        closeBtn.onclick = () => {
-          banner.classList.remove('active');
-          sessionStorage.setItem('dismissed_promo_' + promo.id, 'true');
-        };
-      }
-    }
-
-    // 2. Native Android / Phone OS System Notification Push
-    if ('Notification' in window && Notification.permission === 'granted') {
-      if (navigator.serviceWorker && navigator.serviceWorker.controller) {
-        navigator.serviceWorker.controller.postMessage({
-          type: 'SHOW_NOTIFICATION',
-          payload: {
-            id: promo.id,
-            title: `${promo.tag || '👑 VIP DEAL'} - ${promo.title}`,
-            message: promo.message
-          }
-        });
-      } else {
-        // Fallback Native Notification
-        new Notification(`${promo.tag || '👑 VIP DEAL'} - ${promo.title}`, {
-          body: promo.message,
-          icon: './icon-192.png',
-          badge: './icon-192.png'
-        });
-      }
-    }
-  } catch (e) {
-    console.warn('Promo listener error:', e);
+    const data = localStorage.getItem('hot_taste_orders');
+    orders = data ? JSON.parse(data) : [];
+  } catch {
+    orders = [];
   }
+
+  // CRITICAL FIX: Only show tracker if user actually placed an order
+  // Don't fall back to orders[0] - that shows tracker even when user hasn't ordered!
+  const activeOrder = activeOrderId ? orders.find(o => o.id === activeOrderId) : null;
+
+  if (!activeOrder) {
+    if (emptyState) emptyState.classList.remove('hidden');
+    if (activeState) activeState.classList.add('hidden');
+    if (orderIdEl) orderIdEl.innerText = 'No Active Order';
+    return;
+  }
+
+  if (emptyState) emptyState.classList.add('hidden');
+  if (activeState) activeState.classList.remove('hidden');
+
+  if (orderIdEl) orderIdEl.innerText = activeOrder.orderNumber || activeOrder.id;
+  if (branchEl) branchEl.innerText = `Dispatched from ${activeOrder.branch || 'Khuda Baksh Rd Hub'}`;
+
+  const riderPhoneLabel = document.getElementById('trackerRiderPhoneLabel');
+  const riderWaBtn = document.getElementById('trackerRiderWaBtn');
+
+  if (activeOrder.riderName && riderNameEl) {
+    riderNameEl.innerText = `${activeOrder.riderName} (${activeOrder.riderBike || 'Fleet Motorbike #01'})`;
+  } else if (riderNameEl) {
+    riderNameEl.innerText = 'Ali Raza (Fleet Motorbike #01)';
+  }
+
+  const activeRiderPhone = activeOrder.riderPhone || '03074484814';
+  if (riderPhoneLabel) {
+    riderPhoneLabel.innerText = `Direct Motorbike Dispatch • Rider: ${activeRiderPhone}`;
+  }
+
+  if (riderWaBtn) {
+    const rawRiderPhone = activeRiderPhone.replace(/[^0-9]/g, '');
+    const cleanRiderPhone = rawRiderPhone.startsWith('0') ? '92' + rawRiderPhone.slice(1) : (rawRiderPhone.startsWith('92') ? rawRiderPhone : '92' + rawRiderPhone);
+    const orderIdRef = activeOrder.orderNumber || activeOrder.id;
+    const msg = `Assalam-o-Alaikum! I am tracking my AZFC Order #${orderIdRef}. Please update me on the live delivery status.`;
+    riderWaBtn.href = `https://wa.me/${cleanRiderPhone}?text=${encodeURIComponent(msg)}`;
+  }
+
+  // 4 Steps: pending (received) -> cooking (in oven) -> dispatched -> delivered
+  const stepMap = {
+    'pending': { idx: 0, width: '15%', eta: '25:00 min' },
+    'received': { idx: 0, width: '15%', eta: '25:00 min' },
+    'cooking': { idx: 1, width: '45%', eta: '18:00 min' },
+    'dispatched': { idx: 2, width: '75%', eta: '08:30 min' },
+    'delivered': { idx: 3, width: '100%', eta: 'Delivered!' }
+  };
+
+  const currentInfo = stepMap[activeOrder.status] || stepMap['pending'];
+
+  const nodes = [
+    document.getElementById('stepNode1'),
+    document.getElementById('stepNode2'),
+    document.getElementById('stepNode3'),
+    document.getElementById('stepNode4')
+  ];
+
+  nodes.forEach((node, idx) => {
+    if (!node) return;
+    node.classList.remove('active', 'completed');
+    if (idx < currentInfo.idx) node.classList.add('completed');
+    else if (idx === currentInfo.idx) node.classList.add('active');
+  });
+
+  if (progressBar) progressBar.style.width = currentInfo.width;
+  if (etaTimer) etaTimer.innerText = currentInfo.eta;
 }
 
-// Check and request Native Push Notification Permission
-function setupPushNotificationEngine() {
-  const permBanner = document.getElementById('pushPermissionBanner');
-  const enableBtn = document.getElementById('enablePushBtn');
-  const dismissBtn = document.getElementById('dismissPushBtn');
-
-  if (!('Notification' in window)) return;
-
-  // If not granted and not previously dismissed, ask customer
-  if (Notification.permission === 'default' && !localStorage.getItem('azfc_push_dismissed')) {
-    if (permBanner) {
-      setTimeout(() => {
-        permBanner.classList.add('show');
-      }, 1500);
+function listenToKdsStorageSync() {
+  window.addEventListener('storage', (e) => {
+    if (e.key === 'hot_taste_orders' || e.key === 'azfc_active_order_id') {
+      updateTrackerContent();
     }
-  }
-
-  if (enableBtn) {
-    enableBtn.addEventListener('click', async () => {
-      try {
-        const perm = await Notification.requestPermission();
-        if (perm === 'granted') {
-          if (permBanner) permBanner.classList.remove('show');
-          showCartToast('🔔 Lock screen notifications enabled!');
-
-          // Test welcome notification
-          if (navigator.serviceWorker && navigator.serviceWorker.ready) {
-            const reg = await navigator.serviceWorker.ready;
-            reg.showNotification('👑 AZFC VIP Alerts Enabled!', {
-              body: 'You will now receive secret discounts and instant kitchen order updates!',
-              icon: './icon-192.png',
-              badge: './icon-192.png',
-              vibrate: [200, 100, 200]
-            });
-          }
-        } else {
-          if (permBanner) permBanner.classList.remove('show');
-        }
-      } catch (err) {
-        console.error('Notification permission error:', err);
-      }
-    });
-  }
-
-  if (dismissBtn && permBanner) {
-    dismissBtn.addEventListener('click', () => {
-      permBanner.classList.remove('show');
-      localStorage.setItem('azfc_push_dismissed', 'true');
-    });
-  }
-}
-
-// In-App Notification Preferences Toggle Handler
-function setupNotificationToggleBtn() {
-  const toggleBtn = document.getElementById('notifPrefToggleBtn');
-  const icon = document.getElementById('notifStatusIcon');
-  const text = document.getElementById('notifStatusText');
-
-  function updateUi() {
-    const isMuted = localStorage.getItem('azfc_notif_muted') === 'true';
-    if (!('Notification' in window) || Notification.permission === 'denied' || isMuted) {
-      if (icon) icon.textContent = '🔕';
-      if (text) text.textContent = 'Alerts OFF';
-      if (toggleBtn) toggleBtn.style.color = 'var(--text-muted)';
-    } else {
-      if (icon) icon.textContent = '🔔';
-      if (text) text.textContent = 'Alerts ON';
-      if (toggleBtn) toggleBtn.style.color = '#34D399';
-    }
-  }
-
-  updateUi();
-
-  if (toggleBtn) {
-    toggleBtn.addEventListener('click', async () => {
-      if (!('Notification' in window)) {
-        alert('Web push notifications are not supported in this browser.');
-        return;
-      }
-
-      if (Notification.permission === 'default') {
-        const perm = await Notification.requestPermission();
-        if (perm === 'granted') {
-          localStorage.removeItem('azfc_notif_muted');
-          showCartToast('🔔 Notifications Enabled!');
-        }
-      } else if (Notification.permission === 'granted') {
-        const isMuted = localStorage.getItem('azfc_notif_muted') === 'true';
-        if (isMuted) {
-          localStorage.removeItem('azfc_notif_muted');
-          showCartToast('🔔 Push Notifications Activated!');
-        } else {
-          localStorage.setItem('azfc_notif_muted', 'true');
-          showCartToast('🔕 Push Notifications Muted');
-        }
-      } else {
-        alert('Notification permission is blocked in browser settings. Please enable them in your browser/app settings.');
-      }
-      updateUi();
-    });
-  }
-}
-
-// Storage event listener for live cross-tab deal notification
-window.addEventListener('storage', (e) => {
-  if (e.key === 'hot_taste_broadcast_promo') {
-    checkPromoBroadcast();
-  }
-});
-
-// Initialize Promo check & Push Engine on storefront load
-document.addEventListener('DOMContentLoaded', () => {
-  setTimeout(checkPromoBroadcast, 1200);
-  setTimeout(setupPushNotificationEngine, 1000);
-  setTimeout(setupNotificationToggleBtn, 500);
-});
-
-// ==========================================
-// 11. PWA SERVICE WORKER & INSTANT 1-CLICK APP INSTALL ENGINE
-// ==========================================
-let deferredPrompt = null;
-
-// Determine if app is running in installed standalone mode
-function isAppInstalled() {
-  return (
-    window.matchMedia('(display-mode: standalone)').matches ||
-    window.navigator.standalone === true ||
-    document.referrer.includes('android-app://')
-  );
-}
-
-// Register Service Worker
-if ('serviceWorker' in navigator) {
-  window.addEventListener('load', () => {
-    navigator.serviceWorker.register('./sw.js')
-      .then(reg => {
-        console.log('👑 AZFC PWA Service Worker Registered:', reg.scope);
-      })
-      .catch(err => {
-        console.warn('PWA Service Worker Registration Error:', err);
-      });
   });
 }
 
-// Intercept browser install prompt immediately
-window.addEventListener('beforeinstallprompt', (e) => {
-  e.preventDefault();
-  deferredPrompt = e;
+// ==========================================
+// 9. SEARCH, FILTERS, FAST MODAL DISMISSAL & CAPTAIN ZESTY INTERACTION
+// ==========================================
+function bindGlobalEvents() {
+  // Search Input
+  const searchInput = document.getElementById('menuSearchInput') || document.getElementById('liveSearchInput');
+  const clearBtn = document.getElementById('clearSearchBtn');
 
-  const banner = document.getElementById('pwaInstallBanner');
-  // CRITICAL: NEVER show install banner if app is already running as installed standalone app!
-  if (banner && !isAppInstalled() && !sessionStorage.getItem('pwa_banner_dismissed')) {
-    banner.style.display = 'flex';
-  }
-});
-
-// Listen for successful installation
-window.addEventListener('appinstalled', () => {
-  console.log('🎉 AZFC App installed successfully on user device!');
-  const banner = document.getElementById('pwaInstallBanner');
-  if (banner) banner.style.display = 'none';
-  localStorage.setItem('azfc_app_is_installed', 'true');
-  deferredPrompt = null;
-  showCartToast('👑 AZFC App installed successfully!');
-});
-
-document.addEventListener('DOMContentLoaded', () => {
-  const installBtn = document.getElementById('pwaInstallBtn');
-  const dismissBtn = document.getElementById('pwaDismissBtn');
-  const banner = document.getElementById('pwaInstallBanner');
-
-  // Immediately hide install banner if app is installed
-  if (isAppInstalled() || localStorage.getItem('azfc_app_is_installed') === 'true') {
-    if (banner) banner.style.display = 'none';
-  }
-
-  if (installBtn) {
-    installBtn.addEventListener('click', async () => {
-      if (deferredPrompt) {
-        try {
-          deferredPrompt.prompt();
-          const { outcome } = await deferredPrompt.userChoice;
-          if (outcome === 'accepted') {
-            if (banner) banner.style.display = 'none';
-            localStorage.setItem('azfc_app_is_installed', 'true');
-            showCartToast('👑 AZFC App Installing...');
-          }
-        } catch (err) {
-          console.error('Install prompt error:', err);
-        }
-        deferredPrompt = null;
-      } else {
-        const guideModal = document.getElementById('pwaGuideModal');
-        if (guideModal) {
-          guideModal.classList.add('open');
-        }
-      }
+  if (searchInput) {
+    searchInput.addEventListener('input', (e) => {
+      state.searchQuery = e.target.value;
+      if (clearBtn) clearBtn.classList.toggle('hidden', !state.searchQuery);
+      renderCategorizedMenu();
+      initScrollspy();
     });
   }
 
-  // Modal Close Handlers
-  const guideCloseBtn = document.getElementById('pwaGuideCloseBtn');
-  const guideActionBtn = document.getElementById('pwaGuideActionBtn');
-  const guideModal = document.getElementById('pwaGuideModal');
-
-  if (guideCloseBtn && guideModal) {
-    guideCloseBtn.addEventListener('click', () => guideModal.classList.remove('open'));
-  }
-  if (guideActionBtn && guideModal) {
-    guideActionBtn.addEventListener('click', () => guideModal.classList.remove('open'));
-  }
-
-  if (dismissBtn && banner) {
-    dismissBtn.addEventListener('click', () => {
-      banner.style.display = 'none';
-      sessionStorage.setItem('pwa_banner_dismissed', 'true');
+  if (clearBtn) {
+    clearBtn.addEventListener('click', () => {
+      clearSearch();
     });
   }
-});
 
+  // Filter Chips
+  document.querySelectorAll('.filter-chip').forEach(chip => {
+    chip.addEventListener('click', () => {
+      document.querySelectorAll('.filter-chip').forEach(c => c.classList.remove('active'));
+      chip.classList.add('active');
+      state.activeFilter = chip.dataset.filter;
+      renderCategorizedMenu();
+      initScrollspy();
+    });
+  });
+
+  // Order Mode Switcher (Delivery vs Pickup)
+  document.querySelectorAll('.mode-btn').forEach(btn => {
+    btn.addEventListener('click', () => {
+      document.querySelectorAll('.mode-btn').forEach(b => b.classList.remove('active'));
+      btn.classList.add('active');
+      state.orderMode = btn.dataset.mode;
+      const cartModeText = document.getElementById('cartModeText');
+      if (cartModeText) cartModeText.innerText = state.orderMode || 'Delivery';
+      showToast(`Switched to ${btn.dataset.mode.toUpperCase()} mode`, 'info');
+    });
+  });
+
+  // Branch Selector
+  const branchSelect = document.getElementById('branchSelect');
+  if (branchSelect) {
+    branchSelect.addEventListener('change', (e) => {
+      state.currentBranch = e.target.value;
+      showToast(`Selected Hub: ${state.currentBranch}`, 'info');
+    });
+  }
+
+  // Fast Zero-Lag Modal Triggers & Dismissals (Supports all Primary and Secondary aliases)
+  const cartOpenButtons = ['cartToggleBtn', 'navCartBtn', 'viewCartFloatingBtn', 'openCartBtn', 'mobileBottomCartBtn'];
+  cartOpenButtons.forEach(btnId => {
+    document.getElementById(btnId)?.addEventListener('click', openCart);
+  });
+
+  const cartCloseButtons = ['closeCartBtn', 'cartDrawerClose'];
+  cartCloseButtons.forEach(btnId => {
+    document.getElementById(btnId)?.addEventListener('click', closeCart);
+  });
+  document.getElementById('drawerBackdrop')?.addEventListener('click', closeCart);
+
+  // Cart Drawer Checkout Action Buttons
+  document.getElementById('codCheckoutBtn')?.addEventListener('click', checkoutCOD);
+  document.getElementById('waCheckoutBtn')?.addEventListener('click', checkoutWhatsApp);
+
+  const trackerOpenButtons = ['openTrackerBtn', 'navTrackerBtn', 'mobileBottomTrackBtn'];
+  trackerOpenButtons.forEach(btnId => {
+    document.getElementById(btnId)?.addEventListener('click', openTracker);
+  });
+  document.getElementById('trackerCloseBtn')?.addEventListener('click', closeTracker);
+  document.getElementById('trackerBrowseMenuBtn')?.addEventListener('click', () => {
+    closeTracker();
+    document.getElementById('categorizedMenuContainer')?.scrollIntoView({ behavior: 'smooth' });
+  });
+
+  document.getElementById('modalCloseBtn')?.addEventListener('click', closeCustomizer);
+  document.getElementById('modalQtyMinus')?.addEventListener('click', () => adjustCustomQty(-1));
+  document.getElementById('modalQtyPlus')?.addEventListener('click', () => adjustCustomQty(1));
+  document.getElementById('modalConfirmBtn')?.addEventListener('click', confirmCustomizerAdd);
+
+  document.getElementById('closeCheckoutDetailsBtn')?.addEventListener('click', closeCheckoutDetails);
+  document.getElementById('confirmCheckoutSubmitBtn')?.addEventListener('click', confirmAndTransmitOrder);
+
+  // Dismiss modals on backdrop click
+  ['customizerModal', 'checkoutDetailsModal', 'orderTrackerModal'].forEach(modalId => {
+    const modal = document.getElementById(modalId);
+    if (modal) {
+      modal.addEventListener('click', (e) => {
+        if (e.target === modal) {
+          modal.classList.remove('active');
+          document.body.style.overflow = '';
+        }
+      });
+    }
+  });
+
+  // Dismiss all active modals on 'Escape' keypress
+  window.addEventListener('keydown', (e) => {
+    if (e.key === 'Escape') {
+      closeCustomizer();
+      closeCart();
+      closeCheckoutDetails();
+      closeTracker();
+    }
+  });
+
+  // Captain Zesty Anime-Style Scroll Animation
+  // Hand-raising motion + manga-style speech bubble on scroll (like anime books)
+  const zestyWidget = document.getElementById('mascotWrapper') || document.getElementById('mascotWidget');
+  const mascotCard = document.querySelector('.mascot-card');
+
+  if (zestyWidget) {
+    zestyWidget.classList.add('interactive-zesty-widget');
+    zestyWidget.style.cursor = 'pointer';
+
+    // IntersectionObserver for anime-style scroll animation
+    const mascotObserver = new IntersectionObserver((entries) => {
+      entries.forEach(entry => {
+        if (entry.isIntersecting) {
+          // Anime-style entrance: happy face + hand wave + speech bubble pop-in
+          setTimeout(() => {
+            zestyWidget.classList.add('super-happy');
+            if (mascotCard) mascotCard.classList.add('show-message');
+          }, 150);
+        } else {
+          // Return to calm when scrolled away
+          zestyWidget.classList.remove('super-happy');
+          if (mascotCard) mascotCard.classList.remove('show-message');
+        }
+      });
+    }, {
+      threshold: 0.4,
+      rootMargin: '0px 0px -100px 0px'
+    });
+
+    mascotObserver.observe(zestyWidget);
+
+    // Click interaction
+    zestyWidget.addEventListener('click', () => {
+      zestyWidget.classList.add('super-happy');
+      if (mascotCard) mascotCard.classList.add('show-message');
+      showToast('Captain Zesty says: "Hot, Crisp & Freshly Smashed Just For You!"', 'info');
+      setTimeout(() => {
+        zestyWidget.classList.remove('super-happy');
+        if (mascotCard) mascotCard.classList.remove('show-message');
+      }, 3500);
+    });
+  }
+
+  // Initialize unified cart event delegation
+  initCartItemDelegation();
+
+  // Network Offline/Online Listeners
+  window.addEventListener('online', () => {
+    document.getElementById('networkBanner')?.classList.add('hidden');
+    showToast('Connection Restored: Live KDS Synchronized', 'info');
+  });
+  window.addEventListener('offline', () => {
+    document.getElementById('networkBanner')?.classList.remove('hidden');
+  });
+}
+
+window.clearSearch = function() {
+  state.searchQuery = '';
+  const input = document.getElementById('menuSearchInput');
+  const clearBtn = document.getElementById('clearSearchBtn');
+  if (input) input.value = '';
+  if (clearBtn) clearBtn.classList.add('hidden');
+  renderCategorizedMenu();
+  initScrollspy();
+};
+
+// Green "Added to Bucket" confirmation toast. `variant`: 'success' (green) | 'warning' (amber) | 'info' (neutral)
+function showToast(msg, variant = 'success') {
+  const toast = document.getElementById('cartToast');
+  const text = document.getElementById('toastMsg') || document.getElementById('toastText');
+  if (!toast || !text) return;
+
+  text.innerText = msg;
+  toast.classList.remove('toast-success', 'toast-warning', 'toast-info');
+  toast.classList.add(`toast-${variant}`, 'show');
+  setTimeout(() => {
+    toast.classList.remove('show');
+  }, 3200);
+}
