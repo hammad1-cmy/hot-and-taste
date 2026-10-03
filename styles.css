@@ -224,7 +224,151 @@ body {
   animation: pulseDot 1.5s infinite;
 }
 
-/* 3. Main Storefront Header */
+/* 2. Main Master Header */
+.master-header {
+  position: sticky;
+  top: 0;
+  background: rgba(8, 8, 11, 0.95);
+  backdrop-filter: blur(14px);
+  -webkit-backdrop-filter: blur(14px);
+  border-bottom: 1px solid var(--border-subtle);
+  z-index: 1000;
+  padding: 10px 20px;
+}
+.header-container {
+  max-width: 1300px;
+  margin: 0 auto;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 16px;
+}
+.brand-identity {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  text-decoration: none;
+}
+.brand-emblem-svg {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+.brand-text-block {
+  display: flex;
+  flex-direction: column;
+}
+.brand-title {
+  font-family: var(--font-heading);
+  font-size: 20px;
+  font-weight: 900;
+  letter-spacing: 0.5px;
+  color: #FFF;
+  line-height: 1;
+}
+.brand-motto {
+  font-size: 10px;
+  color: var(--color-primary);
+  font-weight: 800;
+  letter-spacing: 1px;
+  margin-top: 2px;
+}
+
+.header-nav-pills {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+}
+.nav-pill {
+  color: var(--text-muted);
+  text-decoration: none;
+  font-size: 13px;
+  font-weight: 700;
+  padding: 6px 14px;
+  border-radius: var(--radius-pill);
+  transition: all 0.2s ease;
+}
+.nav-pill:hover,
+.nav-pill.active {
+  color: #FFF;
+  background: var(--bg-surface-elevated);
+}
+
+.header-actions {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+}
+.header-btn {
+  background: var(--bg-surface-elevated);
+  border: 1px solid var(--border-subtle);
+  color: #FFF;
+  font-family: var(--font-body);
+  font-size: 13px;
+  font-weight: 700;
+  padding: 8px 14px;
+  border-radius: var(--radius-pill);
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  transition: all 0.2s ease;
+}
+.header-btn:hover {
+  border-color: var(--color-primary);
+}
+.tracker-btn {
+  color: var(--text-muted);
+}
+.tracker-btn:hover {
+  color: #FFF;
+}
+.cart-trigger-btn {
+  background: var(--primary-gradient);
+  border: none;
+  color: #08080B;
+  font-weight: 900;
+  box-shadow: var(--shadow-gold);
+}
+.cart-trigger-btn:hover {
+  transform: scale(1.02);
+}
+.cart-icon-wrap {
+  position: relative;
+  display: flex;
+  align-items: center;
+}
+.cart-badge-count {
+  position: absolute;
+  top: -8px;
+  right: -8px;
+  background: #991B1B;
+  color: #FFF;
+  font-size: 10px;
+  font-weight: 900;
+  width: 16px;
+  height: 16px;
+  border-radius: 50%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+.cart-btn-label {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+}
+.cart-label-title {
+  font-size: 13px;
+  font-weight: 900;
+}
+.cart-label-amount {
+  font-size: 12px;
+  font-weight: 800;
+  opacity: 0.85;
+}
+
+/* 3. Main Storefront Header (Legacy compatibility) */
 .app-header {
   position: sticky;
   top: 0;
@@ -2031,44 +2175,66 @@ body {
    so the actions block pushed the page ~130-146px wide.
    ============================================================ */
 @media (max-width: 768px) {
-  .header {
-    position: sticky;
-    top: 0;
+  /* Hide Top Announcement Strip completely on mobile */
+  .announcement-strip {
+    display: none !important;
   }
-  .header-inner {
-    flex-wrap: wrap;
-    row-gap: 10px;
-  }
-  .brand-block { order: 1; }
-  .header-actions { order: 2; margin-left: auto; }
-  .search-container { order: 3; flex: 1 1 100%; }
 
-  /* Replace green dot with readable text label on mobile */
-  .tracker-btn .live-ping {
-    display: none;
+  .master-header {
+    padding: 10px 14px !important;
   }
-  .tracker-btn span:not(.live-ping) {
-    display: inline;
-    font-size: 13px;
-    font-weight: 600;
+  .header-container {
+    display: flex !important;
+    align-items: center !important;
+    justify-content: space-between !important;
+    width: 100% !important;
   }
-  .tracker-btn::before {
-    content: 'Track Your Order';
-    display: inline;
+  .header-left {
+    display: flex !important;
+    align-items: center !important;
+  }
+  .brand-identity {
+    display: flex !important;
+    align-items: center !important;
+    gap: 8px !important;
+  }
+  .brand-emblem-svg svg {
+    width: 34px !important;
+    height: 34px !important;
+  }
+  .brand-title {
+    font-size: 16px !important;
+    color: #FFF !important;
+  }
+  .brand-motto {
+    font-size: 8.5px !important;
+    color: var(--color-primary) !important;
+  }
+
+  .header-nav-pills {
+    display: none !important; /* Controlled via category bar & bottom nav */
+  }
+
+  .header-actions {
+    display: flex !important;
+    align-items: center !important;
+    gap: 8px !important;
   }
   .tracker-btn {
-    padding: 10px 14px;
-    min-width: auto;
-    white-space: nowrap;
+    padding: 6px 10px !important;
+    font-size: 11px !important;
   }
-
-  .cart-btn-label {
-    display: none;
+  .tracker-btn .btn-text {
+    font-size: 11px !important;
   }
-  .cart-btn {
-    padding: 10px 12px;
-    min-width: 44px;
-    justify-content: center;
+  .cart-trigger-btn {
+    padding: 6px 12px !important;
+  }
+  .cart-label-amount {
+    display: none !important;
+  }
+  .cart-label-title {
+    font-size: 12px !important;
   }
 
   /* 2-column mobile menu grid for items - Daily Deli Co. Inspired compact view */
@@ -2222,29 +2388,6 @@ body {
     padding: 6px 12px !important;
     font-size: 11px !important;
     border-radius: 16px !important;
-  }
-
-  /* Mobile Top Announcement Strip & Header */
-  .announcement-strip {
-    display: none !important; /* Keep mobile viewport clean without top clutter */
-  }
-
-  .master-header,
-  .app-header {
-    padding: 8px 12px !important;
-  }
-
-  .brand-title {
-    font-size: 16px !important;
-  }
-
-  .brand-motto,
-  .brand-sub {
-    font-size: 9px !important;
-  }
-
-  .header-nav-pills {
-    display: none !important; /* Managed by sticky category bar and mobile bottom nav */
   }
 
   /* Mobile Captain Zesty Manga Bubble positioning */
